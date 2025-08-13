@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const navButtonsContainer = document.querySelector('.nav-buttons');
     const mainContent = document.getElementById('main-content');
 
-    if (!navButtonsContainer || !mainContent) {
-        console.error('No se encontraron los contenedores necesarios.');
+    if (!mainContent) {
+        console.error('Contenedor principal no encontrado.');
         return;
     }
 
@@ -49,65 +48,51 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetView) {
             targetView.classList.add('active');
             const itemList = targetView.querySelector('.item-list');
-            // Cargar artículos solo si la lista está vacía (o solo tiene el mensaje de carga/error)
             if (itemList && itemList.children.length <= 1) {
                 loadArticles(button.dataset.familiaId, button.dataset.view);
             }
         }
     };
 
-    // Cargar familias y construir la UI
-    fetch('api/familias.php')
-        .then(response => response.json())
-        .then(familias => {
-            if (familias.error) throw new Error(familias.error);
+    // Función para inicializar la página de productos
+    const initProductPage = () => {
+        const buttons = document.querySelectorAll('.nav-button');
+        if (buttons.length === 0) return; // Salir si los botones aún no están listos
 
-            navButtonsContainer.innerHTML = '';
-            mainContent.innerHTML = '';
+        mainContent.innerHTML = ''; // Limpiar contenido principal
 
-            familias.forEach((familia, index) => {
-                const viewName = familia.descripcion.toLowerCase().replace(/\s+/g, '-');
+        buttons.forEach((button, index) => {
+            const viewName = button.dataset.view;
+            const familia = { descripcion: button.querySelector('span').textContent, id_familias: button.dataset.familiaId };
 
-                // Crear botón de navegación
-                const button = document.createElement('button');
-                button.className = 'nav-button';
-                button.dataset.view = viewName;
-                button.dataset.familiaId = familia.id_familias;
-                
-                let iconName = 'utensils'; // Icono por defecto
-                if (['bebidas', 'licores', 'refrescos', 'cervezas'].some(term => familia.descripcion.toLowerCase().includes(term))) iconName = 'beer';
-                else if (familia.descripcion.toLowerCase().includes('snacks')) iconName = 'coffee';
-                else if (familia.descripcion.toLowerCase().includes('comidas')) iconName = 'utensils-crossed';
+            // Crear vista de contenido
+            const view = document.createElement('div');
+            view.id = `${viewName}-view`;
+            view.className = 'view';
+            view.innerHTML = `<h2>${familia.descripcion.toUpperCase()}</h2>
+                              <input type="text" placeholder="FILTRO" class="filter-input" data-target="${viewName}-list">
+                              <div id="${viewName}-list" class="item-list"></div>`;
+            mainContent.appendChild(view);
 
-                button.innerHTML = `<i data-lucide="${iconName}"></i><span>${familia.descripcion}</span>`;
-                navButtonsContainer.appendChild(button);
-
-                // Crear vista de contenido
-                const view = document.createElement('div');
-                view.id = `${viewName}-view`;
-                view.className = 'view';
-                view.innerHTML = `<h2>${familia.descripcion.toUpperCase()}</h2>
-                                  <input type="text" placeholder="FILTRO" class="filter-input" data-target="${viewName}-list">
-                                  <div id="${viewName}-list" class="item-list"></div>`;
-                mainContent.appendChild(view);
-
-                // Activar el primer elemento y cargar sus artículos
-                if (index === 0) {
-                    button.classList.add('active');
-                    view.classList.add('active');
-                    loadArticles(familia.id_familias, viewName);
-                }
-            });
-
-            // Añadir listeners a los botones
-            document.querySelectorAll('.nav-button').forEach(button => {
-                button.addEventListener('click', () => switchView(button));
-            });
-
-            lucide.createIcons();
-        })
-        .catch(error => {
-            console.error('Error al inicializar la aplicación:', error);
-            mainContent.innerHTML = '<p>Error al cargar la aplicación. Verifique la consola.</p>';
+            if (index === 0) {
+                button.classList.add('active');
+                view.classList.add('active');
+                loadArticles(familia.id_familias, viewName);
+            }
         });
+
+        // Añadir listeners a los botones
+        buttons.forEach(button => {
+            button.addEventListener('click', () => switchView(button));
+        });
+    };
+
+    // Esperar a que el sidebar esté listo antes de inicializar
+    document.addEventListener('sidebarReady', initProductPage);
+
+    // Si el sidebar ya está listo (en caso de que el script se cargue después)
+    if (document.querySelector('.nav-buttons').children.length > 0) {
+        initProductPage();
+    }
 });
+

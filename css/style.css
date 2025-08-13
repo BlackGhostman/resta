@@ -129,11 +129,14 @@ body, html {
 /* Contenido Principal */
 #main-content {
     flex-grow: 1;
-    background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-g5hVNebinUTOeqhBtx4LPbXRXpPdWK.png');
+    /* background-image: url('../img/fondo-mesas.jpg'); */
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
-    overflow-y: auto;
+    overflow-y: auto; /* Para scroll si el contenido es largo */
+}
+
+.page-content-wrapper {
+    padding: 20px;
 }
 
 /* Vistas de Contenido */
