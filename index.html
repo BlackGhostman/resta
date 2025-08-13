@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Restaurante</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide-react@0.390.0/dist/lucide-react.js"></script>
+</head>
+<body>
+    <div id="app-container">
+        <header id="main-header">
+            <i data-lucide="home"></i>
+            <div class="header-title">
+                <span>sistema.com</span>
+            </div>
+            <div class="header-icons">
+                <i data-lucide="user"></i>
+                <i data-lucide="more-vertical"></i>
+            </div>
+        </header>
+
+        <div id="main-layout">
+            <aside id="sidebar">
+                <div class="sidebar-header">
+                    <h1>MENÚ</h1>
+                </div>
+                <nav class="sidebar-nav">
+                    <div class="active-user">
+                        <i data-lucide="user" class="text-yellow"></i>
+                        <span class="text-yellow">Camilo B</span>
+                    </div>
+
+                    <button data-view="drinks" class="nav-button active">
+                        <i data-lucide="beer"></i>
+                        <span>Bebidas</span>
+                    </button>
+                    <button data-view="bocas" class="nav-button">
+                        <i data-lucide="menu"></i>
+                        <span>Bocas</span>
+                    </button>
+                    <button data-view="fuertes" class="nav-button">
+                        <i data-lucide="utensils"></i>
+                        <span>Fuertes</span>
+                    </button>
+                    <button data-view="snacks" class="nav-button">
+                        <i data-lucide="coffee"></i>
+                        <span>Snacks</span>
+                    </button>
+                     <button data-view="tables" class="nav-button">
+                        <i data-lucide="table-2"></i>
+                        <span>Mesas</span>
+                    </button>
+                    <button data-view="clients" class="nav-button">
+                        <i data-lucide="users"></i>
+                        <span>Clientes</span>
+                    </button>
+                </nav>
+            </aside>
+
+            <main id="main-content">
+                <div id="drinks-view" class="view active">
+                    <h2>BEBIDAS</h2>
+                    <input type="text" placeholder="FILTRO" class="filter-input" data-target="drinks-list">
+                    <div id="drinks-list" class="item-list">
+                        <div class="list-item">Cervesa Imperial</div>
+                        <div class="list-item">Cervesa Pilsen</div>
+                        <div class="list-item">Cervesa Heineken</div>
+                        <div class="list-item">Litro Cacique</div>
+                        <div class="list-item">Litro Johnnie Walker</div>
+                        <div class="list-item">Litro J&B</div>
+                        <div class="list-item">Cervesa Corona</div>
+                        <div class="list-item">Cervesa Sol</div>
+                        <div class="list-item">Cervesa Toña</div>
+                    </div>
+                </div>
+
+                <div id="bocas-view" class="view">
+                    <h2>BOCAS</h2>
+                    <input type="text" placeholder="FILTRO" class="filter-input" data-target="bocas-list">
+                    <div id="bocas-list" class="item-list">
+                        <div class="list-item">Chifrijo</div>
+                        <div class="list-item">Ceviche</div>
+                        <div class="list-item">Yuca con Chicharrón</div>
+                        <div class="list-item">Olla de Carne</div>
+                        <div class="list-item">Alitas</div>
+                        <div class="list-item">Costilla</div>
+                        <div class="list-item">Queso Frito</div>
+                        <div class="list-item">Posol</div>
+                        <div class="list-item">Taco</div>
+                    </div>
+                </div>
+                
+                <div id="fuertes-view" class="view">
+                    <h2>PLATOS FUERTES</h2>
+                    <input type="text" placeholder="FILTRO" class="filter-input" data-target="fuertes-list">
+                    <div id="fuertes-list" class="item-list">
+                        <div class="list-item">Casado</div>
+                        <div class="list-item">Arroz con Pollo</div>
+                        <div class="list-item">Pescado Entero Frito</div>
+                        <div class="list-item">Lomito de Cerdo</div>
+                        <div class="list-item">Arroz con Camarones</div>
+                        <div class="list-item">Pulpo al Ajillo</div>
+                        <div class="list-item">Albóndigas en Salsa</div>
+                        <div class="list-item">Pargo Rojo Frito con Ajo</div>
+                        <div class="list-item">Sopa de Mariscos</div>
+                        <div class="list-item">Pollo en Salsa</div>
+                        <div class="list-item">Carne en Salsa</div>
+                    </div>
+                </div>
+                
+                <div id="snacks-view" class="view">
+                    <h2>SNACKS</h2>
+                    <input type="text" placeholder="FILTRO" class="filter-input" data-target="snacks-list">
+                    <div id="snacks-list" class="item-list">
+                        <div class="list-item">Papas fritas</div>
+                        <div class="list-item">Nachos con queso</div>
+                        <div class="list-item">Alitas de pollo</div>
+                        <div class="list-item">Aros de cebolla</div>
+                        <div class="list-item">Palomitas de maíz</div>
+                        <div class="list-item">Chips de plátano</div>
+                        <div class="list-item">Mini pizzas</div>
+                        <div class="list-item">Empanadas</div>
+                        <div class="list-item">Tacos</div>
+                        <div class="list-item">Quesadillas</div>
+                    </div>
+                </div>
+
+                <div id="tables-view" class="view">
+                    <h2>MESAS</h2>
+                    <div id="tables-list" class="item-list">
+                        <button class="table-button" data-table-id="1">Mesa #1</button>
+                        <button class="table-button" data-table-id="2">Mesa #2</button>
+                        <button class="table-button" data-table-id="3">Mesa #3</button>
+                        <button class="table-button occupied" data-table-id="4">Mesa #4</button>
+                        <button class="table-button" data-table-id="5">Mesa #5</button>
+                        <button class="table-button" data-table-id="6">Mesa #6</button>
+                        <button class="table-button" data-table-id="7">Mesa #7</button>
+                        <button class="table-button occupied" data-table-id="8">Mesa #8</button>
+                        <button class="table-button" data-table-id="9">Mesa #9</button>
+                        <button class="table-button" data-table-id="10">Mesa #10</button>
+                        <button class="table-button" data-table-id="11">Mesa #11</button>
+                    </div>
+                </div>
+
+                <div id="clients-view" class="view">
+                    <h2>CLIENTES</h2>
+                    <form id="add-client-form">
+                        <input id="new-client-input" type="text" placeholder="NOMBRE" class="filter-input">
+                        <button type="submit" class="submit-button">Agregar</button>
+                    </form>
+                    <div id="clients-list" class="item-list">
+                        <div class="list-item">Camilo B</div>
+                        <div class="list-item">Francisco A</div>
+                        <div class="list-item">Eriberto L</div>
+                        <div class="list-item">Jose A</div>
+                        <div class="list-item">Luis M</div>
+                        <div class="list-item">Ricardo S</div>
+                        <div class="list-item">Eliecer B</div>
+                        <div class="list-item">Enrrique G</div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide-react"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <script src="js/api.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
