@@ -1,0 +1,132 @@
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.layout-container {
+    display: flex;
+    height: 100%;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: #1f1f1f;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #ffffff;
+}
+
+.zone-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.zone-btn {
+    background-color: transparent;
+    color: #a0a0a0;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.zone-btn:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+.zone-btn.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-image: url('https://i.imgur.com/P2pA1sS.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.main-content::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.main-header {
+    position: relative;
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(0,0,0,0.2);
+}
+
+#current-zone-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.main-content .table-grid {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 30px;
+    position: relative;
+}
+
+.table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 20px;
+}
+
+.table-btn {
+    background-color: #e9ecef;
+    color: #343a40;
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px; /* Taller buttons */
+}
+
+.table-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.table-btn.occupied {
+    background-color: #dc3545; /* A standard red color */
+    color: #fff;
+}
