@@ -56,6 +56,29 @@
                 );
             }
 
+                        function RenameZoneModal({ show, onClose, value, onChange, onSave }) {
+                const inputRef = useRef(null);
+                useEffect(() => {
+                    if (show) {
+                        setTimeout(() => inputRef.current?.focus(), 50);
+                    }
+                }, [show]);
+
+                if (!show) return null;
+                return (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+                        <div className="bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-white mb-4">Renombrar Zona</h3>
+                            <input ref={inputRef} type="text" value={value} onChange={onChange} className="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4" />
+                            <div className="flex justify-end gap-3">
+                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white">Cancelar</button>
+                                <button onClick={onSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
             function DeleteZoneModal({ show, onClose, onConfirm, zoneName }) {
                 if (!show) return null;
                 return (
@@ -72,41 +95,54 @@
                 );
             }
 
-            const Sidebar = ({ tables, activeLocation, setActiveLocation, isAddingMode, setIsAddingMode, selectedTable, handleDeleteSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, isSidebarOpen, setIsSidebarOpen, setSelectedTable }) => (
-                <aside className={`fixed top-0 left-0 z-40 w-64 h-screen bg-gray-900/80 backdrop-blur-md border-r border-gray-700 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
-                    <div className="h-full px-3 py-4 overflow-y-auto flex flex-col">
-                        <div>
-                            <div className="flex items-center justify-between mb-8">
-                                <a href="#" className="flex items-center ps-2.5">
-                                    <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
-                                    <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">ZONAS</span>
-                                </a>
-                                <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-2 rounded-md hover:bg-gray-700"><Icon name="X" className="w-6 h-6" /></button>
+            const Sidebar = ({ tables, activeLocation, setActiveLocation, isAddingMode, setIsAddingMode, selectedTable, handleDeleteSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setShowRenameZoneModal, isSidebarOpen, setIsSidebarOpen, setSelectedTable }) => {
+
+                const handleZoneClick = (location) => {
+                    setActiveLocation(location);
+                    setSelectedTable(null);
+                    setIsAddingMode(false);
+                    if (window.innerWidth < 1024) { // lg breakpoint in tailwind
+                        setIsSidebarOpen(false);
+                    }
+                };
+
+                return (
+                    <aside className={`fixed top-0 left-0 z-40 h-screen bg-gray-900/80 backdrop-blur-md border-r border-gray-700 transition-all duration-300 lg:w-64 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
+                        <div className="h-full px-3 py-4 overflow-y-auto flex flex-col">
+                            <div>
+                                <div className="flex items-center justify-between mb-8">
+                                    <a href="#" className="flex items-center ps-2.5">
+                                        <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
+                                        <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>ZONAS</span>
+                                    </a>
+                                    <button onClick={() => setIsSidebarOpen(false)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden ${isSidebarOpen ? 'inline' : 'hidden'}`}><Icon name="X" className="w-6 h-6" /></button>
+                                </div>
+                                <ul className="space-y-3 font-medium">
+                                    {Object.keys(tables).map(location => (
+                                        <li key={location}>
+                                            <button onClick={() => handleZoneClick(location)} className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeLocation === location ? 'bg-white/10' : 'hover:bg-white/5'}`}>
+                                                <Icon name={location === 'Salón' ? 'Armchair' : location.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeLocation === location ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
+                                                <span className={`ms-4 text-lg whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{location}</span>
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
-                            <ul className="space-y-3 font-medium">
-                                {Object.keys(tables).map(location => (
-                                    <li key={location}>
-                                        <button onClick={() => { setActiveLocation(location); setIsSidebarOpen(false); setSelectedTable(null); setIsAddingMode(false); }} className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeLocation === location ? 'bg-white/10' : 'hover:bg-white/5'}`}>
-                                            <Icon name={location === 'Salón' ? 'Armchair' : location.includes('Barra') ? 'Beer' : 'MapPin'} className={`w-8 h-8 transition duration-75 ${activeLocation === location ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
-                                            <span className="ms-4 text-lg">{location}</span>
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="mt-auto pt-8">
-                            <h3 className="text-lg font-semibold text-white mb-4 px-2">Herramientas</h3>
-                            <div className="space-y-3">
-                                <button onClick={() => setIsAddingMode(true)} className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'}`}><Icon name="PlusCircle" /><span>Añadir Mesa</span></button>
-                                <button onClick={handleDeleteSelectedTable} disabled={!selectedTable} className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors bg-red-800 hover:bg-red-700 text-gray-200 disabled:bg-gray-600 disabled:opacity-50"><Icon name="Trash2" /><span>Eliminar Mesa</span></button>
-                                <div className="border-t border-gray-700 my-4"></div>
-                                <button onClick={() => setShowAddZoneModal(true)} className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors bg-blue-700 hover:bg-blue-600 text-gray-200"><Icon name="LayoutGrid" /><span>Nueva Zona</span></button>
-                                <button onClick={() => setShowDeleteZoneModal(true)} className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors bg-red-900 hover:bg-red-800 text-gray-200"><Icon name="SquareX" /><span>Eliminar Zona</span></button>
+                            <div className="mt-auto pt-8">
+                                <h3 className={`text-lg font-semibold text-white mb-4 px-2 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Herramientas</h3>
+                                <div className="space-y-3">
+                                    <button onClick={() => setIsAddingMode(true)} className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'}`}><Icon name="PlusCircle" className="flex-shrink-0" /> <span className={`whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Mesa</span></button>
+                                    <button onClick={handleDeleteSelectedTable} disabled={!selectedTable} className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors bg-red-800 hover:bg-red-700 text-gray-200 disabled:bg-gray-600 disabled:opacity-50"><Icon name="Trash2" className="flex-shrink-0" /> <span className={`whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Eliminar Mesa</span></button>
+                                    <div className="border-t border-gray-700 my-4"></div>
+                                    <button onClick={() => setShowAddZoneModal(true)} className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors bg-blue-700 hover:bg-blue-600 text-gray-200"><Icon name="LayoutGrid" className="flex-shrink-0" /> <span className={`whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Nueva Zona</span></button>
+                                    <button onClick={() => setShowRenameZoneModal(true)} className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors bg-yellow-600 hover:bg-yellow-500 text-gray-200"><Icon name="Pencil" className="flex-shrink-0" /> <span className={`whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Renombrar Zona</span></button>
+                                    <button onClick={() => setShowDeleteZoneModal(true)} className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors bg-red-900 hover:bg-red-800 text-gray-200"><Icon name="SquareX" className="flex-shrink-0" /> <span className={`whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Eliminar Zona</span></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </aside>
-            );
+                    </aside>
+                );
+            }
 
             const Header = ({ activeLocation, setIsSidebarOpen }) => (
                 <header className="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-30 flex items-center justify-between lg:hidden px-4 py-3 border-b border-gray-700">
@@ -120,15 +156,23 @@
                 const [tables, setTables] = useState({});
                 const [activeLocation, setActiveLocation] = useState('');
                 const [loading, setLoading] = useState(true);
-                const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+                                                const [isSidebarOpen, setIsSidebarOpen] = useState(false);
                 const [isAddingMode, setIsAddingMode] = useState(false);
                 const [selectedTable, setSelectedTable] = useState(null);
                 const [showAddZoneModal, setShowAddZoneModal] = useState(false);
                 const [newZoneName, setNewZoneName] = useState('');
-                const [showDeleteZoneModal, setShowDeleteZoneModal] = useState(false);
+                                const [showDeleteZoneModal, setShowDeleteZoneModal] = useState(false);
+                const [showRenameZoneModal, setShowRenameZoneModal] = useState(false);
+                const [zoneNameToRename, setZoneNameToRename] = useState('');
 
                 const GRID_ROWS = 10;
                 const GRID_COLS = 16;
+
+                useEffect(() => {
+                    if (showRenameZoneModal) {
+                        setZoneNameToRename(activeLocation);
+                    }
+                }, [showRenameZoneModal]);
 
                 useEffect(() => {
                     fetch('mesas.json')
@@ -202,6 +246,33 @@
                     }
                 };
 
+                                const handleRenameZone = () => {
+                    const oldName = activeLocation;
+                    const newName = zoneNameToRename.trim();
+
+                    if (!newName || newName === oldName) {
+                        setShowRenameZoneModal(false);
+                        return;
+                    }
+
+                    if (tables[newName]) {
+                        return alert('Ya existe una zona con ese nombre.');
+                    }
+
+                    const newTables = Object.keys(tables).reduce((acc, key) => {
+                        if (key === oldName) {
+                            acc[newName] = tables[key];
+                        } else {
+                            acc[key] = tables[key];
+                        }
+                        return acc;
+                    }, {});
+
+                    setTables(newTables);
+                    setActiveLocation(newName);
+                    setShowRenameZoneModal(false);
+                };
+
                 const handleDeleteZone = () => {
                     if (Object.keys(tables).length <= 1) return alert("No se puede eliminar la última zona.");
                     const newTables = { ...tables };
@@ -213,11 +284,12 @@
 
                 return (
                     <div className="relative min-h-screen bg-gray-800">
-                        <AddZoneModal show={showAddZoneModal} onClose={() => setShowAddZoneModal(false)} value={newZoneName} onChange={(e) => setNewZoneName(e.target.value)} onSave={handleAddZone} />
+                                                <AddZoneModal show={showAddZoneModal} onClose={() => setShowAddZoneModal(false)} value={newZoneName} onChange={(e) => setNewZoneName(e.target.value)} onSave={handleAddZone} />
+                        <RenameZoneModal show={showRenameZoneModal} onClose={() => setShowRenameZoneModal(false)} value={zoneNameToRename} onChange={(e) => setZoneNameToRename(e.target.value)} onSave={handleRenameZone} />
                         <DeleteZoneModal show={showDeleteZoneModal} onClose={() => setShowDeleteZoneModal(false)} onConfirm={handleDeleteZone} zoneName={activeLocation} />
                         <div className="relative flex h-screen">
-                            <Sidebar {...{ tables, activeLocation, setActiveLocation, isAddingMode, setIsAddingMode, selectedTable, handleDeleteSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, isSidebarOpen, setIsSidebarOpen, setSelectedTable }} />
-                            <div className="flex-1 flex flex-col overflow-hidden lg:ml-64">
+                                                        <Sidebar {...{ tables, activeLocation, setActiveLocation, isAddingMode, setIsAddingMode, selectedTable, handleDeleteSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setShowRenameZoneModal, isSidebarOpen, setIsSidebarOpen, setSelectedTable }} />
+                                                                                                                                                                                                    <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 lg:ml-64 ${isSidebarOpen ? 'ml-64' : 'ml-20'}`}>
                                 <Header {...{ activeLocation, setIsSidebarOpen }} />
                                 <main className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 ${isAddingMode ? 'adding-mode' : ''}`}>
                                     <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Editor de Plano: {activeLocation}</h1>

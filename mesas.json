@@ -10,6 +10,6 @@
     "Barra": [
         { "id": 101, "number": "B1", "row": 2, "col": 3 },
         { "id": 102, "number": "B7", "row": 2, "col": 4 },
-        { "id": 102, "number": "B2", "row": 2, "col": 5 }
+        { "id": 103, "number": "B2", "row": 2, "col": 5 }
     ]
 }
