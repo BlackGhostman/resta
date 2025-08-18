@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/lucide-react@0.390.0/dist/umd/lucide-react.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #111827; }
@@ -26,14 +25,42 @@
 
     <script type="text/babel">
         window.onload = function() {
-            const { useState, useEffect, createElement, useRef } = React;
+            const { useState, useEffect, useRef } = React;
 
-            const Icon = ({ name, ...props }) => {
-                if (typeof lucide === 'undefined' || !lucide[name]) {
-                    return <span style={{ display: 'inline-block', width: '1em', height: '1em' }}></span>;
-                }
-                return createElement(lucide[name], props);
+            const SVG_ICONS = {
+                Save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" />',
+                Loader: '<path d="M12 2v4" /><path d="m16.2 7.8 2.8-2.8" /><path d="M18 12h4" /><path d="m16.2 16.2 2.8 2.8" /><path d="M12 18v4" /><path d="m7.8 16.2-2.8 2.8" /><path d="M6 12H2" /><path d="m7.8 7.8-2.8-2.8" />',
+                Trash2: '<path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" />',
+                PlusCircle: '<circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />',
+                Menu: '<line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" />',
+                CircleUser: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>',
+                UtensilsCrossed: '<path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8" /><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7" /><path d="m2.1 2.1 6.4 6.4" />',
+                X: '<path d="M18 6 6 18" /><path d="m6 6 12 12" />',
+                Armchair: '<path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3" /><path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2Z" /><path d="M5 11v-2" /><path d="M19 9v2" />',
+                Beer: '<path d="M17 11h1a3 3 0 0 1 0 6h-1" /><path d="M9 12v6" /><path d="M13 12v6" /><path d="M14 7.5c0-.28.22-.5.5-.5h1c.28 0 .5.22.5.5c0 .28-.22.5-.5.5h-1c-.28 0-.5-.22-.5-.5Z" /><path d="M12 20a6 6 0 0 1-6-6V7H4v10a8 8 0 0 0 8 8Z" />',
+                MapPin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" />',
+                LayoutGrid: '<rect width="7" height="7" x="3" y="3" rx="1" /><rect width="7" height="7" x="14" y="3" rx="1" /><rect width="7" height="7" x="14" y="14" rx="1" /><rect width="7" height="7" x="3" y="14" rx="1" />',
+                Pencil: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path d="m15 5 4 4" />',
+                SquareX: '<rect width="18" height="18" x="3" y="3" rx="2" /><path d="m15 9-6 6" /><path d="m9 9 6 6" />',
+                TriangleAlert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" />'
             };
+
+            const Icon = ({ name, className = '', ...props }) => (
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={className}
+                    {...props}
+                    dangerouslySetInnerHTML={{ __html: SVG_ICONS[name] || '' }}
+                />
+            );
 
             function AddZoneModal({ show, onClose, value, onChange, onSave }) {
                 const inputRef = useRef(null);
@@ -95,7 +122,14 @@
                 );
             }
 
-            const Sidebar = ({ tables, activeLocation, setActiveLocation, isAddingMode, setIsAddingMode, selectedTable, handleDeleteSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setShowRenameZoneModal, isSidebarOpen, setIsSidebarOpen, setSelectedTable }) => {
+            const Sidebar = ({
+                tables, activeLocation, setActiveLocation,
+                isAddingMode, setIsAddingMode,
+                selectedTable, handleDeleteSelectedTable,
+                setShowAddZoneModal, setShowDeleteZoneModal, setShowRenameZoneModal,
+                isSidebarOpen, setIsSidebarOpen, setSelectedTable,
+                handleSaveChanges, isDirty, isSaving
+            }) => {
 
                 const handleZoneClick = (location) => {
                     setActiveLocation(location);
@@ -137,6 +171,12 @@
                                                                         <button onClick={() => setShowAddZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-blue-700 hover:bg-blue-600 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="LayoutGrid" className="flex-shrink-0" /> <span className={`whitespace-nowrap ms-3 ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Nueva Zona</span></button>
                                                                         <button onClick={() => setShowRenameZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-yellow-600 hover:bg-yellow-500 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Pencil" className="flex-shrink-0" /> <span className={`whitespace-nowrap ms-3 ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Renombrar Zona</span></button>
                                                                         <button onClick={() => setShowDeleteZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-red-900 hover:bg-red-800 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="SquareX" className="flex-shrink-0" /> <span className={`whitespace-nowrap ms-3 ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Eliminar Zona</span></button>
+                                    <div className="border-t border-gray-700 my-4"></div>
+                                    <button onClick={handleSaveChanges} disabled={!isDirty || isSaving} className={`w-full flex items-center p-3 rounded-lg transition-colors text-white disabled:opacity-50 ${isDirty ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}>
+                                        {isSaving ? null : <Icon name="Save" className="flex-shrink-0" />}
+                                        <span className={`whitespace-nowrap ms-3 ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{isSaving ? 'Guardando...' : 'Guardar Cambios'}</span>
+                                        {!isSaving && isDirty && <span className="w-3 h-3 bg-yellow-400 rounded-full ms-auto ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline"></span>}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -164,6 +204,8 @@
                                 const [showDeleteZoneModal, setShowDeleteZoneModal] = useState(false);
                 const [showRenameZoneModal, setShowRenameZoneModal] = useState(false);
                 const [zoneNameToRename, setZoneNameToRename] = useState('');
+                const [isDirty, setIsDirty] = useState(false); // Track unsaved changes
+                const [isSaving, setIsSaving] = useState(false);
 
                 const GRID_ROWS = 10;
                 const GRID_COLS = 16;
@@ -174,21 +216,35 @@
                     }
                 }, [showRenameZoneModal]);
 
-                useEffect(() => {
-                    fetch('mesas.json')
-                        .then(res => res.ok ? res.json() : Promise.reject(new Error('Failed to load')))
+                const API_URL = 'api/plano.php';
+
+                const fetchData = () => {
+                    setLoading(true);
+                    fetch(API_URL)
+                        .then(res => res.ok ? res.json() : Promise.reject(new Error('Failed to load layout')))
                         .then(data => {
-                            setTables(data);
-                            setActiveLocation(Object.keys(data)[0] || '');
+                            if (Object.keys(data).length === 0) {
+                                // Handle empty layout, maybe create a default one
+                                const defaultLayout = { 'Salón Principal': [] };
+                                setTables(defaultLayout);
+                                setActiveLocation('Salón Principal');
+                            } else {
+                                setTables(data);
+                                setActiveLocation(Object.keys(data)[0] || '');
+                            }
+                            setIsDirty(false);
                         })
-                        .catch(err => console.error('Error fetching tables:', err))
+                        .catch(err => console.error('Error fetching layout:', err))
                         .finally(() => setLoading(false));
+                };
+
+                useEffect(() => {
+                    fetchData();
                 }, []);
 
                 if (loading) {
                     return (
                         <div className="flex items-center justify-center h-screen bg-gray-900 text-white text-xl">
-                            <Icon name="LoaderCircle" className="animate-spin h-8 w-8 mr-4" />
                             Cargando datos del plano...
                         </div>
                     );
@@ -211,17 +267,20 @@
                 const handleDrop = (e, toRow, toCol) => {
                     e.preventDefault();
                     e.currentTarget.classList.remove('drag-over');
-                    if (tables[activeLocation].some(t => t.row === toRow && t.col === toCol)) return;
+                    if (tables[activeLocation] && tables[activeLocation].some(t => t.row === toRow && t.col === toCol)) return;
                     const tableId = e.dataTransfer.getData("tableId");
                     setTables(p => ({ ...p, [activeLocation]: p[activeLocation].map(t => t.id == tableId ? { ...t, row: toRow, col: toCol } : t) }));
+                    setIsDirty(true);
                 };
 
                 const handleCellClick = (row, col) => {
                     if (!isAddingMode || tables[activeLocation].some(t => t.row === row && t.col === col)) return;
                     const num = prompt(`Nombre para la nueva mesa en (${row}, ${col}):`);
                     if (num) {
-                        const newTable = { id: Date.now(), number: num, row, col };
+                        // NOTE: This creates a temporary client-side ID. The backend doesn't support adding tables yet.
+                        const newTable = { id: `temp-${Date.now()}`, number: num, row, col, estado: 'disponible', descripcion: `Mesa ${num}` };
                         setTables(p => ({ ...p, [activeLocation]: [...p[activeLocation], newTable] }));
+                        setIsDirty(true);
                     }
                     setIsAddingMode(false);
                 };
@@ -229,8 +288,11 @@
                 const handleDeleteSelectedTable = () => {
                     if (!selectedTable) return alert("Selecciona una mesa para eliminar.");
                     if (confirm("¿Seguro que quieres eliminar la mesa seleccionada?")) {
+                        // NOTE: The backend doesn't support deleting tables yet via this interface.
+                        // This will only remove it from the UI until next save.
                         setTables(p => ({ ...p, [activeLocation]: p[activeLocation].filter(t => t.id !== selectedTable) }));
                         setSelectedTable(null);
+                        setIsDirty(true);
                     }
                 };
 
@@ -241,6 +303,7 @@
                         setActiveLocation(name);
                         setShowAddZoneModal(false);
                         setNewZoneName('');
+                        setIsDirty(true);
                     } else {
                         alert("Nombre de zona inválido o ya existe.");
                     }
@@ -271,6 +334,30 @@
                     setTables(newTables);
                     setActiveLocation(newName);
                     setShowRenameZoneModal(false);
+                    setIsDirty(true);
+                };
+
+                const handleSaveChanges = () => {
+                    setIsSaving(true);
+                    fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(tables)
+                    })
+                    .then(res => res.ok ? res.json() : Promise.reject(new Error('Failed to save')))
+                    .then(result => {
+                        if(result.success) {
+                            alert('¡Plano guardado con éxito!');
+                            fetchData(); // Recargar datos para obtener IDs actualizados
+                        } else {
+                            alert('Error al guardar: ' + result.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error saving layout:', err);
+                        alert('Ocurrió un error de conexión al guardar.');
+                    })
+                    .finally(() => setIsSaving(false));
                 };
 
                 const handleDeleteZone = () => {
@@ -280,6 +367,7 @@
                     setTables(newTables);
                     setActiveLocation(Object.keys(newTables)[0]);
                     setShowDeleteZoneModal(false);
+                    setIsDirty(true);
                 };
 
                 return (
@@ -288,28 +376,32 @@
                         <RenameZoneModal show={showRenameZoneModal} onClose={() => setShowRenameZoneModal(false)} value={zoneNameToRename} onChange={(e) => setZoneNameToRename(e.target.value)} onSave={handleRenameZone} />
                         <DeleteZoneModal show={showDeleteZoneModal} onClose={() => setShowDeleteZoneModal(false)} onConfirm={handleDeleteZone} zoneName={activeLocation} />
                         <div className="relative flex h-screen">
-                                                        <Sidebar {...{ tables, activeLocation, setActiveLocation, isAddingMode, setIsAddingMode, selectedTable, handleDeleteSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setShowRenameZoneModal, isSidebarOpen, setIsSidebarOpen, setSelectedTable }} />
+                                                        <Sidebar {...{ tables, activeLocation, setActiveLocation, isAddingMode, setIsAddingMode, selectedTable, handleDeleteSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setShowRenameZoneModal, isSidebarOpen, setIsSidebarOpen, setSelectedTable, handleSaveChanges, isDirty, isSaving }} />
                                                                                                                                                                                                     <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 lg:ml-64 ${isSidebarOpen ? 'ml-64' : 'ml-20'}`}>
                                 <Header {...{ activeLocation, setIsSidebarOpen }} />
                                 <main className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 ${isAddingMode ? 'adding-mode' : ''}`}>
                                     <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Editor de Plano: {activeLocation}</h1>
                                     <div className="bg-gray-900 p-4 rounded-lg">
-                                        <div className="grid" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`}}>
-                                            {Array.from({ length: GRID_ROWS * GRID_COLS }).map((_, index) => {
-                                                const row = Math.floor(index / GRID_COLS) + 1;
-                                                const col = (index % GRID_COLS) + 1;
-                                                const table = tables[activeLocation]?.find(t => t.row === row && t.col === col);
-                                                return (
-                                                    <div key={`${row}-${col}`} className="grid-cell border border-gray-700/50 flex items-center justify-center" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={(e) => handleDrop(e, row, col)} onClick={() => handleCellClick(row, col)}>
-                                                        {table && (
-                                                            <div draggable onDragStart={(e) => handleDragStart(e, table.id)} onClick={(e) => { e.stopPropagation(); setSelectedTable(table.id); setIsAddingMode(false); }} className={`p-2 h-16 w-16 flex items-center justify-center rounded-xl shadow-lg cursor-move transition-all ${selectedTable === table.id ? 'ring-2 ring-cyan-400' : ''} bg-gray-200 text-gray-900`}>
-                                                                <span className="text-xl font-bold">{table.number}</span>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
+                                        {tables[activeLocation] ? (
+                                            <div className="grid" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`}}>
+                                                {Array.from({ length: GRID_ROWS * GRID_COLS }).map((_, index) => {
+                                                    const row = Math.floor(index / GRID_COLS) + 1;
+                                                    const col = (index % GRID_COLS) + 1;
+                                                    const table = tables[activeLocation].find(t => parseInt(t.row, 10) === row && parseInt(t.col, 10) === col);
+                                                    return (
+                                                        <div key={`${row}-${col}`} className="grid-cell border border-gray-700/50 flex items-center justify-center" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={(e) => handleDrop(e, row, col)} onClick={() => handleCellClick(row, col)}>
+                                                            {table && (
+                                                                <div draggable onDragStart={(e) => handleDragStart(e, table.id)} onClick={(e) => { e.stopPropagation(); setSelectedTable(table.id); setIsAddingMode(false); }} className={`p-2 h-16 w-16 flex items-center justify-center rounded-xl shadow-lg cursor-move transition-all ${selectedTable === table.id ? 'ring-2 ring-cyan-400' : ''} bg-gray-200 text-gray-900`}>
+                                                                    <span className="text-xl font-bold">{table.number}</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center text-gray-400 py-8">Selecciona una zona para ver las mesas.</div>
+                                        )}
                                     </div>
                                 </main>
                             </div>
