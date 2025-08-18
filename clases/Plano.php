@@ -9,7 +9,7 @@ class Plano {
     }
 
     public function obtenerPlanoCompleto() {
-        $sqlUbicaciones = "SELECT id_ubicaciones_mesas, nombre_ubicacion FROM ubicaciones_mesas WHERE estado = 'Activo'";
+        $sqlUbicaciones = "SELECT id_ubicaciones_mesas, id_ubicaciones_mesas as id_ubicacion_mesa, nombre_ubicacion FROM ubicaciones_mesas WHERE estado = 'Activo' ORDER BY id_ubicaciones_mesas ASC";
         $ubicaciones = $this->db->consultar($sqlUbicaciones);
 
         $plano = [];
@@ -26,7 +26,12 @@ class Plano {
                          WHERE id_ubicacion_mesa = ?";
             
             $mesas = $this->db->consultar($sqlMesas, [$ubicacion['id_ubicaciones_mesas']]);
-            $plano[$ubicacion['nombre_ubicacion']] = $mesas;
+
+            $plano[] = [
+                'id' => $ubicacion['id_ubicaciones_mesas'],
+                'name' => $ubicacion['nombre_ubicacion'],
+                'tables' => $mesas
+            ];
         }
 
         return $plano;
@@ -35,55 +40,46 @@ class Plano {
     public function guardarPlano($planoData) {
         $this->db->iniciarTransaccion();
         try {
-            // Zonas actuales en la BD
-            $ubicacionesEnDB = $this->db->consultar("SELECT id_ubicaciones_mesas, nombre_ubicacion FROM ubicaciones_mesas WHERE estado = 'Activo'");
-            $mapNombreIdDB = array_column($ubicacionesEnDB, 'id_ubicaciones_mesas', 'nombre_ubicacion');
+            $ubicacionesEnDB = $this->db->consultar("SELECT id_ubicaciones_mesas FROM ubicaciones_mesas WHERE estado = 'Activo'");
+            $idsEnDB = array_column($ubicacionesEnDB, 'id_ubicaciones_mesas');
 
-            $nombresZonasFrontend = array_keys($planoData);
+            $idsFrontend = array_column($planoData, 'id');
 
-            // Detectar zonas eliminadas
-            $zonasAEliminar = array_diff(array_keys($mapNombreIdDB), $nombresZonasFrontend);
-            if (!empty($zonasAEliminar)) {
-                foreach ($zonasAEliminar as $nombreZona) {
-                    $idUbicacion = $mapNombreIdDB[$nombreZona];
-                    $this->db->ejecutar("UPDATE ubicaciones_mesas SET estado = 'Inactivo' WHERE id_ubicaciones_mesas = ?", [$idUbicacion]);
-                }
+            $zonasAEliminar = array_diff($idsEnDB, $idsFrontend);
+            foreach ($zonasAEliminar as $idZona) {
+                $this->db->ejecutar("UPDATE ubicaciones_mesas SET estado = 'Inactivo' WHERE id_ubicaciones_mesas = ?", [$idZona]);
             }
 
-            foreach ($planoData as $nombreZona => $mesasFrontend) {
-                $idUbicacion = null;
-                if (isset($mapNombreIdDB[$nombreZona])) {
-                    $idUbicacion = $mapNombreIdDB[$nombreZona];
+            foreach ($planoData as $zona) {
+                $idUbicacion = $zona['id'];
+                $nombreZona = $zona['name'];
+                $mesasFrontend = $zona['tables'];
+
+                if (in_array($idUbicacion, $idsEnDB)) {
+                    $this->db->ejecutar("UPDATE ubicaciones_mesas SET nombre_ubicacion = ? WHERE id_ubicaciones_mesas = ?", [$nombreZona, $idUbicacion]);
                 } else {
-                    // Crear nueva zona
                     $this->db->ejecutar("INSERT INTO ubicaciones_mesas (nombre_ubicacion, estado) VALUES (?, 'Activo')", [$nombreZona]);
                     $idUbicacion = $this->db->ultimoId();
                 }
 
-                // Mesas actuales de esta zona en la BD
                 $mesasEnDB = $this->db->consultar("SELECT id_salones_mesas FROM salones_mesas WHERE id_ubicacion_mesa = ?", [$idUbicacion]);
                 $idsMesasEnDB = array_column($mesasEnDB, 'id_salones_mesas');
-                
                 $idsMesasFrontend = [];
 
                 foreach ($mesasFrontend as $mesa) {
-                    // Si el ID es temporal, es una mesa nueva
                     if (strpos($mesa['id'], 'temp-') === 0) {
                         $sqlInsertMesa = "INSERT INTO salones_mesas (identificador, descripcion, estado, id_ubicacion_mesa, row, col) VALUES (?, ?, 'disponible', ?, ?, ?)";
-                        $this->db->ejecutar($sqlInsertMesa, [$mesa['number'], $mesa['descripcion'], $idUbicacion, $mesa['row'], $mesa['col']]);
+                        $this->db->ejecutar($sqlInsertMesa, [$mesa['number'], $mesa['descripcion'] ?? '', $idUbicacion, $mesa['row'], $mesa['col']]);
                     } else {
-                        // Es una mesa existente, actualizarla
                         $idsMesasFrontend[] = $mesa['id'];
                         $sqlUpdateMesa = "UPDATE salones_mesas SET row = ?, col = ?, identificador = ?, descripcion = ? WHERE id_salones_mesas = ?";
-                        $this->db->ejecutar($sqlUpdateMesa, [$mesa['row'], $mesa['col'], $mesa['number'], $mesa['descripcion'], $mesa['id']]);
+                        $this->db->ejecutar($sqlUpdateMesa, [$mesa['row'], $mesa['col'], $mesa['number'], $mesa['descripcion'] ?? '', $mesa['id']]);
                     }
                 }
 
-                // Detectar mesas eliminadas
                 $idsMesasAEliminar = array_diff($idsMesasEnDB, $idsMesasFrontend);
                 if (!empty($idsMesasAEliminar)) {
                     foreach ($idsMesasAEliminar as $idMesa) {
-                        // Opcional: cambiar estado a 'inactivo' en lugar de borrar
                         $this->db->ejecutar("DELETE FROM salones_mesas WHERE id_salones_mesas = ?", [$idMesa]);
                     }
                 }
