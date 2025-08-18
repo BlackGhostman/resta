@@ -180,35 +180,30 @@
                                                 return <div className="text-center text-gray-400 py-8">Selecciona una zona para ver las mesas.</div>;
                                             }
 
-                                            return (
-                                                <div className="grid" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`}}>
-                                                    {Array.from({ length: GRID_ROWS * GRID_COLS }).map((_, index) => {
-                                                        const row = Math.floor(index / GRID_COLS) + 1;
-                                                        const col = (index % GRID_COLS) + 1;
-                                                        const table = activeZone.tables.find(t => parseInt(t.row, 10) === row && parseInt(t.col, 10) === col);
-                                                        
-                                                        const getTableColor = (estado) => {
-                                                            switch(estado) {
-                                                                case 'ocupada': return 'bg-red-400 text-red-900';
-                                                                case 'disponible': return 'bg-green-400 text-green-900';
-                                                                case 'reservada': return 'bg-yellow-400 text-yellow-900';
-                                                                default: return 'bg-gray-200 text-gray-900';
-                                                            }
-                                                        }
+                                            const getTableColor = (estado) => {
+                                                switch(estado) {
+                                                    case 'ocupada': return 'bg-red-400 text-red-900';
+                                                    case 'disponible': return 'bg-green-400 text-green-900';
+                                                    case 'reservada': return 'bg-yellow-400 text-yellow-900';
+                                                    default: return 'bg-gray-200 text-gray-900';
+                                                }
+                                            }
 
-                                                        return (
-                                                            <div key={index} className="grid-cell border border-gray-700/50 flex items-center justify-center">
-                                                                {table && (
-                                                                    <div 
-                                                                        onClick={() => handleTableClick(table)} 
-                                                                        className={`p-2 h-16 w-16 flex items-center justify-center rounded-xl shadow-lg cursor-pointer transition-all ${selectedTable === table.id ? 'ring-4 ring-offset-2 ring-offset-gray-800 ring-cyan-400' : ''} ${getTableColor(table.estado)}`}
-                                                                    >
-                                                                        <span className="text-xl font-bold">{table.number}</span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
+                                            return (
+                                                <div className="relative" style={{ height: `${GRID_ROWS * 80}px` }}>
+                                                    {activeZone.tables.map(table => (
+                                                        <div 
+                                                            key={table.id}
+                                                            onClick={() => handleTableClick(table)} 
+                                                            className={`absolute p-2 h-16 w-16 flex items-center justify-center rounded-xl shadow-lg cursor-pointer transition-all ${selectedTable === table.id ? 'ring-4 ring-offset-2 ring-offset-gray-800 ring-cyan-400' : ''} ${getTableColor(table.estado)}`}
+                                                            style={{
+                                                                top: `${(parseInt(table.row, 10) - 1) * 80 + 8}px`,
+                                                                left: `${(parseInt(table.col, 10) - 1) * 80 + 8}px`
+                                                            }}
+                                                        >
+                                                            <span className="text-xl font-bold">{table.number}</span>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             );
                                         })()}
