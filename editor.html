@@ -251,6 +251,7 @@
                                                 className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeZoneId === zone.id ? 'bg-white/10' : 'hover:bg-white/5'} ${!isSidebarOpen && 'lg:w-auto w-full justify-center'}`}>
                                                 <Icon name={zone.name === 'Salón' ? 'Armchair' : zone.name.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeZoneId === zone.id ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
                                                 <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{zone.name}</span>
+                                                <span className={`text-sm font-semibold whitespace-nowrap ${!isSidebarOpen ? 'inline' : 'hidden'} lg:hidden`}>{getInitials(zone.name)}</span>
                                                                                             </button>
                                         </li>
                                     ))}
@@ -275,10 +276,10 @@
                 );
             }
 
-            function Header({ activeZoneName, setIsSidebarOpen }) {
+            function Header({ activeZoneName, isSidebarOpen, setIsSidebarOpen }) {
                 return (
                     <header className="flex items-center justify-between p-4 bg-gray-800/80 backdrop-blur-sm border-b border-gray-700/50 lg:hidden">
-                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-md hover:bg-gray-700 lg:hidden">
+                        <button onClick={() => setIsSidebarOpen(prev => !prev)} className="p-2 rounded-md hover:bg-gray-700 lg:hidden">
                             <Icon name="Menu" className="w-6 h-6" />
                         </button>
                         <h1 className="text-xl font-bold text-white">{activeZoneName}</h1>
@@ -294,6 +295,15 @@
                 const [activeZoneId, setActiveZoneId] = useState(null);
                 const [loading, setLoading] = useState(true);
                 const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
+
+                const getInitials = (name) => {
+                    if (!name) return '';
+                    const words = name.split(' ');
+                    if (words.length > 1) {
+                        return words.map(word => word[0]).join('').toUpperCase();
+                    }
+                    return name.substring(0, 2).toUpperCase();
+                };
                 const [isAddingMode, setIsAddingMode] = useState(false);
                 const [selectedTable, setSelectedTable] = useState(null);
                 const [showAddZoneModal, setShowAddZoneModal] = useState(false);
@@ -506,9 +516,9 @@
                         <DeleteZoneModal show={showDeleteZoneModal} onClose={() => setShowDeleteZoneModal(false)} onConfirm={handleDeleteZone} zoneName={zones.find(z => z.id === activeZoneId)?.name || ''} />
                         <EditTableModal show={showEditTableModal} onClose={() => setShowEditTableModal(false)} table={tableToEdit} onSave={handleEditTable} onDelete={handleDeleteFromModal} />
                         <div className="relative flex h-screen">
-                            <Sidebar {...{ zones, activeZoneId, setActiveZoneId, isAddingMode, setIsAddingMode, selectedTable, setSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setZoneToEdit, setShowZoneActionsModal, isSidebarOpen, setIsSidebarOpen, handleSaveChanges, isDirty, isSaving }} />
+                            <Sidebar {...{ getInitials, zones, activeZoneId, setActiveZoneId, isAddingMode, setIsAddingMode, selectedTable, setSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setZoneToEdit, setShowZoneActionsModal, isSidebarOpen, setIsSidebarOpen, handleSaveChanges, isDirty, isSaving }} />
                             <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} lg:ml-64`}>
-                                <Header activeZoneName={zones.find(z => z.id === activeZoneId)?.name || 'Sin Zonas'} setIsSidebarOpen={setIsSidebarOpen} />
+                                <Header activeZoneName={zones.find(z => z.id === activeZoneId)?.name || 'Sin Zonas'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
                                 <main className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 ${isAddingMode ? 'adding-mode' : ''}`}>
                                     <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Editor de Plano: {zones.find(z => z.id === activeZoneId)?.name || ''}</h1>
                                     <div className="bg-gray-900 p-4 rounded-lg">
