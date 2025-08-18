@@ -42,6 +42,7 @@
                 LayoutGrid: '<rect width="7" height="7" x="3" y="3" rx="1" /><rect width="7" height="7" x="14" y="3" rx="1" /><rect width="7" height="7" x="14" y="14" rx="1" /><rect width="7" height="7" x="3" y="14" rx="1" />',
                 Pencil: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path d="m15 5 4 4" />',
                 SquareX: '<rect width="18" height="18" x="3" y="3" rx="2" /><path d="m15 9-6 6" /><path d="m9 9 6 6" />',
+                Table: '<path d="M20 10.5h-2V7a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v3.5H4a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2v2.5a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V17.5h2a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1Z"/>',
                 TriangleAlert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" />'
             };
 
@@ -106,7 +107,7 @@
                 );
             }
 
-            function EditTableModal({ show, onClose, table, onSave }) {
+            function EditTableModal({ show, onClose, table, onSave, onDelete }) {
                 const [tableName, setTableName] = useState('');
                 const inputRef = useRef(null);
 
@@ -140,9 +141,14 @@
                                 onChange={(e) => setTableName(e.target.value)}
                                 className="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4"
                             />
-                            <div className="flex justify-end gap-3">
-                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white">Cancelar</button>
-                                <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
+                            <div className="flex justify-between items-center">
+                                <button onClick={() => onDelete(table.id)} className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white flex items-center gap-2">
+                                    <Icon name="Trash2" className="w-4 h-4"/> Eliminar
+                                </button>
+                                <div className="flex gap-3">
+                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white">Cancelar</button>
+                                    <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -165,10 +171,19 @@
                 );
             }
 
+            const getInitials = (name) => {
+                if (!name) return '';
+                const words = name.trim().split(' ');
+                if (words.length > 1) {
+                    return words.map(word => word[0]).join('').toUpperCase().substring(0, 2);
+                }
+                return name.substring(0, 2).toUpperCase();
+            };
+
             const Sidebar = ({
                 tables, activeLocation, setActiveLocation,
                 isAddingMode, setIsAddingMode,
-                selectedTable, handleDeleteSelectedTable,
+                selectedTable,
                 setShowAddZoneModal, setShowDeleteZoneModal, setShowRenameZoneModal,
                 isSidebarOpen, setIsSidebarOpen, setSelectedTable,
                 handleSaveChanges, isDirty, isSaving
@@ -197,9 +212,10 @@
                                 <ul className="space-y-3 font-medium">
                                     {Object.keys(tables).map(location => (
                                         <li key={location}>
-                                            <button onClick={() => handleZoneClick(location)} className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeLocation === location ? 'bg-white/10' : 'hover:bg-white/5'}`}>
+                                            <button onClick={() => handleZoneClick(location)} className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeLocation === location ? 'bg-white/10' : 'hover:bg-white/5'} ${!isSidebarOpen && 'lg:w-auto w-full justify-center'}`}>
                                                 <Icon name={location === 'Salón' ? 'Armchair' : location.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeLocation === location ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
                                                 <span className={`ms-4 text-lg whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{location}</span>
+                                                <span className={`text-sm font-semibold whitespace-nowrap ${isSidebarOpen ? 'hidden' : 'inline'} lg:hidden`}>{getInitials(location)}</span>
                                             </button>
                                         </li>
                                     ))}
@@ -208,8 +224,7 @@
                             <div className="mt-auto pt-8">
                                 <h3 className={`text-lg font-semibold text-white mb-4 px-2 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Herramientas</h3>
                                 <div className="space-y-3">
-                                                                        <button onClick={() => setIsAddingMode(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="PlusCircle" className="flex-shrink-0" /> <span className={`whitespace-nowrap ms-3 ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Mesa</span></button>
-                                                                        <button onClick={handleDeleteSelectedTable} disabled={!selectedTable} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-red-800 hover:bg-red-700 text-gray-200 disabled:bg-gray-600 disabled:opacity-50 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Trash2" className="flex-shrink-0" /> <span className={`whitespace-nowrap ms-3 ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Eliminar Mesa</span></button>
+                                                                                                                                                <button onClick={() => setIsAddingMode(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Table" className="flex-shrink-0" /> <span className={`whitespace-nowrap ms-3 ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Mesa</span></button>
                                     <div className="border-t border-gray-700 my-4"></div>
                                                                         <button onClick={() => setShowAddZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-blue-700 hover:bg-blue-600 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="LayoutGrid" className="flex-shrink-0" /> <span className={`whitespace-nowrap ms-3 ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Nueva Zona</span></button>
                                                                         <button onClick={() => setShowRenameZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-yellow-600 hover:bg-yellow-500 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Pencil" className="flex-shrink-0" /> <span className={`whitespace-nowrap ms-3 ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Renombrar Zona</span></button>
@@ -330,16 +345,6 @@
                     setIsAddingMode(false);
                 };
 
-                const handleDeleteSelectedTable = () => {
-                    if (!selectedTable) return alert("Selecciona una mesa para eliminar.");
-                    if (confirm("¿Seguro que quieres eliminar la mesa seleccionada?")) {
-                        // NOTE: The backend doesn't support deleting tables yet via this interface.
-                        // This will only remove it from the UI until next save.
-                        setTables(p => ({ ...p, [activeLocation]: p[activeLocation].filter(t => t.id !== selectedTable) }));
-                        setSelectedTable(null);
-                        setIsDirty(true);
-                    }
-                };
 
                 const handleAddZone = () => {
                     const name = newZoneName.trim();
@@ -405,6 +410,30 @@
                     .finally(() => setIsSaving(false));
                 };
 
+                const handleTableDoubleClick = (e, table) => {
+                    if (e.altKey) {
+                        if (confirm(`¿Seguro que quieres eliminar la mesa "${table.number}"?`)) {
+                            setTables(p => ({ ...p, [activeLocation]: p[activeLocation].filter(t => t.id !== table.id) }));
+                            if (selectedTable === table.id) {
+                                setSelectedTable(null);
+                            }
+                            setIsDirty(true);
+                        }
+                    } else {
+                        setTableToEdit(table);
+                        setShowEditTableModal(true);
+                    }
+                };
+
+                const handleDeleteFromModal = (tableId) => {
+                    if (confirm("¿Seguro que quieres eliminar esta mesa?")) {
+                        setTables(p => ({ ...p, [activeLocation]: p[activeLocation].filter(t => t.id !== tableId) }));
+                        setSelectedTable(prev => prev === tableId ? null : prev);
+                        setIsDirty(true);
+                        setShowEditTableModal(false);
+                    }
+                };
+
                 const handleEditTable = (tableId, newName) => {
                     setTables(prevTables => ({
                         ...prevTables,
@@ -430,9 +459,9 @@
                         <AddZoneModal show={showAddZoneModal} onClose={() => setShowAddZoneModal(false)} value={newZoneName} onChange={(e) => setNewZoneName(e.target.value)} onSave={handleAddZone} />
                         <RenameZoneModal show={showRenameZoneModal} onClose={() => setShowRenameZoneModal(false)} value={zoneNameToRename} onChange={(e) => setZoneNameToRename(e.target.value)} onSave={handleRenameZone} />
                         <DeleteZoneModal show={showDeleteZoneModal} onClose={() => setShowDeleteZoneModal(false)} onConfirm={handleDeleteZone} zoneName={activeLocation} />
-                        <EditTableModal show={showEditTableModal} onClose={() => setShowEditTableModal(false)} table={tableToEdit} onSave={handleEditTable} />
+                        <EditTableModal show={showEditTableModal} onClose={() => setShowEditTableModal(false)} table={tableToEdit} onSave={handleEditTable} onDelete={handleDeleteFromModal} />
                         <div className="relative flex h-screen">
-                                                        <Sidebar {...{ tables, activeLocation, setActiveLocation, isAddingMode, setIsAddingMode, selectedTable, handleDeleteSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setShowRenameZoneModal, isSidebarOpen, setIsSidebarOpen, setSelectedTable, handleSaveChanges, isDirty, isSaving }} />
+                                                        <Sidebar {...{ tables, activeLocation, setActiveLocation, isAddingMode, setIsAddingMode, selectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setShowRenameZoneModal, isSidebarOpen, setIsSidebarOpen, setSelectedTable, handleSaveChanges, isDirty, isSaving }} />
                                                                                                                                                                                                     <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 lg:ml-64 ${isSidebarOpen ? 'ml-64' : 'ml-20'}`}>
                                 <Header {...{ activeLocation, setIsSidebarOpen }} />
                                 <main className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 ${isAddingMode ? 'adding-mode' : ''}`}>
@@ -447,7 +476,7 @@
                                                     return (
                                                         <div key={`${row}-${col}`} className="grid-cell border border-gray-700/50 flex items-center justify-center" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={(e) => handleDrop(e, row, col)} onClick={() => handleCellClick(row, col)}>
                                                             {table && (
-                                                                <div draggable onDragStart={(e) => handleDragStart(e, table.id)} onDoubleClick={() => { setTableToEdit(table); setShowEditTableModal(true); }} onClick={(e) => { e.stopPropagation(); setSelectedTable(table.id); setIsAddingMode(false); }} className={`p-2 h-16 w-16 flex items-center justify-center rounded-xl shadow-lg cursor-move transition-all ${selectedTable === table.id ? 'ring-2 ring-cyan-400' : ''} bg-gray-200 text-gray-900`}>
+                                                                <div draggable onDragStart={(e) => handleDragStart(e, table.id)} onDoubleClick={(e) => handleTableDoubleClick(e, table)} onClick={(e) => { e.stopPropagation(); setSelectedTable(table.id); setIsAddingMode(false); }} className={`p-2 h-16 w-16 flex items-center justify-center rounded-xl shadow-lg cursor-move transition-all ${selectedTable === table.id ? 'ring-2 ring-cyan-400' : ''} bg-gray-200 text-gray-900`}>
                                                                     <span className="text-xl font-bold">{table.number}</span>
                                                                 </div>
                                                             )}
