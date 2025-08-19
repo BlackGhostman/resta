@@ -57,9 +57,9 @@
                         onClick={() => onSelect(article)}
                     >
                         <img src={imageUrl} alt={article.nombre} className="w-full h-32 object-cover" onError={(e) => { e.target.onerror = null; e.target.src=defaultImageUrl; }} />
-                        <div className="p-4 flex flex-col flex-grow justify-between">
-                            <h3 className="font-semibold text-white text-lg mb-2 break-words flex-grow">{article.nombre}</h3>
-                            <p className="text-cyan-400 font-bold text-xl mt-2">{new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(article.precio)}</p>
+                        <div className="p-3 flex flex-col flex-grow justify-between">
+                            <h3 className="font-semibold text-white text-base leading-tight h-12 flex items-center justify-center">{article.nombre}</h3>
+                            <p className="text-cyan-400 font-bold text-lg mt-2">{new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(article.precio)}</p>
                         </div>
                     </div>
                 );
@@ -85,7 +85,7 @@
                                 </div>
                                 <ul className="space-y-3 font-medium">
                                     {families.map(family => (
-                                        <li key={family.id}>
+                                        <li key={`${family.id}-${family.nombre}`}>
                                             <button onClick={() => handleFamilyClick(family.id)} className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeFamilyId === family.id ? 'bg-white/10' : 'hover:bg-white/5'} ${!isSidebarOpen && 'lg:w-auto w-full justify-center'}`}>
                                                 <Icon name='UtensilsCrossed' className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeFamilyId === family.id ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
                                                 <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{family.nombre}</span>
@@ -118,14 +118,56 @@
                 );
             }
 
+            const OrderPanel = ({ pedido, onSendOrder }) => {
+                const calcularTotal = () => {
+                    return pedido.reduce((total, item) => total + item.precio * item.cantidad, 0);
+                };
+
+                return (
+                    <div className="w-96 bg-gray-900 p-6 flex flex-col h-full shadow-lg border-l border-gray-700/50">
+                        <h2 className="text-3xl font-bold text-white mb-6 border-b-2 border-gray-700 pb-4">Pedido Actual</h2>
+                        <div className="flex-grow overflow-y-auto pr-2">
+                            {pedido.length === 0 ? (
+                                <p className="text-gray-400 text-center mt-8">No hay productos en el pedido.</p>
+                            ) : (
+                                <ul className="space-y-4">
+                                    {pedido.map(item => (
+                                        <li key={item.id_articulos} className="flex justify-between items-center bg-gray-800 p-3 rounded-lg">
+                                            <div>
+                                                <p className="font-semibold text-white">{item.nombre}</p>
+                                                <p className="text-sm text-gray-400">
+                                                    {new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(item.precio)}
+                                                </p>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <span className="font-bold text-white text-lg">{item.cantidad}</span>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                        <div className="mt-auto pt-6 border-t-2 border-gray-700">
+                            <div className="flex justify-between items-center text-2xl font-bold text-white mb-4">
+                                <span>Total:</span>
+                                <span>{new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(calcularTotal())}</span>
+                            </div>
+                            <button onClick={onSendOrder} className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 rounded-lg text-lg transition-colors">
+                                Enviar Pedido
+                            </button>
+                        </div>
+                    </div>
+                );
+            };
+
             function ProductSelector() {
                 const [families, setFamilies] = useState([]);
                 const [articles, setArticles] = useState([]);
                 const [activeFamilyId, setActiveFamilyId] = useState(null);
                 const [loading, setLoading] = useState(true);
                 const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
-                const [selectedArticle, setSelectedArticle] = useState(null);
                 const [idMesa, setIdMesa] = useState(null);
+                const [pedido, setPedido] = useState([]);
 
                 const FAMILIES_API_URL = 'api/familias.php';
                 const ARTICLES_API_URL = 'api/articulos.php';
@@ -135,7 +177,6 @@
                     const mesaId = urlParams.get('id_mesa');
                     if (mesaId) {
                         setIdMesa(mesaId);
-                        console.log('Mesa ID:', mesaId);
                     }
                 }, []);
 
@@ -144,9 +185,13 @@
                     fetch(FAMILIES_API_URL)
                         .then(res => res.json())
                         .then(data => {
-                            setFamilies(data || []);
-                            if (data && data.length > 0 && !activeFamilyId) {
-                                setActiveFamilyId(data[0].id);
+                            if (Array.isArray(data)) {
+                                setFamilies(data);
+                                if (data.length > 0 && !activeFamilyId) {
+                                    setActiveFamilyId(data[0].id);
+                                }
+                            } else {
+                                setFamilies([]); // Asegurarse que sea un array en caso de error
                             }
                             setLoading(false);
                         })
@@ -179,31 +224,55 @@
                         return;
                     }
 
-                    console.log(`Añadiendo artículo ${article.nombre} (ID: ${article.id}) a la mesa ${idMesa}`);
+                    const existingArticle = pedido.find(item => item.id_articulos === article.id_articulos);
+                    let updatedOrder;
 
-                    fetch('api/agregar_articulo.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            id_mesa: idMesa,
-                            id_articulo: article.id,
-                            cantidad: 1 // Por ahora, añadimos de 1 en 1
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if(data.success) {
-                            console.log('Artículo añadido con éxito');
-                            // Aquí podrías mostrar una notificación de éxito
-                        } else {
-                            console.error('Error al añadir el artículo:', data.error);
-                            alert('Error: ' + data.error);
+                    if (existingArticle) {
+                        updatedOrder = pedido.map(item =>
+                            item.id_articulos === article.id_articulos
+                                ? { ...item, cantidad: item.cantidad + 1 }
+                                : item
+                        );
+                    } else {
+                        updatedOrder = [...pedido, { ...article, cantidad: 1 }];
+                    }
+                    setPedido(updatedOrder);
+                };
+
+                const handleSendOrder = async () => {
+                    if (pedido.length === 0) {
+                        alert("No hay artículos en el pedido.");
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('api/guardar_pedido.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                id_mesa: idMesa,
+                                articulos: pedido,
+                            }),
+                        });
+
+                        const result = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(result.error || 'Error en el servidor');
                         }
-                    })
-                    .catch(err => {
-                        console.error('Error en la petición:', err);
-                        alert('Ocurrió un error de conexión.');
-                    });
+
+                        if (result.success) {
+                            alert("Pedido enviado con éxito.");
+                            setPedido([]);
+                        } else {
+                            throw new Error(result.error || 'Error al guardar el pedido');
+                        }
+                    } catch (error) {
+                        console.error('Error al enviar el pedido:', error);
+                        alert(`Error al enviar el pedido: ${error.message}`);
+                    }
                 };
 
                 if (loading && families.length === 0) {
@@ -215,23 +284,26 @@
                 return (
                     <div className="relative min-h-screen bg-gray-900">
                         <div className="relative flex h-screen">
-                            <Sidebar families={families} activeFamilyId={activeFamilyId} setActiveFamilyId={setActiveFamilyId} setSelectedArticle={setSelectedArticle} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-                            <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} lg:ml-64`}>
-                                <Header activeFamilyName={activeFamily?.nombre || 'Sin Familias'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-                                <main className="flex-1 overflow-auto p-4 sm:p-6 md:p-8">
-                                    <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Seleccionar Producto: {activeFamily?.nombre || ''}</h1>
-                                    <div className="bg-gray-800/50 p-4 rounded-lg">
-                                        {!activeFamily ? (
-                                            <div className="text-center text-gray-400 py-8">Selecciona una familia para ver los productos.</div>
-                                        ) : (
-                                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                                                {articles.map(article => (
-                                                    <ArticleCard key={article.id} article={article} onSelect={handleArticleClick} />
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </main>
+                            <Sidebar families={families} activeFamilyId={activeFamilyId} setActiveFamilyId={setActiveFamilyId} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+                            <div className={`flex-1 flex overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} lg:ml-64`}>
+                                <div className="flex-1 flex flex-col overflow-hidden">
+                                    <Header activeFamilyName={activeFamily?.nombre || 'Sin Familias'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+                                    <main className="flex-1 overflow-auto p-4 sm:p-6 md:p-8">
+                                        <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Seleccionar Producto: {activeFamily?.nombre || ''}</h1>
+                                        <div className="bg-gray-800/50 p-4 rounded-lg">
+                                            {!activeFamily ? (
+                                                <div className="text-center text-gray-400 py-8">Selecciona una familia para ver los productos.</div>
+                                            ) : (
+                                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                                                    {articles.map(article => (
+                                                        <ArticleCard key={article.id_articulos} article={article} onSelect={handleArticleClick} />
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </main>
+                                </div>
+                                <OrderPanel pedido={pedido} onSendOrder={handleSendOrder} />
                             </div>
                         </div>
                     </div>
