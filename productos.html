@@ -252,6 +252,8 @@
                         updatedOrder = [...pedido, { ...article, cantidad: 1 }];
                     }
                     setPedido(updatedOrder);
+                    setIsOrderPanelOpen(true);
+                    setIsSidebarOpen(false);
                 };
 
                 const handleSendOrder = async () => {
