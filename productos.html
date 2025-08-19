@@ -53,7 +53,7 @@
 
                 return (
                     <div 
-                        className="bg-gray-800 rounded-lg shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200 flex flex-col min-w-36 m-2"
+                        className="bg-gray-800 rounded-lg shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200 flex flex-col min-w-32 m-2"
                         onClick={() => onSelect(article)}
                     >
                         <img src={imageUrl} alt={article.nombre} className="w-full h-32 object-cover" onError={(e) => { e.target.onerror = null; e.target.src=defaultImageUrl; }} />
@@ -72,34 +72,37 @@
                 };
 
                 return (
-                    <div className={`fixed top-0 left-0 z-40 h-screen bg-gray-900 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'} lg:w-64`}>
+                    <div className={`fixed top-0 left-0 z-40 h-screen bg-gray-900 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
                         <div className="flex flex-col h-full p-4">
                             <div>
-                                <div className="flex items-center justify-between mb-6">
-                                    <a href="#" className="flex items-center ps-2.5">
-                                        <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
-                                        <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>FAMILIAS</span>
-                                    </a>
-                                    <button onClick={() => setIsSidebarOpen(false)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden ${isSidebarOpen ? 'inline' : 'hidden'}`}><Icon name="X" className="w-6 h-6" /></button>
-                                </div>
+                                <div className={`flex items-center mb-6 h-[2.125rem] ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
+                                        <a href="#" className={`flex items-center ps-2.5 ${!isSidebarOpen && 'hidden'}`}>
+                                            <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
+                                            <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">FAMILIAS</span>
+                                        </a>
+                                        <button onClick={() => setIsSidebarOpen(true)} className={`p-2 rounded-md hover:bg-gray-700 ${!isSidebarOpen ? 'inline' : 'hidden'}`}>
+                                            <Icon name="Menu" className="w-6 h-6" />
+                                        </button>
+                                        <button onClick={() => setIsSidebarOpen(false)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden ${isSidebarOpen ? 'inline' : 'hidden'}`}><Icon name="X" className="w-6 h-6" /></button>
+                                    </div>
                                 <ul className="space-y-3 font-medium">
                                     {families.map(family => (
                                         <li key={`${family.id}-${family.nombre}`}>
-                                            <button onClick={() => handleFamilyClick(family.id)} className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeFamilyId === family.id ? 'bg-white/10' : 'hover:bg-white/5'} ${!isSidebarOpen && 'lg:w-auto w-full justify-center'}`}>
+                                            <button onClick={() => handleFamilyClick(family.id)} className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeFamilyId === family.id ? 'bg-white/10' : 'hover:bg-white/5'} ${!isSidebarOpen && 'justify-center'}`}>
                                                 <Icon name='UtensilsCrossed' className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeFamilyId === family.id ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
-                                                <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{family.nombre}</span>
-                                                <span className={`text-sm font-semibold whitespace-nowrap ${!isSidebarOpen ? 'inline' : 'hidden'} lg:hidden`}>{getInitials(family.nombre)}</span>
+                                                <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>{family.nombre}</span>
+                                                <span className={`text-sm font-semibold whitespace-nowrap ${!isSidebarOpen ? 'inline' : 'hidden'}`}>{getInitials(family.nombre)}</span>
                                             </button>
                                         </li>
                                     ))}
                                 </ul>
                             </div>
                             <div className="mt-auto pt-8 space-y-3">
-                                <a href="/resta2/mesas.html" className={`w-full flex items-center p-3 rounded-lg transition-colors bg-gray-700 hover:bg-gray-600 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}>
-                                    <Icon name="Armchair" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Mesas</span>
+                                <a href="/resta2/mesas.html" className={`w-full flex items-center p-3 rounded-lg transition-colors bg-gray-700 hover:bg-gray-600 text-gray-200 ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}>
+                                    <Icon name="Armchair" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Mesas</span>
                                 </a>
-                                <a href="/resta2/editor.html" className={`w-full flex items-center p-3 rounded-lg transition-colors bg-gray-700 hover:bg-gray-600 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}>
-                                    <Icon name="Pencil" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Modo Editor</span>
+                                <a href="/resta2/editor.html" className={`w-full flex items-center p-3 rounded-lg transition-colors bg-gray-700 hover:bg-gray-600 text-gray-200 ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}>
+                                    <Icon name="Pencil" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Modo Editor</span>
                                 </a>
                             </div>
                         </div>
@@ -107,23 +110,23 @@
                 );
             }
 
-            function Header({ activeFamilyName, isSidebarOpen, setIsSidebarOpen }) {
+            function Header({ activeFamilyName, isSidebarOpen, setIsSidebarOpen, onToggleOrderPanel }) {
                 return (
                     <header className="flex items-center justify-between p-4 bg-gray-800/80 backdrop-blur-sm border-b border-gray-700/50 lg:hidden">
                         <button onClick={() => setIsSidebarOpen(prev => !prev)} className="p-2 rounded-md hover:bg-gray-700 lg:hidden"><Icon name="Menu" className="w-6 h-6" /></button>
                         <h1 className="text-xl font-bold text-white">{activeFamilyName}</h1>
-                        <a href="#" className="p-2 rounded-full hover:bg-gray-700"><Icon name="CircleUser" className="w-6 h-6" /></a>
+                        <button onClick={onToggleOrderPanel} className="p-2 rounded-full hover:bg-gray-700"><Icon name="CircleUser" className="w-6 h-6" /></button>
                     </header>
                 );
             }
 
-            const OrderPanel = ({ pedido, onSendOrder }) => {
+            const OrderPanel = ({ pedido, onSendOrder, isOpen }) => {
                 const calcularTotal = () => {
                     return pedido.reduce((total, item) => total + item.precio * item.cantidad, 0);
                 };
 
                 return (
-                    <div className="w-96 bg-gray-900 p-6 flex flex-col h-full shadow-lg border-l border-gray-700/50">
+                    <div className={`fixed top-0 right-0 z-30 h-screen bg-gray-900 transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'} w-80 md:w-96 p-6 flex flex-col shadow-lg border-l border-gray-700/50`}>
                         <h2 className="text-3xl font-bold text-white mb-6 border-b-2 border-gray-700 pb-4">Pedido Actual</h2>
                         <div className="flex-grow overflow-y-auto pr-2">
                             {pedido.length === 0 ? (
@@ -165,6 +168,7 @@
                 const [activeFamilyId, setActiveFamilyId] = useState(null);
                 const [loading, setLoading] = useState(true);
                 const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
+                const [isOrderPanelOpen, setIsOrderPanelOpen] = useState(false);
                 const [idMesa, setIdMesa] = useState(null);
                 const [pedido, setPedido] = useState([]);
 
@@ -199,6 +203,18 @@
                             setLoading(false);
                         });
                 }, []);
+
+                useEffect(() => {
+                    if (isOrderPanelOpen && window.innerWidth >= 1024) {
+                        setIsSidebarOpen(false);
+                    }
+                }, [isOrderPanelOpen]);
+
+                useEffect(() => {
+                    if (isSidebarOpen && window.innerWidth >= 1024) {
+                        setIsOrderPanelOpen(false);
+                    }
+                }, [isSidebarOpen]);
 
                 useEffect(() => {
                     if (activeFamilyId) {
@@ -283,17 +299,33 @@
                 return (
                     <div className="relative min-h-screen bg-gray-900">
                         <div className="relative flex h-screen">
-                            <Sidebar families={families} activeFamilyId={activeFamilyId} onFamilyClick={setActiveFamilyId} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-                            <div className={`flex-1 flex overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} lg:ml-64`}>
+                            <Sidebar 
+                                families={families} 
+                                activeFamilyId={activeFamilyId} 
+                                onFamilyClick={setActiveFamilyId} 
+                                isSidebarOpen={isSidebarOpen} 
+                                setIsSidebarOpen={setIsSidebarOpen}
+                            />
+                            <div className={`flex-1 flex overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} ${isOrderPanelOpen ? 'mr-80 md:mr-96' : ''}`}>
                                 <div className="flex-1 flex flex-col overflow-hidden">
-                                    <Header activeFamilyName={activeFamily?.nombre || 'Sin Familias'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+                                    <Header 
+                                        activeFamilyName={activeFamily?.nombre || 'Sin Familias'} 
+                                        isSidebarOpen={isSidebarOpen} 
+                                        setIsSidebarOpen={() => setIsSidebarOpen(prev => !prev)}
+                                        onToggleOrderPanel={() => setIsOrderPanelOpen(prev => !prev)}
+                                    />
                                     <main className="flex-1 overflow-auto p-4 sm:p-6 md:p-8">
-                                        <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Seleccionar Producto: {activeFamily?.nombre || ''}</h1>
+                                        <div className="hidden lg:flex items-center justify-between mb-8">
+                                            <h1 className="text-4xl font-bold text-white">Seleccionar Producto: {activeFamily?.nombre || ''}</h1>
+                                            <button onClick={() => setIsOrderPanelOpen(prev => !prev)} className="p-2 rounded-full hover:bg-gray-700">
+                                                <Icon name="CircleUser" className="w-8 h-8" />
+                                            </button>
+                                        </div>
                                         <div className="bg-gray-800/50 p-4 rounded-lg">
                                             {!activeFamily ? (
                                                 <div className="text-center text-gray-400 py-8">Selecciona una familia para ver los productos.</div>
                                             ) : (
-                                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+                                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
                                                     {articles.map(article => (
                                                         <ArticleCard key={article.id_articulos} article={article} onSelect={handleArticleClick} />
                                                     ))}
@@ -302,7 +334,7 @@
                                         </div>
                                     </main>
                                 </div>
-                                <OrderPanel pedido={pedido} onSendOrder={handleSendOrder} />
+                                <OrderPanel pedido={pedido} onSendOrder={handleSendOrder} isOpen={isOrderPanelOpen} />
                             </div>
                         </div>
                     </div>
