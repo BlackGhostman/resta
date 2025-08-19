@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 
 try {
     $db = obtenerConexion();
-    $sql = "SELECT DISTINCT f.id_familias, f.descripcion FROM familias f INNER JOIN articulos a ON f.id_familias = a.id_familia ORDER BY f.descripcion";
+    $sql = "SELECT DISTINCT f.id_familias as id, f.descripcion as nombre FROM familias f INNER JOIN articulos a ON f.id_familias = a.id_familia ORDER BY f.descripcion";
     $familias = $db->consultar($sql);
     
     echo json_encode($familias);

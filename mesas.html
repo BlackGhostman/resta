@@ -110,7 +110,10 @@
                                     ))}
                                 </ul>
                             </div>
-                            <div className="mt-auto pt-8">
+                            <div className="mt-auto pt-8 space-y-3">
+                                <a href="/resta2/productos.html" className={`w-full flex items-center p-3 rounded-lg transition-colors bg-gray-700 hover:bg-gray-600 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}>
+                                    <Icon name="UtensilsCrossed" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Productos</span>
+                                </a>
                                 <a href="/resta2/editor.html" className={`w-full flex items-center p-3 rounded-lg transition-colors bg-gray-700 hover:bg-gray-600 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}>
                                     <Icon name="Pencil" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Modo Editor</span>
                                 </a>
