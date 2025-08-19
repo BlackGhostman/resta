@@ -131,6 +131,15 @@
                 const ARTICLES_API_URL = 'api/articulos.php';
 
                 useEffect(() => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const mesaId = urlParams.get('id_mesa');
+                    if (mesaId) {
+                        setIdMesa(mesaId);
+                        console.log('Mesa ID:', mesaId);
+                    }
+                }, []);
+
+                useEffect(() => {
                     setLoading(true);
                     fetch(FAMILIES_API_URL)
                         .then(res => res.json())
@@ -165,9 +174,36 @@
                 }, [activeFamilyId]);
 
                 const handleArticleClick = (article) => {
-                    setSelectedArticle(article.id);
-                    // Lógica para añadir artículo al pedido
-                    console.log(`Artículo seleccionado: ${article.nombre} (ID: ${article.id})`);
+                    if (!idMesa) {
+                        alert("No se ha seleccionado una mesa. Por favor, vuelva a la pantalla de mesas.");
+                        return;
+                    }
+
+                    console.log(`Añadiendo artículo ${article.nombre} (ID: ${article.id}) a la mesa ${idMesa}`);
+
+                    fetch('api/agregar_articulo.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            id_mesa: idMesa,
+                            id_articulo: article.id,
+                            cantidad: 1 // Por ahora, añadimos de 1 en 1
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            console.log('Artículo añadido con éxito');
+                            // Aquí podrías mostrar una notificación de éxito
+                        } else {
+                            console.error('Error al añadir el artículo:', data.error);
+                            alert('Error: ' + data.error);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error en la petición:', err);
+                        alert('Ocurrió un error de conexión.');
+                    });
                 };
 
                 if (loading && families.length === 0) {

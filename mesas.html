@@ -174,8 +174,8 @@
                         setTableForModal(table);
                         setIsModalOpen(true);
                     } else {
-                        // Aquí puedes redirigir a la pantalla de la comanda si la mesa está ocupada
-                        console.log(`Mesa ocupada seleccionada: ${table.number} (ID: ${table.id})`);
+                        // Redirigir a la pantalla de productos para la mesa ocupada
+                        window.location.href = `productos.html?id_mesa=${table.id}`;
                     }
                 };
 
