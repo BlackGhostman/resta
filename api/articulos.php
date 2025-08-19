@@ -14,7 +14,7 @@ if ($id_familia <= 0) {
 
 try {
     $db = obtenerConexion();
-    $sql = "SELECT id_articulos as id, nombre, precio_venta as precio FROM articulos WHERE id_familia = :id_familia ORDER BY nombre";
+    $sql = "SELECT id_articulos as id, nombre, precio_venta as precio, url_imagen FROM articulos WHERE id_familia = :id_familia ORDER BY nombre";
     $parametros = [':id_familia' => $id_familia];
     
     $articulos = $db->consultar($sql, $parametros);

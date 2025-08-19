@@ -47,6 +47,24 @@
                 return name.substring(0, 2).toUpperCase();
             };
 
+            function ArticleCard({ article, onSelect }) {
+                const defaultImageUrl = 'https://placehold.co/200x150/2d3748/e2e8f0?text=Producto';
+                const imageUrl = article.url_imagen || defaultImageUrl;
+
+                return (
+                    <div 
+                        className="bg-gray-800/50 rounded-lg text-center cursor-pointer transition-all duration-300 hover:bg-gray-700/80 hover:scale-105 shadow-lg flex flex-col overflow-hidden"
+                        onClick={() => onSelect(article)}
+                    >
+                        <img src={imageUrl} alt={article.nombre} className="w-full h-32 object-cover" onError={(e) => { e.target.onerror = null; e.target.src=defaultImageUrl; }} />
+                        <div className="p-4 flex flex-col flex-grow justify-between">
+                            <h3 className="font-semibold text-white text-lg mb-2 break-words flex-grow">{article.nombre}</h3>
+                            <p className="text-cyan-400 font-bold text-xl mt-2">{new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(article.precio)}</p>
+                        </div>
+                    </div>
+                );
+            }
+
 
             const Sidebar = ({ families, activeFamilyId, setActiveFamilyId, setSelectedArticle, isSidebarOpen, setIsSidebarOpen }) => {
                 const handleFamilyClick = (familyId) => {
@@ -151,11 +169,9 @@
                     console.log(`Artículo seleccionado: ${article.nombre} (ID: ${article.id})`);
                 };
 
-
                 if (loading && families.length === 0) {
                     return <div className="flex items-center justify-center h-screen bg-gray-900 text-white text-xl">Cargando familias de productos...</div>;
                 }
-
 
                 const activeFamily = families.find(f => f.id === activeFamilyId);
 
@@ -173,13 +189,7 @@
                                         ) : (
                                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                                                 {articles.map(article => (
-                                                    <div 
-                                                        key={article.id}
-                                                        onClick={() => handleArticleClick(article)} 
-                                                        className={`p-4 flex flex-col items-center justify-center rounded-xl shadow-lg cursor-pointer transition-all duration-200 transform hover:-translate-y-1 bg-gray-700 hover:bg-gray-600 text-white ${selectedArticle === article.id ? 'ring-4 ring-offset-2 ring-offset-gray-800 ring-cyan-400' : ''}`}>
-                                                        <span className="text-center font-semibold">{article.nombre}</span>
-                                                        <span className="text-lg font-bold mt-2 text-cyan-400">${parseFloat(article.precio).toFixed(2)}</span>
-                                                    </div>
+                                                    <ArticleCard key={article.id} article={article} onSelect={handleArticleClick} />
                                                 ))}
                                             </div>
                                         )}
