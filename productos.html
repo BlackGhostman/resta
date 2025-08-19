@@ -80,7 +80,7 @@
                                             <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
                                             <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">FAMILIAS</span>
                                         </a>
-                                        <button onClick={() => setIsSidebarOpen(true)} className={`p-2 rounded-md hover:bg-gray-700 ${!isSidebarOpen ? 'inline' : 'hidden'}`}>
+                                        <button onClick={() => setIsSidebarOpen(true)} className={`p-2 rounded-md hover:bg-gray-700 ${!isSidebarOpen ? 'hidden lg:inline' : 'hidden'}`}>
                                             <Icon name="Menu" className="w-6 h-6" />
                                         </button>
                                         <button onClick={() => setIsSidebarOpen(false)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden ${isSidebarOpen ? 'inline' : 'hidden'}`}><Icon name="X" className="w-6 h-6" /></button>
@@ -205,13 +205,13 @@
                 }, []);
 
                 useEffect(() => {
-                    if (isOrderPanelOpen && window.innerWidth >= 1024) {
+                    if (isOrderPanelOpen) {
                         setIsSidebarOpen(false);
                     }
                 }, [isOrderPanelOpen]);
 
                 useEffect(() => {
-                    if (isSidebarOpen && window.innerWidth >= 1024) {
+                    if (isSidebarOpen) {
                         setIsOrderPanelOpen(false);
                     }
                 }, [isSidebarOpen]);
