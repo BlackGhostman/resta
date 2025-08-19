@@ -192,10 +192,8 @@
                     .then(res => res.json())
                     .then(data => {
                         if(data.success) {
-                            console.log('Mesa abierta con éxito');
-                            setIsModalOpen(false);
-                            setTableForModal(null);
-                            fetchTables(); // Recargar datos para mostrar el nuevo estado
+                            // Redirigir a la página de productos con el ID de la mesa
+                            window.location.href = `productos.html?id_mesa=${tableId}`;
                         } else {
                             console.error('Error al abrir la mesa:', data.error);
                             alert('Error: ' + data.error);
