@@ -22,7 +22,7 @@
 
     <script type="text/babel">
         window.onload = function() {
-            const { useState, useEffect } = React;
+            const { useState, useEffect, useCallback } = React;
 
             const SVG_ICONS = {
                 Menu: '<line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" />',
@@ -32,40 +32,56 @@
                 Armchair: '<path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3" /><path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2Z" /><path d="M5 11v-2" /><path d="M19 9v2" />',
                 Beer: '<path d="M17 11h1a3 3 0 0 1 0 6h-1" /><path d="M9 12v6" /><path d="M13 12v6" /><path d="M14 7.5c0-.28.22-.5.5-.5h1c.28 0 .5.22.5.5c0 .28-.22.5-.5.5h-1c-.28 0-.5-.22-.5-.5Z" /><path d="M12 20a6 6 0 0 1-6-6V7H4v10a8 8 0 0 0 8 8Z" />',
                 MapPin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" />',
-                Pencil: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path d="m15 5 4 4" />'
+                Pencil: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path d="m15 5 4 4" />',
+                Users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />'
             };
 
             const Icon = ({ name, className = '', ...props }) => (
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={className}
-                    {...props}
-                    dangerouslySetInnerHTML={{ __html: SVG_ICONS[name] || '' }}
-                />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props} dangerouslySetInnerHTML={{ __html: SVG_ICONS[name] || '' }} />
             );
-            
+
             const getInitials = (name) => {
                 if (!name) return '';
                 const words = name.trim().split(' ');
-                if (words.length > 1) {
-                    return words.map(word => word[0]).join('').toUpperCase().substring(0, 2);
-                }
+                if (words.length > 1) return words.map(word => word[0]).join('').toUpperCase().substring(0, 2);
                 return name.substring(0, 2).toUpperCase();
             };
 
-            const Sidebar = ({
-                zones, activeZoneId, setActiveZoneId,
-                setSelectedTable,
-                isSidebarOpen, setIsSidebarOpen
-            }) => {
+            const PersonCountModal = ({ isOpen, onClose, onSubmit, table }) => {
+                if (!isOpen || !table) return null;
+
+                const [personCount, setPersonCount] = useState(1);
+                const [clientName, setClientName] = useState('');
+
+                const handleSubmit = (e) => {
+                    e.preventDefault();
+                    onSubmit(table.id, personCount, clientName);
+                };
+
+                return (
+                    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 transition-opacity duration-300" onClick={onClose}>
+                        <div className="bg-gray-800 rounded-lg p-8 w-full max-w-md m-4 shadow-2xl transform transition-all duration-300 scale-95 hover:scale-100" onClick={e => e.stopPropagation()}>
+                            <h2 className="text-2xl font-bold text-white mb-6">Abrir Mesa: {table.number}</h2>
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-4">
+                                    <label htmlFor="person-count" className="block text-gray-300 text-sm font-bold mb-2">Número de Personas:</label>
+                                    <input type="number" id="person-count" value={personCount} onChange={(e) => setPersonCount(e.target.value)} min="1" className="shadow appearance-none border-2 border-gray-700 rounded w-full py-3 px-4 bg-gray-900 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent" required />
+                                </div>
+                                <div className="mb-6">
+                                    <label htmlFor="client-name" className="block text-gray-300 text-sm font-bold mb-2">Nombre del Cliente (Opcional):</label>
+                                    <input type="text" id="client-name" value={clientName} onChange={(e) => setClientName(e.target.value)} className="shadow appearance-none border-2 border-gray-700 rounded w-full py-3 px-4 bg-gray-900 text-white leading-tight focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent" placeholder="Ej: Juan Pérez" />
+                                </div>
+                                <div className="flex items-center justify-end gap-4">
+                                    <button type="button" onClick={onClose} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-colors">Cancelar</button>
+                                    <button type="submit" className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-colors">Confirmar y Abrir</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                );
+            };
+
+            const Sidebar = ({ zones, activeZoneId, setActiveZoneId, setSelectedTable, isSidebarOpen, setIsSidebarOpen }) => {
                 const handleZoneClick = (zoneId) => {
                     setActiveZoneId(zoneId);
                     setSelectedTable(null);
@@ -85,9 +101,7 @@
                                 <ul className="space-y-3 font-medium">
                                     {zones.map(zone => (
                                         <li key={zone.id}>
-                                            <button
-                                                onClick={() => handleZoneClick(zone.id)}
-                                                className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeZoneId === zone.id ? 'bg-white/10' : 'hover:bg-white/5'} ${!isSidebarOpen && 'lg:w-auto w-full justify-center'}`}>
+                                            <button onClick={() => handleZoneClick(zone.id)} className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeZoneId === zone.id ? 'bg-white/10' : 'hover:bg-white/5'} ${!isSidebarOpen && 'lg:w-auto w-full justify-center'}`}>
                                                 <Icon name={zone.name === 'Salón' ? 'Armchair' : zone.name.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeZoneId === zone.id ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
                                                 <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{zone.name}</span>
                                                 <span className={`text-sm font-semibold whitespace-nowrap ${!isSidebarOpen ? 'inline' : 'hidden'} lg:hidden`}>{getInitials(zone.name)}</span>
@@ -109,13 +123,9 @@
             function Header({ activeZoneName, isSidebarOpen, setIsSidebarOpen }) {
                 return (
                     <header className="flex items-center justify-between p-4 bg-gray-800/80 backdrop-blur-sm border-b border-gray-700/50 lg:hidden">
-                        <button onClick={() => setIsSidebarOpen(prev => !prev)} className="p-2 rounded-md hover:bg-gray-700 lg:hidden">
-                            <Icon name="Menu" className="w-6 h-6" />
-                        </button>
+                        <button onClick={() => setIsSidebarOpen(prev => !prev)} className="p-2 rounded-md hover:bg-gray-700 lg:hidden"><Icon name="Menu" className="w-6 h-6" /></button>
                         <h1 className="text-xl font-bold text-white">{activeZoneName}</h1>
-                        <a href="#" className="p-2 rounded-full hover:bg-gray-700">
-                            <Icon name="CircleUser" className="w-6 h-6" />
-                        </a>
+                        <a href="#" className="p-2 rounded-full hover:bg-gray-700"><Icon name="CircleUser" className="w-6 h-6" /></a>
                     </header>
                 );
             }
@@ -126,22 +136,21 @@
                 const [loading, setLoading] = useState(true);
                 const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
                 const [selectedTable, setSelectedTable] = useState(null);
-                
+                const [isModalOpen, setIsModalOpen] = useState(false);
+                const [tableForModal, setTableForModal] = useState(null);
+
                 const GRID_ROWS = 10;
                 const GRID_COLS = 16;
                 const API_URL = 'api/plano.php';
 
-                useEffect(() => {
+                const fetchTables = useCallback(() => {
                     setLoading(true);
                     fetch(API_URL)
                         .then(res => res.json())
                         .then(data => {
-                            const sanitizedZones = (data || []).map(zone => ({
-                                ...zone,
-                                tables: zone.tables || [] 
-                            }));
+                            const sanitizedZones = (data || []).map(zone => ({ ...zone, tables: zone.tables || [] }));
                             setZones(sanitizedZones);
-                            if (sanitizedZones.length > 0) {
+                            if (!activeZoneId && sanitizedZones.length > 0) {
                                 setActiveZoneId(sanitizedZones[0].id);
                             }
                             setLoading(false);
@@ -150,63 +159,100 @@
                             console.error("Error fetching data:", err);
                             setLoading(false);
                         });
-                }, []);
+                }, [activeZoneId]);
 
-                if (loading) {
-                    return (
-                        <div className="flex items-center justify-center h-screen bg-gray-900 text-white text-xl">
-                            Cargando plano de mesas...
-                        </div>
-                    );
-                }
-                
+                useEffect(() => {
+                    fetchTables();
+                }, [fetchTables]);
+
                 const handleTableClick = (table) => {
                     setSelectedTable(table.id);
-                    console.log(`Mesa seleccionada: ${table.number} (ID: ${table.id})`);
+                    if (table.estado === 'disponible') {
+                        setTableForModal(table);
+                        setIsModalOpen(true);
+                    } else {
+                        // Aquí puedes redirigir a la pantalla de la comanda si la mesa está ocupada
+                        console.log(`Mesa ocupada seleccionada: ${table.number} (ID: ${table.id})`);
+                    }
                 };
+
+                const handleOpenTable = (tableId, personCount, clientName) => {
+                    fetch('api/guardar_datos_mesa.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            id_mesa: tableId, 
+                            cantidad_personas: personCount, 
+                            nombre_cliente: clientName 
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            console.log('Mesa abierta con éxito');
+                            setIsModalOpen(false);
+                            setTableForModal(null);
+                            fetchTables(); // Recargar datos para mostrar el nuevo estado
+                        } else {
+                            console.error('Error al abrir la mesa:', data.error);
+                            alert('Error: ' + data.error);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error en la petición:', err);
+                        alert('Ocurrió un error de conexión.');
+                    });
+                };
+
+                if (loading && zones.length === 0) {
+                    return <div className="flex items-center justify-center h-screen bg-gray-900 text-white text-xl">Cargando plano de mesas...</div>;
+                }
+
+                const getTableColor = (estado) => {
+                    switch(estado) {
+                        case 'ocupada': return 'bg-red-500 text-white';
+                        case 'disponible': return 'bg-green-500 text-white';
+                        case 'reservada': return 'bg-yellow-500 text-white';
+                        default: return 'bg-gray-600 text-white';
+                    }
+                }
+
+                const activeZone = zones.find(z => z.id === activeZoneId);
 
                 return (
                     <div className="relative min-h-screen bg-gray-900">
+                        <PersonCountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleOpenTable} table={tableForModal} />
                         <div className="relative flex h-screen">
                             <Sidebar {...{ zones, activeZoneId, setActiveZoneId, setSelectedTable, isSidebarOpen, setIsSidebarOpen }} />
                             <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} lg:ml-64`}>
-                                <Header activeZoneName={zones.find(z => z.id === activeZoneId)?.name || 'Sin Zonas'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+                                <Header activeZoneName={activeZone?.name || 'Sin Zonas'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
                                 <main className="flex-1 overflow-auto p-4 sm:p-6 md:p-8">
-                                    <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Seleccionar Mesa: {zones.find(z => z.id === activeZoneId)?.name || ''}</h1>
-                                    <div className="bg-gray-900 p-4 rounded-lg">
-                                        {(() => {
-                                            const activeZone = zones.find(z => z.id === activeZoneId);
-                                            if (!activeZone) {
-                                                return <div className="text-center text-gray-400 py-8">Selecciona una zona para ver las mesas.</div>;
-                                            }
-
-                                            const getTableColor = (estado) => {
-                                                switch(estado) {
-                                                    case 'ocupada': return 'bg-red-400 text-red-900';
-                                                    case 'disponible': return 'bg-green-400 text-green-900';
-                                                    case 'reservada': return 'bg-yellow-400 text-yellow-900';
-                                                    default: return 'bg-gray-200 text-gray-900';
-                                                }
-                                            }
-
-                                            return (
-                                                <div className="relative" style={{ height: `${GRID_ROWS * 80}px` }}>
-                                                    {activeZone.tables.map(table => (
-                                                        <div 
-                                                            key={table.id}
-                                                            onClick={() => handleTableClick(table)} 
-                                                            className={`absolute p-2 h-16 w-16 flex items-center justify-center rounded-xl shadow-lg cursor-pointer transition-all ${selectedTable === table.id ? 'ring-4 ring-offset-2 ring-offset-gray-800 ring-cyan-400' : ''} ${getTableColor(table.estado)}`}
-                                                            style={{
-                                                                top: `${(parseInt(table.row, 10) - 1) * 80 + 8}px`,
-                                                                left: `${(parseInt(table.col, 10) - 1) * 80 + 8}px`
-                                                            }}
-                                                        >
-                                                            <span className="text-xl font-bold">{table.number}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            );
-                                        })()}
+                                    <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Seleccionar Mesa: {activeZone?.name || ''}</h1>
+                                    <div className="bg-gray-800/50 p-4 rounded-lg">
+                                        {!activeZone ? (
+                                            <div className="text-center text-gray-400 py-8">Selecciona una zona para ver las mesas.</div>
+                                        ) : (
+                                            <div className="relative" style={{ height: `${GRID_ROWS * 90}px` }}>
+                                                {activeZone.tables.map(table => (
+                                                    <div 
+                                                        key={table.id}
+                                                        onClick={() => handleTableClick(table)} 
+                                                        className={`absolute p-2 h-20 w-20 flex flex-col items-center justify-center rounded-xl shadow-lg cursor-pointer transition-all duration-200 transform hover:-translate-y-1 ${selectedTable === table.id ? 'ring-4 ring-offset-2 ring-offset-gray-800 ring-cyan-400' : ''} ${getTableColor(table.estado)}`}
+                                                        style={{
+                                                            top: `${(parseInt(table.row, 10) - 1) * 90 + 8}px`,
+                                                            left: `${(parseInt(table.col, 10) - 1) * 90 + 8}px`
+                                                        }}
+                                                    >
+                                                        <span className="text-2xl font-bold">{table.number}</span>
+                                                        {table.estado === 'ocupada' && table.cantidad_personas > 0 && (
+                                                            <div className="absolute -top-2 -right-2 bg-cyan-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">
+                                                                {table.cantidad_personas}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 </main>
                             </div>

@@ -16,14 +16,16 @@ class Plano {
 
         foreach ($ubicaciones as $ubicacion) {
             $sqlMesas = "SELECT 
-                            id_salones_mesas as id, 
-                            identificador as number, 
-                            descripcion, 
-                            estado,
-                            ISNULL(row, 1) as row, 
-                            ISNULL(col, 1) as col
-                         FROM salones_mesas 
-                         WHERE id_ubicacion_mesa = ?";
+                            m.id_salones_mesas as id, 
+                            m.identificador as number, 
+                            m.descripcion, 
+                            m.estado,
+                            ISNULL(m.row, 1) as row, 
+                            ISNULL(m.col, 1) as col,
+                            fm.cantidad_personas
+                         FROM salones_mesas m
+                         LEFT JOIN facturas_maestro fm ON m.id_salones_mesas = fm.id_mesa AND fm.estado = 'credito'
+                         WHERE m.id_ubicacion_mesa = ?";
             
             $mesas = $this->db->consultar($sqlMesas, [$ubicacion['id_ubicaciones_mesas']]);
 
