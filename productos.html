@@ -66,10 +66,9 @@
             }
 
 
-            const Sidebar = ({ families, activeFamilyId, setActiveFamilyId, setSelectedArticle, isSidebarOpen, setIsSidebarOpen }) => {
+            const Sidebar = ({ families, activeFamilyId, onFamilyClick, isSidebarOpen, setIsSidebarOpen }) => {
                 const handleFamilyClick = (familyId) => {
-                    setActiveFamilyId(familyId);
-                    setSelectedArticle(null);
+                    onFamilyClick(familyId);
                 };
 
                 return (
@@ -284,7 +283,7 @@
                 return (
                     <div className="relative min-h-screen bg-gray-900">
                         <div className="relative flex h-screen">
-                            <Sidebar families={families} activeFamilyId={activeFamilyId} setActiveFamilyId={setActiveFamilyId} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+                            <Sidebar families={families} activeFamilyId={activeFamilyId} onFamilyClick={setActiveFamilyId} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
                             <div className={`flex-1 flex overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} lg:ml-64`}>
                                 <div className="flex-1 flex flex-col overflow-hidden">
                                     <Header activeFamilyName={activeFamily?.nombre || 'Sin Familias'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
