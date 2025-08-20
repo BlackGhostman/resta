@@ -249,6 +249,15 @@
                 const [isChangeTableModalOpen, setIsChangeTableModalOpen] = useState(false);
                 const [sourceTableForChange, setSourceTableForChange] = useState(null);
                 const clickTimeout = React.useRef(null);
+                const [isDesktopView, setIsDesktopView] = useState(window.innerWidth >= 768);
+
+                useEffect(() => {
+                    const handleResize = () => {
+                        setIsDesktopView(window.innerWidth >= 768);
+                    };
+                    window.addEventListener('resize', handleResize);
+                    return () => window.removeEventListener('resize', handleResize);
+                }, []);
 
                 const GRID_ROWS = 10;
                 const GRID_COLS = 16;
@@ -407,21 +416,32 @@
                                         {!activeZone ? (
                                             <div className="text-center text-gray-400 py-8">Selecciona una zona para ver las mesas.</div>
                                         ) : (
-                                            <div className="relative" style={{ height: `${GRID_ROWS * 90}px` }}>
+                                            <div 
+                                                className={isDesktopView ? 'relative' : 'flex flex-col gap-3'}
+                                                style={{ height: isDesktopView ? `${GRID_ROWS * 90}px` : 'auto' }}
+                                            >
                                                 {activeZone.tables.map(table => (
                                                     <div 
                                                         key={table.id}
                                                         onClick={() => handleTableClick(table)}
                                                         onDoubleClick={() => handleTableDoubleClick(table)} 
-                                                        className={`absolute p-2 h-20 w-20 flex flex-col items-center justify-center rounded-xl shadow-lg cursor-pointer transition-all duration-200 transform hover:-translate-y-1 ${selectedTable === table.id ? 'ring-4 ring-offset-2 ring-offset-gray-800 ring-cyan-400' : ''} ${getTableColor(table.estado)}`}
-                                                        style={{
+                                                        className={`p-3 rounded-xl shadow-lg cursor-pointer transition-all duration-200 ${selectedTable === table.id ? 'ring-4 ring-offset-2 ring-offset-gray-800 ring-cyan-400' : ''} ${getTableColor(table.estado)} ${isDesktopView ? 'absolute h-20 w-20 flex-col justify-center items-center transform hover:-translate-y-1' : 'flex-row justify-between items-center'}`}
+                                                        style={isDesktopView ? {
                                                             top: `${(parseInt(table.row, 10) - 1) * 90 + 8}px`,
                                                             left: `${(parseInt(table.col, 10) - 1) * 90 + 8}px`
-                                                        }}
+                                                        } : {}}
                                                     >
-                                                        <span className="text-2xl font-bold">{table.number}</span>
+                                                        <div className={`flex items-center ${isDesktopView ? 'flex-col' : 'gap-4'}`}>
+                                                            <span className="text-2xl font-bold w-12 text-center">{table.number}</span>
+                                                            {!isDesktopView && (
+                                                                <div className="text-left">
+                                                                    <p className="font-semibold">{table.estado.charAt(0).toUpperCase() + table.estado.slice(1)}</p>
+                                                                    {table.estado === 'ocupada' && table.nombre_cliente && <p className="text-sm opacity-80">{table.nombre_cliente}</p>}
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                         {table.estado === 'ocupada' && table.cantidad_personas > 0 && (
-                                                            <div className="absolute -top-2 -right-2 bg-cyan-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold shadow-lg">
+                                                            <div className={`text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg ${isDesktopView ? 'absolute -top-2 -right-2 bg-cyan-500 h-6 w-6' : 'bg-cyan-500 text-sm h-8 w-8'}`}>
                                                                 {table.cantidad_personas}
                                                             </div>
                                                         )}
