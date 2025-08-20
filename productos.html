@@ -341,19 +341,18 @@
                         return;
                     }
 
-                    const existingArticle = pedido.find(item => item.id_articulos === article.id_articulos);
-                    let updatedOrder;
-
-                    if (existingArticle) {
-                        updatedOrder = pedido.map(item =>
-                            item.id_articulos === article.id_articulos
-                                ? { ...item, cantidad: item.cantidad + 1 }
-                                : item
-                        );
-                    } else {
-                        updatedOrder = [...pedido, { ...article, cantidad: 1 }];
-                    }
-                    setPedido(updatedOrder);
+                    setPedido(prevPedido => {
+                        const existingItem = prevPedido.find(item => item.id_articulos === article.id_articulos);
+                        if (existingItem) {
+                            return prevPedido.map(item => 
+                                item.id_articulos === article.id_articulos 
+                                    ? { ...item, cantidad: item.cantidad + 1 } 
+                                    : item
+                            );
+                        } else {
+                            return [{ ...article, cantidad: 1 }, ...prevPedido];
+                        }
+                    });
                     setIsOrderPanelOpen(true);
                     setIsSidebarOpen(false);
                 };
