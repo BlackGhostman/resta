@@ -137,14 +137,14 @@
                 );
             }
 
-            const OrderPanel = ({ pedido, onSendOrder, isOpen, facturas, activeFacturaId, onSelectFactura }) => {
+            const OrderPanel = ({ pedido, onSendOrder, isOpen, facturas, activeFacturaId, onSelectFactura, isSidebarOpen }) => {
                 const calcularTotal = () => {
                     return pedido.reduce((total, item) => total + item.precio * item.cantidad, 0);
                 };
 
                 return (
-                    <div className={`fixed top-0 right-0 z-30 h-screen bg-gray-900 transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'} w-80 md:w-96 p-6 flex flex-col shadow-lg border-l border-gray-700/50`}>
-                        <h2 className="text-3xl font-bold text-white mb-4">Pedido Actual</h2>
+                    <div className={`fixed bottom-0 left-20 md:left-auto md:top-0 md:right-0 z-30 bg-gray-900 transition-transform duration-300 w-[calc(100%-5rem)] md:w-96 h-[40vh] md:h-screen p-4 flex flex-col shadow-2xl border-t-2 md:border-t-0 md:border-l-2 border-gray-700 ${isOpen ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}`}>
+                        <h2 className="text-2xl font-bold text-white mb-4">Pedido Actual</h2>
                         <FacturaTabs facturas={facturas} activeFacturaId={activeFacturaId} onSelectFactura={onSelectFactura} />
                         <div className="flex-grow overflow-y-auto pr-2">
                             {pedido.length === 0 ? (
@@ -168,7 +168,7 @@
                             )}
                         </div>
                         <div className="mt-auto pt-6 border-t-2 border-gray-700">
-                            <div className="flex justify-between items-center text-2xl font-bold text-white mb-4">
+                            <div className="flex justify-between items-center text-xl font-bold text-white mb-4">
                                 <span>Total:</span>
                                 <span>{new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(calcularTotal())}</span>
                             </div>
@@ -404,43 +404,42 @@
                                 isSidebarOpen={isSidebarOpen} 
                                 setIsSidebarOpen={setIsSidebarOpen}
                             />
-                            <div className={`flex-1 flex overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} ${isOrderPanelOpen ? 'mr-80 md:mr-96' : ''}`}>
-                                <div className="flex-1 flex flex-col overflow-hidden">
-                                    <Header 
-                                        activeFamilyName={activeFamily?.nombre || 'Sin Familias'} 
-                                        isSidebarOpen={isSidebarOpen} 
-                                        setIsSidebarOpen={() => setIsSidebarOpen(prev => !prev)}
-                                        onToggleOrderPanel={() => setIsOrderPanelOpen(prev => !prev)}
-                                    />
-                                    <main className="flex-1 overflow-auto p-4 sm:p-6 md:p-8">
-                                        <div className="hidden lg:flex items-center justify-between mb-8">
-                                            <h1 className="text-4xl font-bold text-white">Seleccionar Producto: {activeFamily?.nombre || ''}</h1>
-                                            <button onClick={() => setIsOrderPanelOpen(prev => !prev)} className="p-2 rounded-full hover:bg-gray-700">
-                                                <Icon name="CircleUser" className="w-8 h-8" />
-                                            </button>
-                                        </div>
-                                        <div className="bg-gray-800/50 p-4 rounded-lg overflow-x-auto">
-                                            {!activeFamily ? (
-                                                <div className="text-center text-gray-400 py-8">Selecciona una familia para ver los productos.</div>
-                                            ) : (
-                                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 min-w-[400px]">
-                                                    {articles.map(article => (
-                                                        <ArticleCard key={article.id_articulos} article={article} onSelect={handleArticleClick} />
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </main>
-                                </div>
-                                <OrderPanel 
-                                    pedido={pedido} 
-                                    onSendOrder={handleSendOrder} 
-                                    isOpen={isOrderPanelOpen} 
-                                    facturas={facturas}
-                                    activeFacturaId={activeFacturaId}
-                                    onSelectFactura={setActiveFacturaId}
+                            <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} ${isOrderPanelOpen ? 'md:mr-96' : ''}`}>
+                                <Header 
+                                    activeFamilyName={activeFamily?.nombre || 'Sin Familias'} 
+                                    isSidebarOpen={isSidebarOpen} 
+                                    setIsSidebarOpen={() => setIsSidebarOpen(prev => !prev)}
+                                    onToggleOrderPanel={() => setIsOrderPanelOpen(prev => !prev)}
                                 />
+                                <main className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 transition-all duration-300 ${isOrderPanelOpen ? 'pb-[40vh] md:pb-8' : 'pb-8'}`}>
+                                    <div className="hidden lg:flex items-center justify-between mb-8">
+                                        <h1 className="text-4xl font-bold text-white">Seleccionar Producto: {activeFamily?.nombre || ''}</h1>
+                                        <button onClick={() => setIsOrderPanelOpen(prev => !prev)} className="p-2 rounded-full hover:bg-gray-700">
+                                            <Icon name="CircleUser" className="w-8 h-8" />
+                                        </button>
+                                    </div>
+                                    <div className="bg-gray-800/50 p-4 rounded-lg overflow-x-auto">
+                                        {!activeFamily ? (
+                                            <div className="text-center text-gray-400 py-8">Selecciona una familia para ver los productos.</div>
+                                        ) : (
+                                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 min-w-[400px]">
+                                                {articles.map(article => (
+                                                    <ArticleCard key={article.id_articulos} article={article} onSelect={handleArticleClick} />
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </main>
                             </div>
+                            <OrderPanel 
+                                pedido={pedido} 
+                                onSendOrder={handleSendOrder} 
+                                isOpen={isOrderPanelOpen} 
+                                facturas={facturas}
+                                activeFacturaId={activeFacturaId}
+                                onSelectFactura={setActiveFacturaId}
+                                isSidebarOpen={isSidebarOpen}
+                            />
                         </div>
                     </div>
                 );
