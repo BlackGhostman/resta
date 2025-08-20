@@ -16,7 +16,7 @@ if (isset($data['id_mesa'])) {
         // Crear una nueva factura para esta mesa
         $stmt = $pdo->prepare(
             "INSERT INTO facturas_maestro (id_mesa, fecha, estado, subtotal, monto_descuento, monto_impuestos, total_factura) 
-             VALUES (:id_mesa, GETDATE(), 'credito', 0, 0, 0, 0)"
+             VALUES (:id_mesa, NOW(), 'credito', 0, 0, 0, 0)"
         );
         
         $stmt->execute(['id_mesa' => $id_mesa]);

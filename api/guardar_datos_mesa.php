@@ -20,7 +20,7 @@ try {
     $db->iniciarTransaccion();
 
     // 1. Crear la nueva factura en facturas_maestro
-    $sql_factura = "INSERT INTO facturas_maestro (fecha, id_mesa, cantidad_personas, nombre_cliente, estado, subtotal, monto_descuento, monto_impuestos, total_factura) VALUES (GETDATE(), ?, ?, ?, 'credito', 0, 0, 0, 0)";
+    $sql_factura = "INSERT INTO facturas_maestro (fecha, id_mesa, cantidad_personas, nombre_cliente, estado, subtotal, monto_descuento, monto_impuestos, total_factura) VALUES (NOW(), ?, ?, ?, 'credito', 0, 0, 0, 0)";
     $db->ejecutar($sql_factura, [$id_mesa, $cantidad_personas, $nombre_cliente]);
 
     // 2. Actualizar el estado de la mesa en la tabla 'salones_mesas'

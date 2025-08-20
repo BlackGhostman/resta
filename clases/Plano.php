@@ -20,9 +20,9 @@ class Plano {
                             m.identificador as number, 
                             m.descripcion, 
                             m.estado,
-                            ISNULL(m.row, 1) as row, 
-                            ISNULL(m.col, 1) as col,
-                            fm.cantidad_personas
+                            IFNULL(m.row, 1) as row, 
+                            IFNULL(m.col, 1) as col,
+                            IFNULL(fm.cantidad_personas, 0) as cantidad_personas
                          FROM salones_mesas m
                          LEFT JOIN facturas_maestro fm ON m.id_salones_mesas = fm.id_mesa AND fm.estado = 'credito'
                          WHERE m.id_ubicacion_mesa = ?";

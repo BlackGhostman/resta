@@ -97,7 +97,7 @@ class Facturas {
                 $total_impuestos_pedido += $monto_impuesto_linea;
 
                 // Insertar en facturas_detalle
-                $sql_detalle = "INSERT INTO facturas_detalle (id_factura_maestro, id_articulo, cantidad, precio_venta, costo_unitario, monto_impuesto, monto_descuento, es_cortesia) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                                $sql_detalle = "INSERT INTO facturas_detalle (id_factura_maestro, id_articulo, cantidad, precio_unitario, costo_unitario, monto_impuesto_linea, monto_descuento_linea, es_cortesia) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 $this->db->ejecutar($sql_detalle, [$id_factura, $id_articulo, $cantidad, $precio_unitario, $costo_unitario, $monto_impuesto_linea, $monto_descuento_linea, $es_cortesia]);
             }
 
