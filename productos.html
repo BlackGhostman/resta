@@ -53,13 +53,13 @@
 
                 return (
                     <div 
-                        className="bg-gray-800 rounded-lg shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200 flex flex-col min-w-32"
+                        className="bg-gray-800 rounded-lg shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-transform duration-200 flex flex-row md:flex-col"
                         onClick={() => onSelect(article)}
                     >
-                        <img src={imageUrl} alt={article.nombre} className="w-full h-32 object-cover" onError={(e) => { e.target.onerror = null; e.target.src=defaultImageUrl; }} />
-                        <div className="p-3 flex flex-col flex-grow justify-between">
-                            <h3 className="font-semibold text-white text-base leading-tight h-12 flex items-center justify-center">{article.nombre}</h3>
-                            <p className="text-cyan-400 font-bold text-lg mt-2">{new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(article.precio)}</p>
+                        <img src={imageUrl} alt={article.nombre} className="w-24 h-24 md:w-full md:h-32 object-cover" onError={(e) => { e.target.onerror = null; e.target.src=defaultImageUrl; }} />
+                        <div className="p-3 flex flex-col flex-grow justify-center md:justify-between">
+                            <h3 className="font-semibold text-white text-base leading-tight text-left md:text-center md:h-12 flex items-center">{article.nombre}</h3>
+                            <p className="text-cyan-400 font-bold text-lg mt-1 md:mt-2 text-left md:text-center">{new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(article.precio)}</p>
                         </div>
                     </div>
                 );
@@ -144,7 +144,13 @@
 
                 return (
                     <div className={`fixed bottom-0 left-20 md:left-auto md:top-0 md:right-0 z-30 bg-gray-900 transition-transform duration-300 w-[calc(100%-5rem)] md:w-96 h-[40vh] md:h-screen p-4 flex flex-col shadow-2xl border-t-2 md:border-t-0 md:border-l-2 border-gray-700 ${isOpen ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}`}>
-                        <h2 className="text-2xl font-bold text-white mb-4">Pedido Actual</h2>
+                        <div className="flex justify-between items-center mb-2 md:hidden">
+                            <h2 className="text-lg font-bold text-white">Pedido Actual</h2>
+                            <button onClick={onSendOrder} className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-colors">
+                                Enviar Pedido
+                            </button>
+                        </div>
+                        <h2 className="hidden md:block text-2xl font-bold text-white mb-4">Pedido Actual</h2>
                         <FacturaTabs facturas={facturas} activeFacturaId={activeFacturaId} onSelectFactura={onSelectFactura} />
                         <div className="flex-grow overflow-y-auto pr-2">
                             {pedido.length === 0 ? (
@@ -167,12 +173,12 @@
                                 </ul>
                             )}
                         </div>
-                        <div className="mt-auto pt-6 border-t-2 border-gray-700">
-                            <div className="flex justify-between items-center text-xl font-bold text-white mb-4">
+                        <div className="mt-auto pt-4 border-t-2 border-gray-700">
+                            <div className="flex justify-between items-center text-xl font-bold text-white md:mb-4">
                                 <span>Total:</span>
                                 <span>{new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(calcularTotal())}</span>
                             </div>
-                            <button onClick={onSendOrder} className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 rounded-lg text-lg transition-colors">
+                            <button onClick={onSendOrder} className="hidden md:block w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 rounded-lg text-lg transition-colors">
                                 Enviar Pedido
                             </button>
                         </div>
@@ -422,7 +428,7 @@
                                         {!activeFamily ? (
                                             <div className="text-center text-gray-400 py-8">Selecciona una familia para ver los productos.</div>
                                         ) : (
-                                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 min-w-[400px]">
+                                            <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                                                 {articles.map(article => (
                                                     <ArticleCard key={article.id_articulos} article={article} onSelect={handleArticleClick} />
                                                 ))}
