@@ -211,14 +211,17 @@
                             })
                             .then(res => res.json())
                             .then(data => {
-                                if (data.success) {
-                                    const newFactura = { id: data.id_factura };
+                                if (data.success && data.factura) {
+                                    // La API ahora devuelve el objeto de factura completo.
+                                    // Asegurémonos de que el frontend lo use correctamente.
+                                    const newFactura = { ...data.factura, id: data.factura.id_facturas_maestro };
                                     setFacturas(prev => [...prev, newFactura]);
-                                    setActiveFacturaId(data.id_factura);
+                                    setActiveFacturaId(newFactura.id);
+                                    // Limpiar el parámetro 'crear_cuenta' de la URL
                                     const newUrl = window.location.pathname + `?id_mesa=${mesaId}`;
                                     window.history.replaceState({}, '', newUrl);
                                 } else {
-                                    alert('Error: ' + data.error);
+                                    alert('Error al crear la cuenta: ' + (data.error || 'Respuesta inválida del servidor.'));
                                 }
                             })
                             .catch(err => {
@@ -230,12 +233,22 @@
                                 .then(res => res.json())
                                 .then(data => {
                                     if (data.success) {
-                                        setFacturas(data.facturas);
-                                        // Activar la última factura por defecto
-                                        setActiveFacturaId(data.facturas[data.facturas.length - 1].id);
+                                        // Mapear facturas para asegurar que tengan una propiedad 'id'
+                                        const facturasConId = data.facturas.map(f => ({ ...f, id: f.id_facturas_maestro }));
+                                        setFacturas(facturasConId);
+                                        if (facturasConId.length > 0) {
+                                            // Activar la última factura por defecto
+                                            setActiveFacturaId(facturasConId[facturasConId.length - 1].id);
+                                        } else {
+                                            // Si no hay facturas, no hacer nada o manejarlo según la lógica de negocio
+                                        }
                                     } else {
-                                        alert('Error: ' + data.error);
-                                        window.location.href = 'mesas.html';
+                                        // Si la API falla pero no es un error de 'no encontrado', mostrar alerta.
+                                        // Si es porque no hay facturas, facturas.php ahora devuelve un array vacío.
+                                        if(data.error) {
+                                            alert('Error: ' + data.error);
+                                            window.location.href = 'mesas.html';
+                                        }
                                     }
                                 })
                                 .catch(err => {

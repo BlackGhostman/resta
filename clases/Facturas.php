@@ -97,14 +97,14 @@ class Facturas {
                 $total_impuestos_pedido += $monto_impuesto_linea;
 
                 // Insertar en facturas_detalle
-                $sql_detalle = "INSERT INTO facturas_detalle (id_factura, id_articulo, cantidad, precio, costo, impuesto) VALUES (?, ?, ?, ?, ?, ?)";
-                $this->db->ejecutar($sql_detalle, [$id_factura, $id_articulo, $cantidad, $precio_unitario, $costo_unitario, $monto_impuesto_linea]);
+                $sql_detalle = "INSERT INTO facturas_detalle (id_factura_maestro, id_articulo, cantidad, precio_venta, costo_unitario, monto_impuesto, monto_descuento, es_cortesia) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                $this->db->ejecutar($sql_detalle, [$id_factura, $id_articulo, $cantidad, $precio_unitario, $costo_unitario, $monto_impuesto_linea, $monto_descuento_linea, $es_cortesia]);
             }
 
-            // 3. Actualizar los totales en facturas una sola vez
+            // 3. Actualizar los totales en facturas_maestro una sola vez
             $total_pedido = $total_subtotal_pedido + $total_impuestos_pedido;
-            $sql_update_factura = "UPDATE facturas SET total = total + ? WHERE id = ?";
-            $this->db->ejecutar($sql_update_factura, [$total_pedido, $id_factura]);
+            $sql_update_maestro = "UPDATE facturas_maestro SET subtotal = subtotal + ?, monto_impuestos = monto_impuestos + ?, total_factura = total_factura + ? WHERE id_facturas_maestro = ?";
+            $this->db->ejecutar($sql_update_maestro, [$total_subtotal_pedido, $total_impuestos_pedido, $total_pedido, $id_factura]);
 
             $this->db->confirmarTransaccion();
 
