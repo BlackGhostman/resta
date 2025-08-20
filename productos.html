@@ -120,14 +120,32 @@
                 );
             }
 
-            const OrderPanel = ({ pedido, onSendOrder, isOpen }) => {
+            const FacturaTabs = ({ facturas, activeFacturaId, onSelectFactura }) => {
+                if (facturas.length <= 1) return null;
+
+                return (
+                    <div className="flex border-b-2 border-gray-700 mb-4">
+                        {facturas.map((factura, index) => (
+                            <button 
+                                key={factura.id}
+                                onClick={() => onSelectFactura(factura.id)}
+                                className={`py-2 px-4 font-semibold transition-colors duration-200 ${factura.id === activeFacturaId ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-gray-400 hover:text-white'}`}>
+                                Cuenta {index + 1}
+                            </button>
+                        ))}
+                    </div>
+                );
+            }
+
+            const OrderPanel = ({ pedido, onSendOrder, isOpen, facturas, activeFacturaId, onSelectFactura }) => {
                 const calcularTotal = () => {
                     return pedido.reduce((total, item) => total + item.precio * item.cantidad, 0);
                 };
 
                 return (
                     <div className={`fixed top-0 right-0 z-30 h-screen bg-gray-900 transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'} w-80 md:w-96 p-6 flex flex-col shadow-lg border-l border-gray-700/50`}>
-                        <h2 className="text-3xl font-bold text-white mb-6 border-b-2 border-gray-700 pb-4">Pedido Actual</h2>
+                        <h2 className="text-3xl font-bold text-white mb-4">Pedido Actual</h2>
+                        <FacturaTabs facturas={facturas} activeFacturaId={activeFacturaId} onSelectFactura={onSelectFactura} />
                         <div className="flex-grow overflow-y-auto pr-2">
                             {pedido.length === 0 ? (
                                 <p className="text-gray-400 text-center mt-8">No hay productos en el pedido.</p>
@@ -170,6 +188,8 @@
                 const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
                 const [isOrderPanelOpen, setIsOrderPanelOpen] = useState(false);
                 const [idMesa, setIdMesa] = useState(null);
+                const [activeFacturaId, setActiveFacturaId] = useState(null);
+                const [facturas, setFacturas] = useState([]);
                 const [pedido, setPedido] = useState([]);
 
                 const FAMILIES_API_URL = 'api/familias.php';
@@ -178,8 +198,51 @@
                 useEffect(() => {
                     const urlParams = new URLSearchParams(window.location.search);
                     const mesaId = urlParams.get('id_mesa');
+                    const crearCuenta = urlParams.get('crear_cuenta') === 'true';
+
                     if (mesaId) {
                         setIdMesa(mesaId);
+
+                        if (crearCuenta) {
+                            fetch('api/crear_cuenta_aparte.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id_mesa: mesaId })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    const newFactura = { id: data.id_factura };
+                                    setFacturas(prev => [...prev, newFactura]);
+                                    setActiveFacturaId(data.id_factura);
+                                    const newUrl = window.location.pathname + `?id_mesa=${mesaId}`;
+                                    window.history.replaceState({}, '', newUrl);
+                                } else {
+                                    alert('Error: ' + data.error);
+                                }
+                            })
+                            .catch(err => {
+                                console.error('Error al crear nueva cuenta:', err);
+                                alert('Error de conexión al crear nueva cuenta.');
+                            });
+                        } else {
+                            fetch(`api/facturas.php?id_mesa=${mesaId}`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        setFacturas(data.facturas);
+                                        // Activar la última factura por defecto
+                                        setActiveFacturaId(data.facturas[data.facturas.length - 1].id);
+                                    } else {
+                                        alert('Error: ' + data.error);
+                                        window.location.href = 'mesas.html';
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error('Error al obtener factura:', err);
+                                    alert('Error de conexión al buscar la factura.');
+                                });
+                        }
                     }
                 }, []);
 
@@ -233,9 +296,29 @@
                     }
                 }, [activeFamilyId]);
 
+                useEffect(() => {
+                    if (activeFacturaId) {
+                        fetch(`api/detalles_factura.php?id_factura=${activeFacturaId}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.success) {
+                                    const itemsConIdArticulo = data.detalles.map(item => ({...item, id_articulos: item.id_articulo}));
+                                    setPedido(itemsConIdArticulo);
+                                } else {
+                                    setPedido([]);
+                                }
+                            })
+                            .catch(err => {
+                                console.error('Error fetching details:', err);
+                                setPedido([]);
+                            });
+                    }
+                }, [activeFacturaId]);
+
+
                 const handleArticleClick = (article) => {
-                    if (!idMesa) {
-                        alert("No se ha seleccionado una mesa. Por favor, vuelva a la pantalla de mesas.");
+                    if (!idMesa || !activeFacturaId) {
+                        alert("No se ha seleccionado una mesa o no hay una cuenta activa. Por favor, vuelva a la pantalla de mesas y seleccione una opción.");
                         return;
                     }
 
@@ -269,7 +352,7 @@
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                id_mesa: idMesa,
+                                id_factura: activeFacturaId,
                                 articulos: pedido,
                             }),
                         });
@@ -336,7 +419,14 @@
                                         </div>
                                     </main>
                                 </div>
-                                <OrderPanel pedido={pedido} onSendOrder={handleSendOrder} isOpen={isOrderPanelOpen} />
+                                <OrderPanel 
+                                    pedido={pedido} 
+                                    onSendOrder={handleSendOrder} 
+                                    isOpen={isOrderPanelOpen} 
+                                    facturas={facturas}
+                                    activeFacturaId={activeFacturaId}
+                                    onSelectFactura={setActiveFacturaId}
+                                />
                             </div>
                         </div>
                     </div>

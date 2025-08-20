@@ -8,17 +8,17 @@ $factura = new Facturas($db);
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($data['id_mesa']) || !isset($data['articulos']) || empty($data['articulos'])) {
-    echo json_encode(['success' => false, 'error' => 'Datos incompletos. Se requiere id_mesa y una lista de artículos.']);
+if (!isset($data['id_factura']) || !isset($data['articulos']) || empty($data['articulos'])) {
+    echo json_encode(['success' => false, 'error' => 'Datos incompletos. Se requiere id_factura y una lista de artículos.']);
     http_response_code(400);
     exit;
 }
 
 try {
-    $id_mesa = $data['id_mesa'];
+    $id_factura = $data['id_factura'];
     $articulos = $data['articulos'];
 
-    $resultado = $factura->guardarPedidoCompleto($id_mesa, $articulos);
+    $resultado = $factura->agregarArticulosAFactura($id_factura, $articulos);
 
     if ($resultado) {
         echo json_encode(['success' => true, 'message' => 'Pedido guardado correctamente.']);
