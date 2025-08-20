@@ -1,5 +1,5 @@
 <?php
-require '..\config\conexion.php';
+require '../config/conexion.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // Permitir peticiones de cualquier origen

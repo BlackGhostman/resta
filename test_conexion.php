@@ -1,43 +1,31 @@
 <?php
-/**
- * Archivo de prueba para verificar la conexión a la base de datos
- */
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+echo "<h1>Prueba de Conexión a la Base de Datos</h1>";
+
+// Incluir el archivo de conexión
 require_once 'config/conexion.php';
 
-echo "<h1>Prueba de Conexión - Sistema Restaurante</h1>";
+echo "<p>Archivo de conexión incluido. Intentando obtener la conexión...</p>";
 
 try {
-    // Probar conexión básica
-    $db = obtenerConexion();
-    echo "<p style='color: green;'>✓ Conexión a la base de datos establecida correctamente</p>";
+    $conexion = obtenerConexion()->getConexion();
+    echo "<p style='color:green; font-weight:bold;'>¡Conexión exitosa!</p>";
     
-    // Probar consulta simple
-    $familias = $db->consultar("SELECT COUNT(*) as total FROM familias");
-    echo "<p>Total de familias en la base de datos: " . $familias[0]['total'] . "</p>";
-    
-    // Probar consulta de artículos
-    $articulos = $db->consultar("SELECT COUNT(*) as total FROM articulos");
-    echo "<p>Total de artículos en la base de datos: " . $articulos[0]['total'] . "</p>";
-    
-    // Probar consulta de mesas
-    $mesas = $db->consultar("SELECT COUNT(*) as total FROM salones_mesas");
-    echo "<p>Total de mesas en la base de datos: " . $mesas[0]['total'] . "</p>";
-    
-    echo "<hr>";
-    echo "<h2>Prueba de APIs</h2>";
-    echo "<p><a href='api/articulos.php?accion=familias' target='_blank'>Probar API de Familias</a></p>";
-    echo "<p><a href='api/articulos.php' target='_blank'>Probar API de Artículos</a></p>";
-    echo "<p><a href='api/mesas.php' target='_blank'>Probar API de Mesas</a></p>";
-    
+    // Opcional: Intentar una consulta simple
+    echo "<p>Intentando una consulta simple...</p>";
+    $stmt = $conexion->query('SELECT 1');
+    if ($stmt) {
+        echo "<p style='color:green; font-weight:bold;'>¡Consulta de prueba exitosa!</p>";
+    } else {
+        echo "<p style='color:orange; font-weight:bold;'>La consulta de prueba falló, pero la conexión se estableció.</p>";
+    }
+
+} catch (PDOException $e) {
+    echo "<p style='color:red; font-weight:bold;'>Error de PDO: " . $e->getMessage() . "</p>";
 } catch (Exception $e) {
-    echo "<p style='color: red;'>✗ Error de conexión: " . $e->getMessage() . "</p>";
-    echo "<h3>Pasos para solucionar:</h3>";
-    echo "<ol>";
-    echo "<li>Verifica que SQL Server esté ejecutándose</li>";
-    echo "<li>Confirma las credenciales en config/conexion.php</li>";
-    echo "<li>Asegúrate de que la base de datos 'restaurante_pos' exista</li>";
-    echo "<li>Verifica que el driver PDO_SQLSRV esté instalado en PHP</li>";
-    echo "</ol>";
+    echo "<p style='color:red; font-weight:bold;'>Error general: " . $e->getMessage() . "</p>";
 }
 ?>
