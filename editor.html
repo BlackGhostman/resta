@@ -235,13 +235,15 @@
                     <div className={`fixed top-0 left-0 z-40 h-screen bg-gray-900 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'} lg:w-64`}>
                         <div className="flex flex-col h-full p-4">
                             <div>
-                                <div className="flex items-center justify-between mb-6">
-                                    <a href="#" className="flex items-center ps-2.5">
-                                        <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
-                                        <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>ZONAS</span>
-                                    </a>
-                                    <button onClick={() => setIsSidebarOpen(false)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden ${isSidebarOpen ? 'inline' : 'hidden'}`}><Icon name="X" className="w-6 h-6" /></button>
-                                </div>
+                                <div className={`flex items-center mb-6 h-[2.125rem] ${isSidebarOpen ? 'justify-between' : 'justify-center'} lg:justify-start`}>
+                                        <a href="#" className={`flex items-center ps-2.5 ${!isSidebarOpen && 'hidden'} lg:flex`}>
+                                            <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
+                                            <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>ZONAS</span>
+                                        </a>
+                                        <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden`}>
+                                            <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6" />
+                                        </button>
+                                    </div>
                                 <ul className="space-y-3 font-medium">
                                     {zones.map(zone => (
                                         <li key={zone.id}>
@@ -252,7 +254,7 @@
                                                 <Icon name={zone.name === 'Salón' ? 'Armchair' : zone.name.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeZoneId === zone.id ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
                                                 <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{zone.name}</span>
                                                 <span className={`text-sm font-semibold whitespace-nowrap ${!isSidebarOpen ? 'inline' : 'hidden'} lg:hidden`}>{getInitials(zone.name)}</span>
-                                                                                            </button>
+                                            </button>
                                         </li>
                                     ))}
                                 </ul>
@@ -279,10 +281,7 @@
             function Header({ activeZoneName, isSidebarOpen, setIsSidebarOpen }) {
                 return (
                     <header className="flex items-center justify-between p-4 bg-gray-800/80 backdrop-blur-sm border-b border-gray-700/50 lg:hidden">
-                        <button onClick={() => setIsSidebarOpen(prev => !prev)} className="p-2 rounded-md hover:bg-gray-700 lg:hidden">
-                            <Icon name="Menu" className="w-6 h-6" />
-                        </button>
-                        <h1 className="text-xl font-bold text-white">{activeZoneName}</h1>
+                                                <h1 className="text-xl font-bold text-white">{activeZoneName}</h1>
                         <a href="#" className="p-2 rounded-full hover:bg-gray-700">
                             <Icon name="CircleUser" className="w-6 h-6" />
                         </a>
