@@ -1,41 +1,49 @@
 <?php
 require_once __DIR__ . '/../config/conexion.php';
 
-class Plano {
-    private $db;
+class Plano extends ConexionDB {
 
     public function __construct() {
-        $this->db = obtenerConexion();
+        parent::__construct();
     }
 
     public function obtenerPlanoCompleto() {
-        $sqlUbicaciones = "SELECT id_ubicaciones_mesas, id_ubicaciones_mesas as id_ubicacion_mesa, nombre_ubicacion FROM ubicaciones_mesas WHERE estado = 'Activo' ORDER BY id_ubicaciones_mesas ASC";
-        $ubicaciones = $this->db->consultar($sqlUbicaciones);
+        $zonas_sql = "SELECT id_ubicaciones_mesas as id, nombre_ubicacion as nombre FROM ubicaciones_mesas ORDER BY id_ubicaciones_mesas ASC";
+        $zonas = $this->consultar($zonas_sql);
 
         $plano = [];
 
-        foreach ($ubicaciones as $ubicacion) {
-            $sqlMesas = "SELECT 
-                            m.id_salones_mesas as id, 
-                            m.identificador as number, 
-                            m.descripcion, 
-                            m.estado,
-                            IFNULL(m.x, 0) as x, 
-                            IFNULL(m.y, 0) as y,
-                            IFNULL(m.row, 1) as row, 
-                            IFNULL(m.col, 1) as col,
-                            IFNULL(m.shape, 'rectangle') as shape,
-                            IFNULL(fm.cantidad_personas, 0) as cantidad_personas
-                         FROM salones_mesas m
-                         LEFT JOIN facturas_maestro fm ON m.id_salones_mesas = fm.id_mesa AND fm.estado = 'credito'
-                         WHERE m.id_ubicacion_mesa = ?";
-            
-            $mesas = $this->db->consultar($sqlMesas, [$ubicacion['id_ubicaciones_mesas']]);
+        foreach ($zonas as $zona) {
+            $zona_id = $zona['id'];
+
+            $mesas_sql = "SELECT id_salones_mesas as id, identificador as number, shape, x, y, 50 as ancho, 50 as alto FROM salones_mesas WHERE id_ubicacion_mesa = ?";
+            $mesas = $this->consultar($mesas_sql, [$zona_id]);
+
+            $paredes_sql = "SELECT id, x1, y1, x2, y2 FROM paredes WHERE zona_id = ?";
+            $paredes_db = $this->consultar($paredes_sql, [$zona_id]);
+            $paredes = array_map(function($p) {
+                return [
+                    'id' => 'wall-' . $p['id'],
+                    'startRow' => ($p['y1'] / 40) + 1,
+                    'startCol' => ($p['x1'] / 40) + 1,
+                    'endRow' => ($p['y2'] / 40) + 1,
+                    'endCol' => ($p['x2'] / 40) + 1,
+                ];
+            }, $paredes_db);
+
+            $decoraciones_sql = "SELECT id, tipo as type, x, y, ancho, alto FROM decoraciones WHERE zona_id = ?";
+            $decoraciones_db = $this->consultar($decoraciones_sql, [$zona_id]);
+            $decoraciones = array_map(function($d) {
+                $d['id'] = 'decor-' . $d['id'];
+                return $d;
+            }, $decoraciones_db);
 
             $plano[] = [
-                'id' => $ubicacion['id_ubicaciones_mesas'],
-                'name' => $ubicacion['nombre_ubicacion'],
-                'tables' => $mesas
+                'id' => $zona['id'],
+                'name' => $zona['nombre'],
+                'tables' => $mesas,
+                'walls' => $paredes,
+                'decorations' => $decoraciones
             ];
         }
 
@@ -43,61 +51,69 @@ class Plano {
     }
 
     public function guardarPlano($planoData) {
-        $this->db->iniciarTransaccion();
+        $this->iniciarTransaccion();
         try {
-            $ubicacionesEnDB = $this->db->consultar("SELECT id_ubicaciones_mesas FROM ubicaciones_mesas WHERE estado = 'Activo'");
-            $idsEnDB = array_column($ubicacionesEnDB, 'id_ubicaciones_mesas');
-
-            $idsFrontend = array_column($planoData, 'id');
-
-            $zonasAEliminar = array_diff($idsEnDB, $idsFrontend);
-            foreach ($zonasAEliminar as $idZona) {
-                $this->db->ejecutar("UPDATE ubicaciones_mesas SET estado = 'Inactivo' WHERE id_ubicaciones_mesas = ?", [$idZona]);
-            }
-
             foreach ($planoData as $zona) {
-                $idUbicacion = $zona['id'];
-                $nombreZona = $zona['name'];
-                $mesasFrontend = $zona['tables'];
-
-                if (in_array($idUbicacion, $idsEnDB)) {
-                    $this->db->ejecutar("UPDATE ubicaciones_mesas SET nombre_ubicacion = ? WHERE id_ubicaciones_mesas = ?", [$nombreZona, $idUbicacion]);
-                } else {
-                    $this->db->ejecutar("INSERT INTO ubicaciones_mesas (nombre_ubicacion, estado) VALUES (?, 'Activo')", [$nombreZona]);
-                    $idUbicacion = $this->db->ultimoId();
+                if (empty($zona['id']) || empty($zona['tables'])) {
+                    continue;
                 }
+                $zona_id = $zona['id'];
 
-                $mesasEnDB = $this->db->consultar("SELECT id_salones_mesas FROM salones_mesas WHERE id_ubicacion_mesa = ?", [$idUbicacion]);
-                $idsMesasEnDB = array_column($mesasEnDB, 'id_salones_mesas');
-                $idsMesasFrontend = [];
+                // Guardar decoraciones
+                if (isset($zona['decorations'])) {
+                    // Primero, eliminar las decoraciones existentes para esta zona
+                    $this->ejecutar("DELETE FROM decoraciones WHERE zona_id = ?", [$zona_id]);
 
-                foreach ($mesasFrontend as $mesa) {
-                    $x = $mesa['x'] ?? 0;
-                    $y = $mesa['y'] ?? 0;
-                    $shape = $mesa['shape'] ?? 'rectangle';
+                    foreach ($zona['decorations'] as $deco) {
+                        // El frontend no envía ancho/alto, así que los calculamos aquí si es necesario.
+                        // Por ahora, los dejaremos en 0, ya que el frontend los calcula al renderizar.
+                        $ancho = $deco['ancho'] ?? 40;
+                        $alto = $deco['alto'] ?? 40;
 
-                    if (strpos($mesa['id'], 'temp-') === 0) {
-                        $sqlInsertMesa = "INSERT INTO salones_mesas (identificador, descripcion, estado, id_ubicacion_mesa, x, y, shape) VALUES (?, ?, 'disponible', ?, ?, ?, ?)";
-                        $this->db->ejecutar($sqlInsertMesa, [$mesa['number'], $mesa['descripcion'] ?? '', $idUbicacion, $x, $y, $shape]);
-                    } else {
-                        $idsMesasFrontend[] = $mesa['id'];
-                        $sqlUpdateMesa = "UPDATE salones_mesas SET x = ?, y = ?, shape = ?, identificador = ?, descripcion = ? WHERE id_salones_mesas = ?";
-                        $this->db->ejecutar($sqlUpdateMesa, [$x, $y, $shape, $mesa['number'], $mesa['descripcion'] ?? '', $mesa['id']]);
+                        $this->ejecutar(
+                            "INSERT INTO decoraciones (zona_id, tipo, x, y, ancho, alto) VALUES (?, ?, ?, ?, ?, ?)",
+                            [$zona_id, $deco['type'], $deco['x'], $deco['y'], $ancho, $alto]
+                        );
                     }
                 }
 
-                $idsMesasAEliminar = array_diff($idsMesasEnDB, $idsMesasFrontend);
-                if (!empty($idsMesasAEliminar)) {
-                    foreach ($idsMesasAEliminar as $idMesa) {
-                        $this->db->ejecutar("DELETE FROM salones_mesas WHERE id_salones_mesas = ?", [$idMesa]);
+                // Guardar paredes
+                if (isset($zona['walls'])) {
+                    // Primero, eliminar las paredes existentes para esta zona
+                    $this->ejecutar("DELETE FROM paredes WHERE zona_id = ?", [$zona_id]);
+
+                    foreach ($zona['walls'] as $pared) {
+                        // Convertir de coordenadas de grid a pixeles
+                        $x1 = ($pared['startCol'] - 1) * 40;
+                        $y1 = ($pared['startRow'] - 1) * 40;
+                        $x2 = ($pared['endCol'] - 1) * 40;
+                        $y2 = ($pared['endRow'] - 1) * 40;
+
+                        $this->ejecutar(
+                            "INSERT INTO paredes (zona_id, x1, y1, x2, y2) VALUES (?, ?, ?, ?, ?)",
+                            [$zona_id, $x1, $y1, $x2, $y2]
+                        );
+                    }
+                }
+
+                foreach ($zona['tables'] as $mesa) {
+                    if (strpos($mesa['id'], 'temp-') !== false) {
+                        $this->ejecutar(
+                            "INSERT INTO salones_mesas (identificador, shape, x, y, id_ubicacion_mesa) VALUES (?, ?, ?, ?, ?)",
+                            [$mesa['number'], $mesa['shape'], $mesa['x'], $mesa['y'], $zona_id]
+                        );
+                    } else {
+                        $this->ejecutar(
+                            "UPDATE salones_mesas SET x = ?, y = ?, identificador = ?, shape = ? WHERE id_salones_mesas = ?",
+                            [$mesa['x'], $mesa['y'], $mesa['number'], $mesa['shape'], $mesa['id']]
+                        );
                     }
                 }
             }
-
-            $this->db->confirmarTransaccion();
+            $this->confirmarTransaccion();
             return true;
         } catch (Exception $e) {
-            $this->db->cancelarTransaccion();
+            $this->cancelarTransaccion();
             error_log('Error al guardar plano: ' . $e->getMessage());
             return false;
         }

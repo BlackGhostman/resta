@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json');
+require_once '../config/conexion.php';
 require_once '../clases/Plano.php';
 
 $plano = new Plano();
