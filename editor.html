@@ -201,7 +201,7 @@
                 );
             }
 
-                                    const DECORATION_TYPES = {
+            const DECORATION_TYPES = {
                 'bar': { name: 'Barra', icon: 'https://cdn-icons-png.flaticon.com/512/947/947411.png', width: 3, height: 2 },
                 'plant': { name: 'Planta', icon: 'https://cdn-icons-png.flaticon.com/512/3159/3159991.png', width: 1, height: 1 },
                 'wall': { name: 'Pared', icon: 'SquareX', isDrawable: true },
@@ -319,6 +319,23 @@
                 );
             }
 
+            function DeleteWallModal({ show, onClose, onConfirm }) {
+                if (!show) return null;
+                return (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 text-center">
+                            <Icon name="TriangleAlert" className="mx-auto mb-4 h-14 w-14 text-red-500" />
+                            <h3 className="mb-5 text-lg font-normal text-gray-800">¿Seguro que quieres eliminar esta pared?</h3>
+                            <p className="text-sm text-gray-500 mb-6">Esta acción no se puede deshacer.</p>
+                            <div className="flex justify-center gap-4">
+                                <button onClick={onClose} className="px-5 py-2.5 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                <button onClick={onConfirm} className="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white">Sí, eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
             const getInitials = (name) => {
                 if (!name) return '';
                 const words = name.trim().split(' ');
@@ -331,8 +348,8 @@
             const Sidebar = ({
                 zones, activeZoneId, setActiveZoneId,
                 isAddingMode, setIsAddingMode,
-                isAddingDecorationMode, setIsAddingDecorationMode, // Props añadidas
-                isAddingWallMode, setIsAddingWallMode, // Props para paredes
+                isAddingDecorationMode, setIsAddingDecorationMode,
+                isAddingWallMode, setIsAddingWallMode,
                 selectedTable, setSelectedTable,
                 setShowAddZoneModal, setShowDeleteZoneModal, setZoneToEdit, setShowZoneActionsModal,
                 isSidebarOpen, setIsSidebarOpen,
@@ -373,14 +390,15 @@
                                     ))}
                                 </ul>
                             </div>
-                            <div className="mt-auto pt-8">
-                                <h3 className={`text-lg font-semibold text-gray-800 mb-4 px-2 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Herramientas</h3>
+                            <div className="mt-auto pt-4">
                                 <div className="space-y-3">
-                                    <button onClick={() => { setIsAddingMode(true); setIsAddingDecorationMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Table" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Mesa</span></button>
-                                                                                                            <button onClick={() => { setIsAddingDecorationMode(true); setIsAddingMode(false); setIsAddingWallMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingDecorationMode ? 'bg-purple-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="PlusCircle" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Decoración</span></button>
-                                    <div className="border-t border-gray-700 my-4"></div>
+                                    <h3 className={`text-lg font-semibold text-gray-800 mb-2 px-2 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Herramientas</h3>
+                                    <button onClick={() => { setIsAddingMode(prev => !prev); setIsAddingDecorationMode(false); setIsAddingWallMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Table" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Mesa</span></button>
+                                    <button onClick={() => { setIsAddingDecorationMode(prev => !prev); setIsAddingMode(false); setIsAddingWallMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingDecorationMode ? 'bg-purple-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="PlusCircle" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Decoración</span></button>
+                                    <button onClick={() => { setIsAddingWallMode(prev => !prev); setIsAddingMode(false); setIsAddingDecorationMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingWallMode ? 'bg-yellow-500 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Pencil" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Pared</span></button>
+                                </div>
+                                <div className="space-y-3 pt-4 mt-4 border-t border-gray-200">
                                     <button onClick={() => setShowAddZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-blue-600 hover:bg-blue-700 text-white justify-center`}><Icon name="LayoutGrid" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Nueva Zona</span></button>
-                                    <div className="border-t border-gray-700 my-4"></div>
                                     <button onClick={handleSaveChanges} disabled={!isDirty || isSaving} className={`w-full flex items-center p-3 rounded-lg transition-colors text-white disabled:opacity-50 ${isDirty ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400'} justify-center`}>
                                         {isSaving ? 
                                             <Icon name="Loader" className="animate-spin flex-shrink-0" /> : 
@@ -440,6 +458,8 @@
                 const [isAddingWallMode, setIsAddingWallMode] = useState(false);
                 const [isDrawingWall, setIsDrawingWall] = useState(false);
                 const [wallDrawing, setWallDrawing] = useState(null);
+                const [selectedWallId, setSelectedWallId] = useState(null);
+                const [showDeleteWallModal, setShowDeleteWallModal] = useState(false);
 
                 const NUM_COLS = 32;
                 const NUM_ROWS = 20;
@@ -528,6 +548,17 @@
                     return { x: 0, y: 0, width: 0, height: 0, id: null };
                 };
 
+                const getWallRect = (wall) => {
+                    const isHorizontal = wall.startRow === wall.endRow;
+                    return {
+                        x: (Math.min(wall.startCol, wall.endCol) - 1) * 40,
+                        y: (Math.min(wall.startRow, wall.endRow) - 1) * 40,
+                        width: isHorizontal ? (Math.abs(wall.endCol - wall.startCol) + 1) * 40 : 5,
+                        height: isHorizontal ? 5 : (Math.abs(wall.endRow - wall.startRow) + 1) * 40,
+                        id: wall.id
+                    };
+                };
+
                 const doRectsOverlap = (rect1, rect2) => {
                     return (
                         rect1.x < rect2.x + rect2.width &&
@@ -537,29 +568,29 @@
                     );
                 };
 
-                const isPositionOccupied = (newItemRect, draggedItemId) => {
+                const isPositionOccupied = (newItemRect, excludingId) => {
                     const activeZone = zones.find(z => z.id === activeZoneId);
                     if (!activeZone) return true;
 
                     for (const table of activeZone.tables) {
-                        if (table.id === draggedItemId) continue;
+                        if (table.id === excludingId) continue;
                         if (doRectsOverlap(newItemRect, getItemRect(table, 'table'))) return true;
                     }
 
-                    for (const deco of activeZone.decorations) {
-                        if (deco.id === draggedItemId) continue;
-                        if (doRectsOverlap(newItemRect, getItemRect(deco, 'decoration'))) return true;
+                    if (activeZone.decorations) {
+                        for (const deco of activeZone.decorations) {
+                            if (deco.id === excludingId) continue;
+                            const decoRect = getItemRect(deco, 'decoration');
+                            if (doRectsOverlap(newItemRect, decoRect)) return true;
+                        }
                     }
 
-                    for (const wall of (activeZone.walls || [])) {
-                        const isHorizontal = wall.startRow === wall.endRow;
-                        const wallRect = {
-                            x: isHorizontal ? (wall.startCol - 1) * 40 : (wall.startCol - 1) * 40 + 18,
-                            y: isHorizontal ? (wall.startRow - 1) * 40 + 18 : (wall.startRow - 1) * 40,
-                            width: isHorizontal ? (wall.endCol - wall.startCol + 1) * 40 : 5,
-                            height: isHorizontal ? 5 : (wall.endRow - wall.startRow + 1) * 40,
-                        };
-                        if (doRectsOverlap(newItemRect, wallRect)) return true;
+                    if (activeZone.walls) {
+                        for (const wall of activeZone.walls) {
+                            if (wall.id === excludingId) continue;
+                            const wallRect = getWallRect(wall);
+                            if (doRectsOverlap(newItemRect, wallRect)) return true;
+                        }
                     }
 
                     return false;
@@ -596,31 +627,32 @@
                         return;
                     }
 
-                    const isHorizontal = Math.abs(wallDrawing.endCol - wallDrawing.startCol) >= Math.abs(wallDrawing.endRow - wallDrawing.startRow);
-                    const finalRow = isHorizontal ? wallDrawing.startRow : wallDrawing.endRow;
-                    const finalCol = isHorizontal ? wallDrawing.endCol : wallDrawing.startCol;
-
-                    const newWallDecoration = {
-                        id: `deco-${Date.now()}`,
+                    const newWall = {
+                        id: `wall-${Date.now()}`,
                         type: 'wall',
-                        x: (Math.min(wallDrawing.startCol, finalCol) - 1) * 40,
-                        y: (Math.min(wallDrawing.startRow, finalRow) - 1) * 40,
-                        startRow: wallDrawing.startRow,
-                        startCol: wallDrawing.startCol,
-                        endRow: finalRow,
-                        endCol: finalCol
+                        ...wallDrawing
                     };
 
-                    const updatedZones = zones.map(zone => {
+                    const wallRect = getWallRect(newWall);
+                    if (isPositionOccupied(wallRect, null)) {
+                        alert("No se puede crear una pared aquí, el espacio está ocupado.");
+                        setWallDrawing(null);
+                        return;
+                    }
+
+                    setZones(prevZones => prevZones.map(zone => {
                         if (zone.id === activeZoneId) {
-                            return { ...zone, decorations: [...zone.decorations, newWallDecoration] };
+                            return {
+                                ...zone,
+                                walls: [...(zone.walls || []), newWall]
+                            };
                         }
                         return zone;
-                    });
+                    }));
 
-                    setZones(updatedZones);
                     setWallDrawing(null);
                     setIsDirty(true);
+                    setIsAddingWallMode(false);
                 };
 
                 const handleMouseDownOnGrid = (e) => {
@@ -695,7 +727,7 @@
                     setIsDirty(true);
                 };
 
-                                const handleCellClick = (row, col) => {
+                const handleCellClick = (row, col) => {
                     const x = (col - 1) * 40;
                     const y = (row - 1) * 40;
 
@@ -708,7 +740,7 @@
                     }
                 };
 
-                                                const handleAddDecoration = (type) => {
+                const handleAddDecoration = (type) => {
                     const typeInfo = DECORATION_TYPES[type];
                     if (typeInfo && typeInfo.isDrawable) {
                         setIsAddingWallMode(true);
@@ -808,6 +840,25 @@
                     setShowZoneActionsModal(false);
                 };
 
+                const handleDeleteWall = () => {
+                    if (!selectedWallId) return;
+
+                    const newZones = zones.map(zone => {
+                        if (zone.id === activeZoneId) {
+                            return {
+                                ...zone,
+                                walls: zone.walls.filter(w => w.id !== selectedWallId)
+                            };
+                        }
+                        return zone;
+                    });
+
+                    setZones(newZones);
+                    setSelectedWallId(null);
+                    setIsDirty(true);
+                    setShowDeleteWallModal(false);
+                };
+
                 const handleSaveChanges = () => {
                     setIsSaving(true);
                     fetch(API_URL, {
@@ -819,7 +870,7 @@
                     .then(result => {
                         if(result.success) {
                             alert('¡Plano guardado con éxito!');
-                            fetchData(); // Recargar datos para obtener IDs actualizados
+                            fetchData();
                         } else {
                             alert('Error al guardar: ' + result.message);
                         }
@@ -891,6 +942,15 @@
                     setIsDirty(true);
                 };
 
+                const handleSelectWall = (wallId) => {
+                    setSelectedWallId(wallId);
+                };
+
+                const handleWallDoubleClick = (wallId) => {
+                    setSelectedWallId(wallId);
+                    setShowDeleteWallModal(true);
+                };
+
                 return (
                     <div className="relative min-h-screen bg-yellow-50">
                         <AddZoneModal show={showAddZoneModal} onClose={() => setShowAddZoneModal(false)} value={newZoneName} onChange={(e) => setNewZoneName(e.target.value)} onSave={handleAddZone} />
@@ -908,6 +968,7 @@
                         <AddDecorationModal show={showAddDecorationModal} onClose={() => setShowAddDecorationModal(false)} onSave={handleAddDecoration} />
                         <AddTableModal show={showAddTableModal} onClose={() => setShowAddTableModal(false)} onSave={handleAddTable} />
                         <DeleteZoneModal show={showDeleteZoneModal} onClose={() => setShowDeleteZoneModal(false)} onConfirm={handleDeleteZone} zoneName={zones.find(z => z.id === activeZoneId)?.name || ''} />
+                        <DeleteWallModal show={showDeleteWallModal} onClose={() => setShowDeleteWallModal(false)} onConfirm={handleDeleteWall} />
                         <EditTableModal show={showEditTableModal} onClose={() => setShowEditTableModal(false)} table={tableToEdit} onSave={handleEditTable} onDelete={handleDeleteFromModal} />
                         <div className="relative flex h-screen">
                             <Sidebar {...{ getInitials, zones, activeZoneId, setActiveZoneId, isAddingMode, setIsAddingMode, isAddingDecorationMode, setIsAddingDecorationMode, isAddingWallMode, setIsAddingWallMode, selectedTable, setSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setZoneToEdit, setShowZoneActionsModal, isSidebarOpen, setIsSidebarOpen, handleSaveChanges, isDirty, isSaving }} />
@@ -986,37 +1047,42 @@
                                                         return <div className="absolute bg-orange-400 opacity-70 rounded-full pointer-events-none" style={style}></div>;
                                                     })()}
 
-                                                    
-                                                                                                        {/* Render decorations with absolute positioning */}
-                                                    {activeZone.decorations.map(deco => {
-                                                        if (deco.type === 'wall') {
-                                                            const isHorizontal = deco.startRow === deco.endRow;
-                                                            const wallWidth = (Math.abs(deco.endCol - deco.startCol) + 1) * 40;
-                                                            const wallHeight = (Math.abs(deco.endRow - deco.startRow) + 1) * 40;
-
-                                                            const style = {
-                                                                top: isHorizontal ? `${(deco.startRow - 1) * 40 + 18}px` : `${(Math.min(deco.startRow, deco.endRow) - 1) * 40}px`,
-                                                                left: isHorizontal ? `${(Math.min(deco.startCol, deco.endCol) - 1) * 40}px` : `${(deco.startCol - 1) * 40 + 18}px`,
-                                                                width: isHorizontal ? `${wallWidth}px` : '5px',
-                                                                height: isHorizontal ? '5px' : `${wallHeight}px`,
-                                                            };
-                                                            return <div key={deco.id} className="absolute bg-gray-700 rounded-full" style={style}></div>;
-                                                        }
-
+                                                    {/* Render decorations with absolute positioning */}
+                                                    {activeZone.decorations && activeZone.decorations.filter(deco => deco.type !== 'wall').map(deco => {
                                                         const typeInfo = DECORATION_TYPES[deco.type];
                                                         if (!typeInfo) return null;
                                                         return (
                                                             <div key={deco.id} draggable onDragStart={(e) => handleDragStart(e, deco.id, 'decoration')} onDoubleClick={(e) => handleDecorationDoubleClick(e, deco)}
                                                                 className={`absolute flex items-center justify-center bg-transparent cursor-move`}
-                                                                style={{ 
-                                                                    top: `${deco.y}px`, 
-                                                                    left: `${deco.x}px`, 
-                                                                    width: `${typeInfo.width * 40}px`, 
-                                                                    height: `${typeInfo.height * 40}px` 
-                                                                }}>
-                                                                <img src={typeInfo.icon} alt={typeInfo.name} className="w-full h-full object-contain p-2 opacity-70 pointer-events-none"/>
+                                                                style={{
+                                                                    top: `${deco.y}px`,
+                                                                    left: `${deco.x}px`,
+                                                                    width: `${typeInfo.width * 40}px`,
+                                                                    height: `${typeInfo.height * 40}px`
+                                                                }}
+                                                            >
+                                                                <img src={typeInfo.icon} alt={typeInfo.name} className="w-full h-full object-contain" />
                                                             </div>
                                                         );
+                                                    })}
+
+                                                    {/* Render walls */}
+                                                    {activeZone.walls && activeZone.walls.map(wall => {
+                                                        const isHorizontal = wall.startRow === wall.endRow;
+                                                        const wallRect = getWallRect(wall);
+                                                        const wallStyle = {
+                                                            position: 'absolute',
+                                                            left: `${wallRect.x}px`,
+                                                            top: `${wallRect.y + (isHorizontal ? 18 : 0)}px`,
+                                                            width: `${wallRect.width}px`,
+                                                            height: `${wallRect.height}px`,
+                                                            backgroundColor: selectedWallId === wall.id ? '#ef4444' : '#4a5568',
+                                                            borderRadius: '9999px',
+                                                            cursor: 'pointer',
+                                                            zIndex: selectedWallId === wall.id ? 20 : 10
+                                                        };
+
+                                                        return <div key={wall.id} style={wallStyle} onClick={() => handleSelectWall(wall.id)} onDoubleClick={() => handleWallDoubleClick(wall.id)} />;
                                                     })}
                                                 </div>
                                             );
