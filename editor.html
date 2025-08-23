@@ -147,6 +147,8 @@
                                 <label htmlFor="table-shape" className="block mb-2 text-sm font-medium text-gray-900">Forma de la Mesa</label>
                                 <select id="table-shape" value={tableShape} onChange={(e) => setTableShape(e.target.value)} className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5">
                                     <option value="square">Cuadrada (2x2)</option>
+                                    <option value="rectangle">Rectangular (4x2)</option>
+                                    <option value="rectangle_vertical">Rectangular (2x4)</option>
                                 </select>
                             </div>
                             <div className="flex justify-between items-center">
@@ -288,6 +290,8 @@
                                     className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5"
                                 >
                                     <option value="square">Cuadrada (2x2)</option>
+                                    <option value="rectangle">Rectangular (4x2)</option>
+                                    <option value="rectangle_vertical">Rectangular (2x4)</option>
                                 </select>
                             </div>
                             <div className="flex justify-end gap-3">
@@ -506,8 +510,14 @@
 
                 const getItemRect = (item, itemType) => {
                     if (itemType === 'table') {
-                        const width = 80; // 2 celdas de 40px
-                        const height = 80; // 2 celdas de 40px
+                        let width = 80, height = 80; // Default to square 2x2
+                        if (item.shape === 'rectangle') { // 4x2
+                            width = 160;
+                            height = 80;
+                        } else if (item.shape === 'rectangle_vertical') { // 2x4
+                            width = 80;
+                            height = 160;
+                        }
                         return { x: item.x, y: item.y, width, height, id: item.id };
                     }
                     if (itemType === 'decoration') {
@@ -556,27 +566,24 @@
                 };
 
                 const handleMouseMoveOnGrid = (e) => {
-                    if (!isDrawingWall) return;
+                    if (!isDrawingWall || !wallDrawing) return;
 
                     const rect = e.currentTarget.getBoundingClientRect();
-                    const currentX = e.clientX - rect.left;
-                    const currentY = e.clientY - rect.top;
-                    const endCol = Math.floor(currentX / 40) + 1;
-                    const endRow = Math.floor(currentY / 40) + 1;
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const col = Math.floor(x / 40) + 1;
+                    const row = Math.floor(y / 40) + 1;
 
-                    const deltaX = Math.abs(endCol - wallDrawing.startCol);
-                    const deltaY = Math.abs(endRow - wallDrawing.startRow);
+                    const isHorizontal = Math.abs(col - wallDrawing.startCol) >= Math.abs(row - wallDrawing.startRow);
+                    
+                    const newEndCol = isHorizontal ? col : wallDrawing.startCol;
+                    const newEndRow = isHorizontal ? wallDrawing.startRow : row;
 
-                    if (deltaX > deltaY) {
-                        endRow = wallDrawing.startRow;
-                    } else {
-                        endCol = wallDrawing.startCol;
-                    }
-
-                    endCol = Math.max(1, Math.min(NUM_COLS, endCol));
-                    endRow = Math.max(1, Math.min(NUM_ROWS, endRow));
-
-                    setWallDrawing(prev => ({ ...prev, endRow, endCol }));
+                    setWallDrawing(prev => ({
+                        ...prev,
+                        endCol: newEndCol,
+                        endRow: newEndRow
+                    }));
                 };
 
                 const handleMouseUpOnGrid = () => {
@@ -649,16 +656,20 @@
 
                         if (itemType === 'table') {
                             items = zone.tables;
-                            item = items.find(t => t.id === itemId);
+                            item = items.find(t => t.id == itemId);
                         } else {
                             items = zone.decorations;
-                            item = items.find(d => d.id === itemId);
+                            item = items.find(d => d.id == itemId);
                         }
 
                         if (!item) return zone;
 
                         const tempItem = { ...item, x: newX, y: newY };
-                        itemRect = getItemRect(tempItem, itemType);
+                        if (itemType === 'table') {
+                            itemRect = getItemRect({ ...item, x: newX, y: newY }, 'table');
+                        } else {
+                            itemRect = getItemRect(tempItem, itemType);
+                        }
 
                         const finalX = Math.max(0, Math.min(newX, (NUM_COLS * 40) - itemRect.width));
                         const finalY = Math.max(0, Math.min(newY, (NUM_ROWS * 40) - itemRect.height));
@@ -670,7 +681,7 @@
                         }
 
                         const updatedItems = items.map(it => 
-                            it.id === itemId ? { ...it, x: finalX, y: finalY, row: undefined, col: undefined } : it
+                            it.id == itemId ? { ...it, x: finalX, y: finalY, row: undefined, col: undefined } : it
                         );
 
                         if (itemType === 'table') {
@@ -862,7 +873,7 @@
                 const handleEditTable = (tableId, newName, newShape) => {
                     const zone = zones.find(z => z.id === activeZoneId);
                     const newTables = zone.tables.map(table =>
-                        table.id === tableId ? { ...table, number: newName, shape: newShape } : table
+                        table.id == tableId ? { ...table, number: newName, shape: newShape } : table
                     );
                     setZones(zones.map(z => z.id === activeZoneId ? { ...z, tables: newTables } : z));
                     setIsDirty(true);
@@ -938,14 +949,18 @@
                                                     {/* Render tables with absolute positioning */}
                                                     {activeZone.tables.map(table => {
                                                         const { shape, number, id } = table;
-                                                        const classByShape = shape === 'rectangle' ? 'w-40 h-20 rounded-xl' : shape === 'round' ? 'w-20 h-20 rounded-full' : 'w-20 h-20 rounded-xl';
+                                                        const rect = getItemRect(table, 'table');
                                                         return (
                                                             <div key={id} draggable onDragStart={(e) => handleDragStart(e, id, 'table')} onDoubleClick={(e) => handleTableDoubleClick(e, table)} onClick={(e) => { e.stopPropagation(); setSelectedTable(id); setIsAddingMode(false); setIsAddingDecorationMode(false); }} 
-                                                                className={`absolute p-2 flex items-center justify-center shadow-lg cursor-move transition-all ${selectedTable === id ? 'ring-2 ring-cyan-500' : ''} bg-white border border-gray-300 text-gray-900 ${classByShape}`}
-                                                                style={{ 
-                                                                    top: `${table.y}px`, 
-                                                                    left: `${table.x}px`
-                                                                }}>
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    left: rect.x,
+                                                                    top: rect.y,
+                                                                    width: rect.width,
+                                                                    height: rect.height,
+                                                                    cursor: 'move',
+                                                                }}
+                                                                className={`flex items-center justify-center bg-white border-2 ${selectedTable === id ? 'border-cyan-500' : 'border-gray-300'} text-gray-900 rounded-xl`}>
                                                                 <span className="text-xl font-bold">{number}</span>
                                                             </div>
                                                         );
