@@ -12,14 +12,14 @@
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #111827; }
-        .grid-cell { min-height: 80px; min-width: 80px; }
+        body { font-family: 'Inter', sans-serif; background-color: #fefcf3; } /* Light yellow background */
+        .grid-cell { min-height: 40px; min-width: 40px; }
         .grid-cell.drag-over { background-color: #2563eb30; border-color: #2563eb; }
         .adding-mode { cursor: copy; }
         .modal-backdrop { background-color: rgba(0, 0, 0, 0.7); }
     </style>
 </head>
-<body class="text-gray-200">
+<body class="text-gray-800">
 
     <div id="root"></div>
 
@@ -72,11 +72,11 @@
                 if (!show) return null;
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-white mb-4">Crear Nueva Zona</h3>
-                            <input ref={inputRef} type="text" value={value} onChange={onChange} placeholder="Nombre de la zona (ej: Terraza)" className="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4" />
+                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Crear Nueva Zona</h3>
+                            <input ref={inputRef} type="text" value={value} onChange={onChange} placeholder="Nombre de la zona (ej: Terraza)" className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4" />
                             <div className="flex justify-end gap-3">
-                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white">Cancelar</button>
+                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
                                 <button onClick={onSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                             </div>
                         </div>
@@ -95,11 +95,11 @@
                 if (!show) return null;
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-white mb-4">Renombrar Zona</h3>
-                            <input ref={inputRef} type="text" value={value} onChange={onChange} className="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4" />
+                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Renombrar Zona</h3>
+                            <input ref={inputRef} type="text" value={value} onChange={onChange} className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4" />
                             <div className="flex justify-end gap-3">
-                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white">Cancelar</button>
+                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
                                 <button onClick={onSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                             </div>
                         </div>
@@ -109,11 +109,13 @@
 
             function EditTableModal({ show, onClose, table, onSave, onDelete }) {
                 const [tableName, setTableName] = useState('');
+                const [tableShape, setTableShape] = useState('square');
                 const inputRef = useRef(null);
 
                 useEffect(() => {
                     if (table) {
                         setTableName(table.number);
+                        setTableShape(table.shape || 'square');
                     }
                 }, [table]);
 
@@ -126,27 +128,33 @@
                 if (!show || !table) return null;
 
                 const handleSave = () => {
-                    onSave(table.id, tableName);
+                    onSave(table.id, tableName, tableShape);
                     onClose();
                 };
 
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-white mb-4">Editar Mesa</h3>
+                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Editar Mesa</h3>
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={tableName}
                                 onChange={(e) => setTableName(e.target.value)}
-                                className="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4"
+                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4"
                             />
+                            <div className="my-4">
+                                <label htmlFor="table-shape" className="block mb-2 text-sm font-medium text-gray-900">Forma de la Mesa</label>
+                                <select id="table-shape" value={tableShape} onChange={(e) => setTableShape(e.target.value)} className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5">
+                                    <option value="square">Cuadrada (2x2)</option>
+                                </select>
+                            </div>
                             <div className="flex justify-between items-center">
                                 <button onClick={() => onDelete(table.id)} className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white flex items-center gap-2">
                                     <Icon name="Trash2" className="w-4 h-4"/> Eliminar
                                 </button>
                                 <div className="flex gap-3">
-                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white">Cancelar</button>
+                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
                                     <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                                 </div>
                             </div>
@@ -168,23 +176,123 @@
 
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-white mb-4">Gestionar Zona</h3>
+                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Gestionar Zona</h3>
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={value}
                                 onChange={onChange}
-                                className="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4"
+                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4"
                             />
                             <div className="flex justify-between items-center">
                                 <button onClick={onDelete} className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white flex items-center gap-2">
                                     <Icon name="Trash2" className="w-4 h-4"/> Eliminar
                                 </button>
                                 <div className="flex gap-3">
-                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white">Cancelar</button>
+                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
                                     <button onClick={onSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+                                    const DECORATION_TYPES = {
+                'bar': { name: 'Barra', icon: 'https://cdn-icons-png.flaticon.com/512/947/947411.png', width: 3, height: 2 },
+                'plant': { name: 'Planta', icon: 'https://cdn-icons-png.flaticon.com/512/3159/3159991.png', width: 1, height: 1 },
+                'wall': { name: 'Pared', icon: 'SquareX', isDrawable: true },
+            };
+
+            function AddDecorationModal({ show, onClose, onSave }) {
+                const [decorationType, setDecorationType] = useState(Object.keys(DECORATION_TYPES)[0]);
+
+                if (!show) return null;
+
+                const handleSave = () => {
+                    onSave(decorationType);
+                    onClose();
+                };
+
+                return (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Añadir Decoración</h3>
+                            <div className="my-4">
+                                <label htmlFor="decoration-type" className="block mb-2 text-sm font-medium text-gray-900">Tipo de Elemento</label>
+                                <select
+                                    id="decoration-type"
+                                    value={decorationType}
+                                    onChange={(e) => setDecorationType(e.target.value)}
+                                    className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5"
+                                >
+                                    {Object.entries(DECORATION_TYPES).map(([key, { name, icon, isDrawable }]) => (
+                                        <option key={key} value={key}>
+                                            {name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex justify-end gap-3">
+                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Añadir</button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            function AddTableModal({ show, onClose, onSave }) {
+                const [tableName, setTableName] = useState('');
+                const [tableShape, setTableShape] = useState('square');
+                const inputRef = useRef(null);
+
+                useEffect(() => {
+                    if (show) {
+                        setTableName('');
+                        setTableShape('square');
+                        setTimeout(() => inputRef.current?.focus(), 50);
+                    }
+                }, [show]);
+
+                if (!show) return null;
+
+                const handleSave = () => {
+                    if (tableName.trim()) {
+                        onSave(tableName, tableShape);
+                        onClose();
+                    } else {
+                        alert("El nombre de la mesa no puede estar vacío.");
+                    }
+                };
+
+                return (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Añadir Nueva Mesa</h3>
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={tableName}
+                                onChange={(e) => setTableName(e.target.value)}
+                                placeholder="Ej: M1, B2..."
+                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4"
+                            />
+                            <div className="my-4">
+                                <label htmlFor="add-table-shape" className="block mb-2 text-sm font-medium text-gray-900">Forma</label>
+                                <select
+                                    id="add-table-shape"
+                                    value={tableShape}
+                                    onChange={(e) => setTableShape(e.target.value)}
+                                    className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5"
+                                >
+                                    <option value="square">Cuadrada (2x2)</option>
+                                </select>
+                            </div>
+                            <div className="flex justify-end gap-3">
+                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                             </div>
                         </div>
                     </div>
@@ -219,6 +327,8 @@
             const Sidebar = ({
                 zones, activeZoneId, setActiveZoneId,
                 isAddingMode, setIsAddingMode,
+                isAddingDecorationMode, setIsAddingDecorationMode, // Props añadidas
+                isAddingWallMode, setIsAddingWallMode, // Props para paredes
                 selectedTable, setSelectedTable,
                 setShowAddZoneModal, setShowDeleteZoneModal, setZoneToEdit, setShowZoneActionsModal,
                 isSidebarOpen, setIsSidebarOpen,
@@ -232,44 +342,48 @@
                 };
 
                 return (
-                    <div className={`fixed top-0 left-0 z-40 h-screen bg-gray-900 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'} lg:w-64`}>
+                    <div className={`fixed top-0 left-0 z-40 h-screen bg-white border-r border-gray-200 shadow-sm transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
                         <div className="flex flex-col h-full p-4">
                             <div>
                                 <div className={`flex items-center mb-6 h-[2.125rem] ${isSidebarOpen ? 'justify-between' : 'justify-center'} lg:justify-start`}>
-                                        <a href="#" className={`flex items-center ps-2.5 ${!isSidebarOpen && 'hidden'} lg:flex`}>
-                                            <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
-                                            <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>ZONAS</span>
-                                        </a>
-                                        <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden`}>
-                                            <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6" />
-                                        </button>
-                                    </div>
+                                    <a href="#" className={`flex items-center ps-2.5`}>
+                                        <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
+                                        <span className={`self-center text-2xl font-semibold whitespace-nowrap text-gray-900 ${isSidebarOpen ? 'inline' : 'hidden'}`}>ZONAS</span>
+                                    </a>
+                                    <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-100`}>
+                                        <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6" />
+                                    </button>
+                                </div>
                                 <ul className="space-y-3 font-medium">
                                     {zones.map(zone => (
                                         <li key={zone.id}>
                                             <button
                                                 onClick={() => handleZoneClick(zone.id)}
                                                 onDoubleClick={() => { setZoneToEdit({ id: zone.id, name: zone.name }); setShowZoneActionsModal(true); }}
-                                                className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeZoneId === zone.id ? 'bg-white/10' : 'hover:bg-white/5'} ${!isSidebarOpen && 'lg:w-auto w-full justify-center'}`}>
-                                                <Icon name={zone.name === 'Salón' ? 'Armchair' : zone.name.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeZoneId === zone.id ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
-                                                <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{zone.name}</span>
-                                                <span className={`text-sm font-semibold whitespace-nowrap ${!isSidebarOpen ? 'inline' : 'hidden'} lg:hidden`}>{getInitials(zone.name)}</span>
+                                                className={`w-full flex items-center p-3 text-gray-700 rounded-lg group transition-colors ${activeZoneId === zone.id ? 'bg-yellow-100' : 'hover:bg-gray-100'} ${!isSidebarOpen && 'justify-center'}`}>
+                                                <Icon name={zone.name === 'Salón' ? 'Armchair' : zone.name.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeZoneId === zone.id ? 'text-cyan-500' : 'text-gray-500 group-hover:text-gray-900'}`} />
+                                                <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>{zone.name}</span>
+                                                <span className={`text-sm font-semibold whitespace-nowrap ${!isSidebarOpen ? 'inline' : 'hidden'}`}>{getInitials(zone.name)}</span>
                                             </button>
                                         </li>
                                     ))}
                                 </ul>
                             </div>
                             <div className="mt-auto pt-8">
-                                <h3 className={`text-lg font-semibold text-white mb-4 px-2 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Herramientas</h3>
+                                <h3 className={`text-lg font-semibold text-gray-800 mb-4 px-2 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Herramientas</h3>
                                 <div className="space-y-3">
-                                    <button onClick={() => setIsAddingMode(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Table" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Mesa</span></button>
+                                    <button onClick={() => { setIsAddingMode(true); setIsAddingDecorationMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Table" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Mesa</span></button>
+                                                                                                            <button onClick={() => { setIsAddingDecorationMode(true); setIsAddingMode(false); setIsAddingWallMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingDecorationMode ? 'bg-purple-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="PlusCircle" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Decoración</span></button>
                                     <div className="border-t border-gray-700 my-4"></div>
-                                    <button onClick={() => setShowAddZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-blue-700 hover:bg-blue-600 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="LayoutGrid" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Nueva Zona</span></button>
+                                    <button onClick={() => setShowAddZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-blue-600 hover:bg-blue-700 text-white justify-center`}><Icon name="LayoutGrid" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Nueva Zona</span></button>
                                     <div className="border-t border-gray-700 my-4"></div>
-                                    <button onClick={handleSaveChanges} disabled={!isDirty || isSaving} className={`w-full flex items-center p-3 rounded-lg transition-colors text-white disabled:opacity-50 ${isDirty ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}>
-                                        {isSaving ? null : <Icon name="Save" className="flex-shrink-0" />}
-                                        <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{isSaving ? 'Guardando...' : 'Guardar Cambios'}</span>
-                                        {!isSaving && isDirty && <span className={`w-3 h-3 bg-yellow-400 rounded-full ms-auto ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}></span>}
+                                    <button onClick={handleSaveChanges} disabled={!isDirty || isSaving} className={`w-full flex items-center p-3 rounded-lg transition-colors text-white disabled:opacity-50 ${isDirty ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400'} justify-center`}>
+                                        {isSaving ? 
+                                            <Icon name="Loader" className="animate-spin flex-shrink-0" /> : 
+                                            <Icon name="Save" className="flex-shrink-0" />
+                                        }
+                                        <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>{isSaving ? 'Guardando...' : 'Guardar Cambios'}</span>
+                                        {!isSaving && isDirty && <span className={`w-3 h-3 bg-yellow-400 rounded-full ms-auto ${isSidebarOpen ? 'inline' : 'hidden'}`}/>}
                                     </button>
                                 </div>
                             </div>
@@ -280,8 +394,8 @@
 
             function Header({ activeZoneName, isSidebarOpen, setIsSidebarOpen }) {
                 return (
-                    <header className="flex items-center justify-between p-4 bg-gray-800/80 backdrop-blur-sm border-b border-gray-700/50 lg:hidden">
-                                                <h1 className="text-xl font-bold text-white">{activeZoneName}</h1>
+                    <header className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm border-b border-gray-200/80 lg:hidden">
+                        <h1 className="text-xl font-bold text-gray-900">{activeZoneName}</h1>
                         <a href="#" className="p-2 rounded-full hover:bg-gray-700">
                             <Icon name="CircleUser" className="w-6 h-6" />
                         </a>
@@ -314,9 +428,17 @@
                 const [showEditTableModal, setShowEditTableModal] = useState(false);
                 const [tableToEdit, setTableToEdit] = useState(null);
                 const [showZoneActionsModal, setShowZoneActionsModal] = useState(false);
+                const [showAddTableModal, setShowAddTableModal] = useState(false);
+                const [newTableCoords, setNewTableCoords] = useState(null);
+                const [isAddingDecorationMode, setIsAddingDecorationMode] = useState(false);
+                const [showAddDecorationModal, setShowAddDecorationModal] = useState(false);
+                const [newDecorationCoords, setNewDecorationCoords] = useState(null);
+                const [isAddingWallMode, setIsAddingWallMode] = useState(false);
+                const [isDrawingWall, setIsDrawingWall] = useState(false);
+                const [wallDrawing, setWallDrawing] = useState(null);
 
-                const GRID_ROWS = 10;
-                const GRID_COLS = 16;
+                const NUM_COLS = 32;
+                const NUM_ROWS = 20;
 
                 const API_URL = 'api/plano.php';
 
@@ -327,7 +449,9 @@
                         .then(data => {
                             const sanitizedZones = (data || []).map(zone => ({
                                 ...zone,
-                                tables: zone.tables || [] 
+                                tables: (zone.tables || []).map(t => ({ ...t, x: t.x ?? (t.col - 1) * 40, y: t.y ?? (t.row - 1) * 40 })),
+                                decorations: (zone.decorations || []).map(d => ({ ...d, x: d.x ?? (d.col - 1) * 40, y: d.y ?? (d.row - 1) * 40 })),
+                                walls: zone.walls || []
                             }));
                             setZones(sanitizedZones);
                             if (sanitizedZones.length > 0) {
@@ -354,9 +478,21 @@
                     );
                 }
 
-                const handleDragStart = (e, tableId) => {
-                    e.dataTransfer.setData("tableId", tableId);
-                    setSelectedTable(tableId);
+                const handleDragStart = (e, itemId, itemType) => {
+                    e.dataTransfer.setData("itemId", itemId);
+                    e.dataTransfer.setData("itemType", itemType);
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const offsetX = e.clientX - rect.left;
+                    const offsetY = e.clientY - rect.top;
+                    e.dataTransfer.setData("offsetX", offsetX.toString());
+                    e.dataTransfer.setData("offsetY", offsetY.toString());
+                    e.dataTransfer.effectAllowed = 'move';
+
+                    if (itemType === 'table') {
+                        setSelectedTable(itemId);
+                    } else {
+                        setSelectedTable(null);
+                    }
                 };
 
                 const handleDragOver = (e) => {
@@ -368,55 +504,290 @@
                     e.currentTarget.classList.remove('drag-over');
                 };
 
-                const handleDrop = (e, toRow, toCol) => {
-                    e.preventDefault();
-                    e.currentTarget.classList.remove('drag-over');
-                    if (zones.find(z => z.id === activeZoneId)?.tables.some(t => t.row === toRow && t.col === toCol)) return;
-                    const tableId = e.dataTransfer.getData("tableId");
-                    const zone = zones.find(z => z.id === activeZoneId);
-                    const newTables = zone.tables.map(t => t.id == tableId ? { ...t, row: toRow, col: toCol } : t);
-                    setZones(zones.map(z => z.id === activeZoneId ? { ...z, tables: newTables } : z));
+                const getItemRect = (item, itemType) => {
+                    if (itemType === 'table') {
+                        const width = 80; // 2 celdas de 40px
+                        const height = 80; // 2 celdas de 40px
+                        return { x: item.x, y: item.y, width, height, id: item.id };
+                    }
+                    if (itemType === 'decoration') {
+                        const typeInfo = DECORATION_TYPES[item.type];
+                        if (!typeInfo) return { x: item.x, y: item.y, width: 0, height: 0, id: item.id };
+                        return { x: item.x, y: item.y, width: typeInfo.width * 40, height: typeInfo.height * 40, id: item.id };
+                    }
+                    return { x: 0, y: 0, width: 0, height: 0, id: null };
+                };
+
+                const doRectsOverlap = (rect1, rect2) => {
+                    return (
+                        rect1.x < rect2.x + rect2.width &&
+                        rect1.x + rect1.width > rect2.x &&
+                        rect1.y < rect2.y + rect2.height &&
+                        rect1.y + rect1.height > rect2.y
+                    );
+                };
+
+                const isPositionOccupied = (newItemRect, draggedItemId) => {
+                    const activeZone = zones.find(z => z.id === activeZoneId);
+                    if (!activeZone) return true;
+
+                    for (const table of activeZone.tables) {
+                        if (table.id === draggedItemId) continue;
+                        if (doRectsOverlap(newItemRect, getItemRect(table, 'table'))) return true;
+                    }
+
+                    for (const deco of activeZone.decorations) {
+                        if (deco.id === draggedItemId) continue;
+                        if (doRectsOverlap(newItemRect, getItemRect(deco, 'decoration'))) return true;
+                    }
+
+                    for (const wall of (activeZone.walls || [])) {
+                        const isHorizontal = wall.startRow === wall.endRow;
+                        const wallRect = {
+                            x: isHorizontal ? (wall.startCol - 1) * 40 : (wall.startCol - 1) * 40 + 18,
+                            y: isHorizontal ? (wall.startRow - 1) * 40 + 18 : (wall.startRow - 1) * 40,
+                            width: isHorizontal ? (wall.endCol - wall.startCol + 1) * 40 : 5,
+                            height: isHorizontal ? 5 : (wall.endRow - wall.startRow + 1) * 40,
+                        };
+                        if (doRectsOverlap(newItemRect, wallRect)) return true;
+                    }
+
+                    return false;
+                };
+
+                const handleMouseMoveOnGrid = (e) => {
+                    if (!isDrawingWall) return;
+
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const currentX = e.clientX - rect.left;
+                    const currentY = e.clientY - rect.top;
+                    const endCol = Math.floor(currentX / 40) + 1;
+                    const endRow = Math.floor(currentY / 40) + 1;
+
+                    const deltaX = Math.abs(endCol - wallDrawing.startCol);
+                    const deltaY = Math.abs(endRow - wallDrawing.startRow);
+
+                    if (deltaX > deltaY) {
+                        endRow = wallDrawing.startRow;
+                    } else {
+                        endCol = wallDrawing.startCol;
+                    }
+
+                    endCol = Math.max(1, Math.min(NUM_COLS, endCol));
+                    endRow = Math.max(1, Math.min(NUM_ROWS, endRow));
+
+                    setWallDrawing(prev => ({ ...prev, endRow, endCol }));
+                };
+
+                const handleMouseUpOnGrid = () => {
+                    if (!isDrawingWall || !wallDrawing) return;
+
+                    setIsDrawingWall(false);
+
+                    if (wallDrawing.startCol === wallDrawing.endCol && wallDrawing.startRow === wallDrawing.endRow) {
+                        setWallDrawing(null);
+                        return;
+                    }
+
+                    const isHorizontal = Math.abs(wallDrawing.endCol - wallDrawing.startCol) >= Math.abs(wallDrawing.endRow - wallDrawing.startRow);
+                    const finalRow = isHorizontal ? wallDrawing.startRow : wallDrawing.endRow;
+                    const finalCol = isHorizontal ? wallDrawing.endCol : wallDrawing.startCol;
+
+                    const newWallDecoration = {
+                        id: `deco-${Date.now()}`,
+                        type: 'wall',
+                        x: (Math.min(wallDrawing.startCol, finalCol) - 1) * 40,
+                        y: (Math.min(wallDrawing.startRow, finalRow) - 1) * 40,
+                        startRow: wallDrawing.startRow,
+                        startCol: wallDrawing.startCol,
+                        endRow: finalRow,
+                        endCol: finalCol
+                    };
+
+                    const updatedZones = zones.map(zone => {
+                        if (zone.id === activeZoneId) {
+                            return { ...zone, decorations: [...zone.decorations, newWallDecoration] };
+                        }
+                        return zone;
+                    });
+
+                    setZones(updatedZones);
+                    setWallDrawing(null);
                     setIsDirty(true);
                 };
 
-                const handleCellClick = (row, col) => {
-                    if (!isAddingMode || zones.find(z => z.id === activeZoneId)?.tables.some(t => t.row === row && t.col === col)) return;
-                    const num = prompt(`Nombre para la nueva mesa en (${row}, ${col}):`);
-                    if (num) {
-                        const newTable = { id: `temp-${Date.now()}`, number: num, row, col, estado: 'disponible', descripcion: `Mesa ${num}` };
-                        const zone = zones.find(z => z.id === activeZoneId);
-                        const newTables = [...zone.tables, newTable];
-                        setZones(zones.map(z => z.id === activeZoneId ? { ...z, tables: newTables } : z));
-                        setIsDirty(true);
-                    }
-                    setIsAddingMode(false);
+                const handleMouseDownOnGrid = (e) => {
+                    if (!isAddingWallMode) return;
+
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const currentX = e.clientX - rect.left;
+                    const currentY = e.clientY - rect.top;
+                    const startCol = Math.floor(currentX / 40) + 1;
+                    const startRow = Math.floor(currentY / 40) + 1;
+
+                    setIsDrawingWall(true);
+                    setWallDrawing({ startRow, startCol, endRow: startRow, endCol: startCol });
                 };
 
-                const handleAddZone = () => {
-                    const name = newZoneName.trim();
-                    if (name && !zones.some(z => z.name === name)) {
-                        const newZone = {
-                            id: `temp-${Date.now()}`,
-                            name: name,
-                            tables: []
-                        };
-                        const newZones = [...zones, newZone];
-                        setZones(newZones);
-                        setActiveZoneId(newZone.id);
-                        setShowAddZoneModal(false);
-                        setNewZoneName('');
-                        setIsDirty(true);
-                    } else {
-                        alert("Nombre de zona inválido o ya existe.");
+                const handleDrop = (e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove('drag-over');
+                    const itemId = e.dataTransfer.getData("itemId");
+                    const itemType = e.dataTransfer.getData("itemType");
+                    const offsetX = parseFloat(e.dataTransfer.getData("offsetX"));
+                    const offsetY = parseFloat(e.dataTransfer.getData("offsetY"));
+
+                    const gridRect = e.currentTarget.getBoundingClientRect();
+                    const newX = Math.round((e.clientX - gridRect.left - offsetX) / 40) * 40;
+                    const newY = Math.round((e.clientY - gridRect.top - offsetY) / 40) * 40;
+
+                    const updatedZones = zones.map(zone => {
+                        if (zone.id !== activeZoneId) return zone;
+
+                        let item, itemRect;
+                        let items, setItems;
+
+                        if (itemType === 'table') {
+                            items = zone.tables;
+                            item = items.find(t => t.id === itemId);
+                        } else {
+                            items = zone.decorations;
+                            item = items.find(d => d.id === itemId);
+                        }
+
+                        if (!item) return zone;
+
+                        const tempItem = { ...item, x: newX, y: newY };
+                        itemRect = getItemRect(tempItem, itemType);
+
+                        const finalX = Math.max(0, Math.min(newX, (NUM_COLS * 40) - itemRect.width));
+                        const finalY = Math.max(0, Math.min(newY, (NUM_ROWS * 40) - itemRect.height));
+
+                        const finalRect = { ...itemRect, x: finalX, y: finalY };
+
+                        if (isPositionOccupied(finalRect, itemId)) {
+                            return zone; // No changes if position is occupied
+                        }
+
+                        const updatedItems = items.map(it => 
+                            it.id === itemId ? { ...it, x: finalX, y: finalY, row: undefined, col: undefined } : it
+                        );
+
+                        if (itemType === 'table') {
+                            return { ...zone, tables: updatedItems };
+                        } else {
+                            return { ...zone, decorations: updatedItems };
+                        }
+                    });
+                    
+                    setZones(updatedZones);
+                    setIsDirty(true);
+                };
+
+                                const handleCellClick = (row, col) => {
+                    const x = (col - 1) * 40;
+                    const y = (row - 1) * 40;
+
+                    if (isAddingMode) {
+                        setNewTableCoords({ x, y });
+                        setShowAddTableModal(true);
+                    } else if (isAddingDecorationMode) {
+                        setNewDecorationCoords({ x, y });
+                        setShowAddDecorationModal(true);
                     }
+                };
+
+                                                const handleAddDecoration = (type) => {
+                    const typeInfo = DECORATION_TYPES[type];
+                    if (typeInfo && typeInfo.isDrawable) {
+                        setIsAddingWallMode(true);
+                        setIsAddingMode(false);
+                        setIsAddingDecorationMode(false);
+                        return;
+                    }
+
+                    if (!newDecorationCoords) {
+                        console.error("No coordinates to add decoration");
+                        return;
+                    }
+                    const { x, y } = newDecorationCoords;
+                    const newDecoration = { id: `decor-temp-${Date.now()}`, type, x, y };
+                    const newDecoRect = getItemRect(newDecoration, 'decoration');
+
+                    if (isPositionOccupied(newDecoRect, null)) {
+                        alert("La posición ya está ocupada.");
+                        return;
+                    }
+
+                    const updatedZones = zones.map(zone => {
+                        if (zone.id === activeZoneId) {
+                            return { ...zone, decorations: [...zone.decorations, newDecoration] };
+                        }
+                        return zone;
+                    });
+                    setZones(updatedZones);
+                    setIsDirty(true);
+                    setIsAddingDecorationMode(false);
+                    setNewDecorationCoords(null);
+                };
+
+                const handleAddZone = (name) => {
+                    const existingZone = zones.find(z => z.name === name);
+                    if (existingZone) {
+                        alert("Ya existe una zona con ese nombre.");
+                        return;
+                    }
+                    const newZone = {
+                        id: `zone-${Date.now()}`,
+                        name: name,
+                        tables: [],
+                        decorations: [],
+                        walls: []
+                    };
+                    const newZones = [...zones, newZone];
+                    setZones(newZones);
+                    setActiveZoneId(newZone.id);
+                    setShowAddZoneModal(false);
+                    setNewZoneName('');
+                    setIsDirty(true);
+                };
+
+                const handleAddTable = (tableName, tableShape) => {
+                    if (!newTableCoords) return;
+                    const { x, y } = newTableCoords;
+
+                    const newTable = {
+                        id: `temp-${Date.now()}`,
+                        number: tableName,
+                        shape: tableShape,
+                        x: x,
+                        y: y,
+                        descripcion: `Mesa ${tableName}`
+                    };
+
+                    const newTableRect = getItemRect(newTable, 'table');
+                    if (isPositionOccupied(newTableRect, null)) {
+                        alert('La posición ya está ocupada.');
+                        return;
+                    }
+
+                    const updatedZones = zones.map(zone => 
+                        zone.id === activeZoneId 
+                            ? { ...zone, tables: [...zone.tables, newTable] } 
+                            : zone
+                    );
+                    setZones(updatedZones);
+                    setIsDirty(true);
+                    setShowAddTableModal(false);
+                    setIsAddingMode(false);
+                    setNewTableCoords(null);
                 };
 
                 const handleRenameZone = () => {
                     const { id, name } = zoneToEdit;
                     const finalNewName = name.trim();
-
                     if (!finalNewName) return;
-                    
+
                     if (zones.some(z => z.name === finalNewName && z.id !== id)) {
                         return alert('Ya existe otra zona con ese nombre.');
                     }
@@ -449,6 +820,17 @@
                     .finally(() => setIsSaving(false));
                 };
 
+                const handleDecorationDoubleClick = (e, deco) => {
+                    if (e.altKey) {
+                        if (confirm(`¿Seguro que quieres eliminar el elemento decorativo?`)) {
+                            const zone = zones.find(z => z.id === activeZoneId);
+                            const newDecorations = zone.decorations.filter(d => d.id !== deco.id);
+                            setZones(zones.map(z => z.id === activeZoneId ? { ...z, decorations: newDecorations } : z));
+                            setIsDirty(true);
+                        }
+                    }
+                };
+
                 const handleTableDoubleClick = (e, table) => {
                     if (e.altKey) {
                         if (confirm(`¿Seguro que quieres eliminar la mesa "${table.number}"?`)) {
@@ -477,10 +859,10 @@
                     }
                 };
 
-                const handleEditTable = (tableId, newName) => {
+                const handleEditTable = (tableId, newName, newShape) => {
                     const zone = zones.find(z => z.id === activeZoneId);
                     const newTables = zone.tables.map(table =>
-                        table.id === tableId ? { ...table, number: newName } : table
+                        table.id === tableId ? { ...table, number: newName, shape: newShape } : table
                     );
                     setZones(zones.map(z => z.id === activeZoneId ? { ...z, tables: newTables } : z));
                     setIsDirty(true);
@@ -499,7 +881,7 @@
                 };
 
                 return (
-                    <div className="relative min-h-screen bg-gray-900">
+                    <div className="relative min-h-screen bg-yellow-50">
                         <AddZoneModal show={showAddZoneModal} onClose={() => setShowAddZoneModal(false)} value={newZoneName} onChange={(e) => setNewZoneName(e.target.value)} onSave={handleAddZone} />
                         <ZoneActionsModal 
                             show={showZoneActionsModal} 
@@ -512,15 +894,17 @@
                                 setShowDeleteZoneModal(true); 
                             }}
                         />
+                        <AddDecorationModal show={showAddDecorationModal} onClose={() => setShowAddDecorationModal(false)} onSave={handleAddDecoration} />
+                        <AddTableModal show={showAddTableModal} onClose={() => setShowAddTableModal(false)} onSave={handleAddTable} />
                         <DeleteZoneModal show={showDeleteZoneModal} onClose={() => setShowDeleteZoneModal(false)} onConfirm={handleDeleteZone} zoneName={zones.find(z => z.id === activeZoneId)?.name || ''} />
                         <EditTableModal show={showEditTableModal} onClose={() => setShowEditTableModal(false)} table={tableToEdit} onSave={handleEditTable} onDelete={handleDeleteFromModal} />
                         <div className="relative flex h-screen">
-                            <Sidebar {...{ getInitials, zones, activeZoneId, setActiveZoneId, isAddingMode, setIsAddingMode, selectedTable, setSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setZoneToEdit, setShowZoneActionsModal, isSidebarOpen, setIsSidebarOpen, handleSaveChanges, isDirty, isSaving }} />
-                            <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} lg:ml-64`}>
+                            <Sidebar {...{ getInitials, zones, activeZoneId, setActiveZoneId, isAddingMode, setIsAddingMode, isAddingDecorationMode, setIsAddingDecorationMode, isAddingWallMode, setIsAddingWallMode, selectedTable, setSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setZoneToEdit, setShowZoneActionsModal, isSidebarOpen, setIsSidebarOpen, handleSaveChanges, isDirty, isSaving }} />
+                            <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64 ml-20' : 'ml-20'}`}>
                                 <Header activeZoneName={zones.find(z => z.id === activeZoneId)?.name || 'Sin Zonas'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-                                <main className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 ${isAddingMode ? 'adding-mode' : ''}`}>
-                                    <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Editor de Plano: {zones.find(z => z.id === activeZoneId)?.name || ''}</h1>
-                                    <div className="bg-gray-900 p-4 rounded-lg">
+                                <main className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 ${isAddingMode || isAddingDecorationMode || isAddingWallMode ? 'adding-mode' : ''}`}>
+                                    <h1 className="hidden lg:block text-4xl font-bold text-gray-800 mb-8">Editor de Plano: {zones.find(z => z.id === activeZoneId)?.name || ''}</h1>
+                                    <div className="bg-white p-4 rounded-lg shadow-md inline-block">
                                         {(() => {
                                             const activeZone = zones.find(z => z.id === activeZoneId);
                                             if (!activeZone) {
@@ -528,18 +912,94 @@
                                             }
 
                                             return (
-                                                <div className="grid" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`}}>
-                                                    {Array.from({ length: GRID_ROWS * GRID_COLS }).map((_, index) => {
-                                                        const row = Math.floor(index / GRID_COLS) + 1;
-                                                        const col = (index % GRID_COLS) + 1;
-                                                        const table = activeZone.tables.find(t => parseInt(t.row, 10) === row && parseInt(t.col, 10) === col);
+                                                <div className="relative grid bg-gray-50" style={{ gridTemplateRows: `repeat(${NUM_ROWS}, 40px)`, gridTemplateColumns: `repeat(${NUM_COLS}, 40px)`}}
+                                                     onDragOver={handleDragOver}
+                                                     onDrop={handleDrop}
+                                                     onMouseDown={handleMouseDownOnGrid}
+                                                     onMouseMove={handleMouseMoveOnGrid}
+                                                     onMouseUp={handleMouseUpOnGrid}
+                                                     onMouseLeave={handleMouseUpOnGrid}>
+                                                    {/* Render grid cells for background and dropping */}
+                                                    {Array.from({ length: NUM_ROWS * NUM_COLS }).map((_, index) => {
+                                                        const row = Math.floor(index / NUM_COLS) + 1;
+                                                        const col = (index % NUM_COLS) + 1;
                                                         return (
-                                                            <div key={index} className="grid-cell border border-gray-700/50 flex items-center justify-center" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={(e) => handleDrop(e, row, col)} onClick={() => handleCellClick(row, col)}>
-                                                                {table && (
-                                                                    <div draggable onDragStart={(e) => handleDragStart(e, table.id)} onDoubleClick={(e) => handleTableDoubleClick(e, table)} onClick={(e) => { e.stopPropagation(); setSelectedTable(table.id); setIsAddingMode(false); }} className={`p-2 h-16 w-16 flex items-center justify-center rounded-xl shadow-lg cursor-move transition-all ${selectedTable === table.id ? 'ring-2 ring-cyan-400' : ''} bg-gray-200 text-gray-900`}>
-                                                                        <span className="text-xl font-bold">{table.number}</span>
-                                                                    </div>
-                                                                )}
+                                                            <div key={`cell-${row}-${col}`} className="grid-cell border border-dashed border-gray-200" 
+                                                                onDragLeave={handleDragLeave} 
+                                                                onClick={() => {
+                                                                    if (isAddingMode || isAddingDecorationMode) {
+                                                                        handleCellClick(row, col);
+                                                                    }
+                                                                }}>
+                                                            </div>
+                                                        );
+                                                    })}
+
+                                                    {/* Render tables with absolute positioning */}
+                                                    {activeZone.tables.map(table => {
+                                                        const { shape, number, id } = table;
+                                                        const classByShape = shape === 'rectangle' ? 'w-40 h-20 rounded-xl' : shape === 'round' ? 'w-20 h-20 rounded-full' : 'w-20 h-20 rounded-xl';
+                                                        return (
+                                                            <div key={id} draggable onDragStart={(e) => handleDragStart(e, id, 'table')} onDoubleClick={(e) => handleTableDoubleClick(e, table)} onClick={(e) => { e.stopPropagation(); setSelectedTable(id); setIsAddingMode(false); setIsAddingDecorationMode(false); }} 
+                                                                className={`absolute p-2 flex items-center justify-center shadow-lg cursor-move transition-all ${selectedTable === id ? 'ring-2 ring-cyan-500' : ''} bg-white border border-gray-300 text-gray-900 ${classByShape}`}
+                                                                style={{ 
+                                                                    top: `${table.y}px`, 
+                                                                    left: `${table.x}px`
+                                                                }}>
+                                                                <span className="text-xl font-bold">{number}</span>
+                                                            </div>
+                                                        );
+                                                    })}
+
+                                                    {/* Render wall preview */}
+                                                    {isDrawingWall && wallDrawing && (() => {
+                                                        const isHorizontal = Math.abs(wallDrawing.endCol - wallDrawing.startCol) >= Math.abs(wallDrawing.endRow - wallDrawing.startRow);
+                                                        
+                                                        const finalRow = isHorizontal ? wallDrawing.startRow : wallDrawing.endRow;
+                                                        const finalCol = isHorizontal ? wallDrawing.endCol : wallDrawing.startCol;
+
+                                                        const startX = (Math.min(wallDrawing.startCol, finalCol) - 1) * 40;
+                                                        const startY = (Math.min(wallDrawing.startRow, finalRow) - 1) * 40;
+                                                        const wallLength = isHorizontal ? (Math.abs(wallDrawing.endCol - wallDrawing.startCol) + 1) * 40 : (Math.abs(wallDrawing.endRow - wallDrawing.startRow) + 1) * 40;
+
+                                                        const style = {
+                                                            left: `${startX}px`,
+                                                            top: `${startY + (isHorizontal ? 18 : 0)}px`,
+                                                            width: isHorizontal ? `${wallLength}px` : '5px',
+                                                            height: isHorizontal ? '5px' : `${wallLength}px`,
+                                                        };
+                                                        return <div className="absolute bg-orange-400 opacity-70 rounded-full pointer-events-none" style={style}></div>;
+                                                    })()}
+
+                                                    
+                                                                                                        {/* Render decorations with absolute positioning */}
+                                                    {activeZone.decorations.map(deco => {
+                                                        if (deco.type === 'wall') {
+                                                            const isHorizontal = deco.startRow === deco.endRow;
+                                                            const wallWidth = (Math.abs(deco.endCol - deco.startCol) + 1) * 40;
+                                                            const wallHeight = (Math.abs(deco.endRow - deco.startRow) + 1) * 40;
+
+                                                            const style = {
+                                                                top: isHorizontal ? `${(deco.startRow - 1) * 40 + 18}px` : `${(Math.min(deco.startRow, deco.endRow) - 1) * 40}px`,
+                                                                left: isHorizontal ? `${(Math.min(deco.startCol, deco.endCol) - 1) * 40}px` : `${(deco.startCol - 1) * 40 + 18}px`,
+                                                                width: isHorizontal ? `${wallWidth}px` : '5px',
+                                                                height: isHorizontal ? '5px' : `${wallHeight}px`,
+                                                            };
+                                                            return <div key={deco.id} className="absolute bg-gray-700 rounded-full" style={style}></div>;
+                                                        }
+
+                                                        const typeInfo = DECORATION_TYPES[deco.type];
+                                                        if (!typeInfo) return null;
+                                                        return (
+                                                            <div key={deco.id} draggable onDragStart={(e) => handleDragStart(e, deco.id, 'decoration')} onDoubleClick={(e) => handleDecorationDoubleClick(e, deco)}
+                                                                className={`absolute flex items-center justify-center bg-transparent cursor-move`}
+                                                                style={{ 
+                                                                    top: `${deco.y}px`, 
+                                                                    left: `${deco.x}px`, 
+                                                                    width: `${typeInfo.width * 40}px`, 
+                                                                    height: `${typeInfo.height * 40}px` 
+                                                                }}>
+                                                                <img src={typeInfo.icon} alt={typeInfo.name} className="w-full h-full object-contain p-2 opacity-70 pointer-events-none"/>
                                                             </div>
                                                         );
                                                     })}

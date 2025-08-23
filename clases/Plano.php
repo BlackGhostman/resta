@@ -20,8 +20,11 @@ class Plano {
                             m.identificador as number, 
                             m.descripcion, 
                             m.estado,
+                            IFNULL(m.x, 0) as x, 
+                            IFNULL(m.y, 0) as y,
                             IFNULL(m.row, 1) as row, 
                             IFNULL(m.col, 1) as col,
+                            IFNULL(m.shape, 'rectangle') as shape,
                             IFNULL(fm.cantidad_personas, 0) as cantidad_personas
                          FROM salones_mesas m
                          LEFT JOIN facturas_maestro fm ON m.id_salones_mesas = fm.id_mesa AND fm.estado = 'credito'
@@ -69,13 +72,17 @@ class Plano {
                 $idsMesasFrontend = [];
 
                 foreach ($mesasFrontend as $mesa) {
+                    $x = $mesa['x'] ?? 0;
+                    $y = $mesa['y'] ?? 0;
+                    $shape = $mesa['shape'] ?? 'rectangle';
+
                     if (strpos($mesa['id'], 'temp-') === 0) {
-                        $sqlInsertMesa = "INSERT INTO salones_mesas (identificador, descripcion, estado, id_ubicacion_mesa, row, col) VALUES (?, ?, 'disponible', ?, ?, ?)";
-                        $this->db->ejecutar($sqlInsertMesa, [$mesa['number'], $mesa['descripcion'] ?? '', $idUbicacion, $mesa['row'], $mesa['col']]);
+                        $sqlInsertMesa = "INSERT INTO salones_mesas (identificador, descripcion, estado, id_ubicacion_mesa, x, y, shape) VALUES (?, ?, 'disponible', ?, ?, ?, ?)";
+                        $this->db->ejecutar($sqlInsertMesa, [$mesa['number'], $mesa['descripcion'] ?? '', $idUbicacion, $x, $y, $shape]);
                     } else {
                         $idsMesasFrontend[] = $mesa['id'];
-                        $sqlUpdateMesa = "UPDATE salones_mesas SET row = ?, col = ?, identificador = ?, descripcion = ? WHERE id_salones_mesas = ?";
-                        $this->db->ejecutar($sqlUpdateMesa, [$mesa['row'], $mesa['col'], $mesa['number'], $mesa['descripcion'] ?? '', $mesa['id']]);
+                        $sqlUpdateMesa = "UPDATE salones_mesas SET x = ?, y = ?, shape = ?, identificador = ?, descripcion = ? WHERE id_salones_mesas = ?";
+                        $this->db->ejecutar($sqlUpdateMesa, [$x, $y, $shape, $mesa['number'], $mesa['descripcion'] ?? '', $mesa['id']]);
                     }
                 }
 
