@@ -12,14 +12,14 @@
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fefcf3; } /* Light yellow background */
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; } /* bg-slate-900 */
         .grid-cell { min-height: 40px; min-width: 40px; }
         .grid-cell.drag-over { background-color: #2563eb30; border-color: #2563eb; }
         .adding-mode { cursor: copy; }
         .modal-backdrop { background-color: rgba(0, 0, 0, 0.7); }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="text-gray-200">
 
     <div id="root"></div>
 
@@ -76,11 +76,11 @@
                 if (!show) return null;
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-gray-900 mb-4">Crear Nueva Zona</h3>
-                            <input ref={inputRef} type="text" value={value} onChange={onChange} placeholder="Nombre de la zona (ej: Terraza)" className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4" />
+                        <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-white mb-4">Crear Nueva Zona</h3>
+                            <input ref={inputRef} type="text" value={value} onChange={onChange} placeholder="Nombre de la zona (ej: Terraza)" className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4 placeholder-gray-400" />
                             <div className="flex justify-end gap-3">
-                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-slate-600 hover:bg-slate-500 text-white">Cancelar</button>
                                 <button onClick={onSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                 );
             }
 
-                        function RenameZoneModal({ show, onClose, value, onChange, onSave }) {
+            function RenameZoneModal({ show, onClose, value, onChange, onSave }) {
                 const inputRef = useRef(null);
                 useEffect(() => {
                     if (show) {
@@ -99,11 +99,11 @@
                 if (!show) return null;
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-gray-900 mb-4">Renombrar Zona</h3>
-                            <input ref={inputRef} type="text" value={value} onChange={onChange} className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4" />
+                        <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-white mb-4">Renombrar Zona</h3>
+                            <input ref={inputRef} type="text" value={value} onChange={onChange} className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4 placeholder-gray-400" />
                             <div className="flex justify-end gap-3">
-                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-slate-600 hover:bg-slate-500 text-white">Cancelar</button>
                                 <button onClick={onSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                             </div>
                         </div>
@@ -135,16 +135,16 @@
 
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4">
-                            <h3 className="text-xl font-semibold text-gray-800">Editar Decoración</h3>
+                        <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4">
+                            <h3 className="text-xl font-semibold text-white">Editar Decoración</h3>
                             <div className="flex gap-4">
                                 <div className="flex-1">
-                                    <label className="block text-sm font-medium text-gray-700">Ancho (celdas)</label>
-                                    <input type="number" name="width" value={editedDecoration.width ?? ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500" />
+                                    <label className="block text-sm font-medium text-gray-300">Ancho (celdas)</label>
+                                    <input type="number" name="width" value={editedDecoration.width ?? ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500" />
                                 </div>
                                 <div className="flex-1">
-                                    <label className="block text-sm font-medium text-gray-700">Alto (celdas)</label>
-                                    <input type="number" name="height" value={editedDecoration.height ?? ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500" />
+                                    <label className="block text-sm font-medium text-gray-300">Alto (celdas)</label>
+                                    <input type="number" name="height" value={editedDecoration.height ?? ''} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500" />
                                 </div>
                             </div>
                             <div className="flex justify-between items-center pt-4">
@@ -152,7 +152,7 @@
                                     <Icon name="Trash2" className="w-4 h-4"/> Eliminar
                                 </button>
                                 <div className="flex gap-3">
-                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-slate-600 hover:bg-slate-500 text-white">Cancelar</button>
                                     <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                                 </div>
                             </div>
@@ -188,18 +188,18 @@
 
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-gray-900 mb-4">Editar Mesa</h3>
+                        <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-white mb-4">Editar Mesa</h3>
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={tableName}
                                 onChange={(e) => setTableName(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4"
+                                className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4 placeholder-gray-400"
                             />
                             <div className="my-4">
-                                <label htmlFor="table-shape" className="block mb-2 text-sm font-medium text-gray-900">Forma de la Mesa</label>
-                                <select id="table-shape" value={tableShape} onChange={(e) => setTableShape(e.target.value)} className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5">
+                                <label htmlFor="table-shape" className="block mb-2 text-sm font-medium text-white">Forma de la Mesa</label>
+                                <select id="table-shape" value={tableShape} onChange={(e) => setTableShape(e.target.value)} className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5">
                                     <option value="square">Cuadrada (2x2)</option>
                                     <option value="rectangle">Rectangular (4x2)</option>
                                     <option value="rectangle_vertical">Rectangular (2x4)</option>
@@ -210,7 +210,7 @@
                                     <Icon name="Trash2" className="w-4 h-4"/> Eliminar
                                 </button>
                                 <div className="flex gap-3">
-                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-slate-600 hover:bg-slate-500 text-white">Cancelar</button>
                                     <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                                 </div>
                             </div>
@@ -232,21 +232,21 @@
 
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-gray-900 mb-4">Gestionar Zona</h3>
+                        <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-white mb-4">Gestionar Zona</h3>
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={value}
                                 onChange={onChange}
-                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4"
+                                className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4 placeholder-gray-400"
                             />
                             <div className="flex justify-between items-center">
                                 <button onClick={onDelete} className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white flex items-center gap-2">
                                     <Icon name="Trash2" className="w-4 h-4"/> Eliminar
                                 </button>
                                 <div className="flex gap-3">
-                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-slate-600 hover:bg-slate-500 text-white">Cancelar</button>
                                     <button onClick={onSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                                 </div>
                             </div>
@@ -274,15 +274,15 @@
 
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-gray-900 mb-4">Añadir Decoración</h3>
+                        <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-white mb-4">Añadir Decoración</h3>
                             <div className="my-4">
-                                <label htmlFor="decoration-type" className="block mb-2 text-sm font-medium text-gray-900">Tipo de Elemento</label>
+                                <label htmlFor="decoration-type" className="block mb-2 text-sm font-medium text-white">Tipo de Elemento</label>
                                 <select
                                     id="decoration-type"
                                     value={decorationType}
                                     onChange={(e) => setDecorationType(e.target.value)}
-                                    className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5"
+                                    className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5"
                                 >
                                     {Object.entries(DECORATION_TYPES).map(([key, { name, icon, isDrawable }]) => (
                                         <option key={key} value={key}>
@@ -292,7 +292,7 @@
                                 </select>
                             </div>
                             <div className="flex justify-end gap-3">
-                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-slate-600 hover:bg-slate-500 text-white">Cancelar</button>
                                 <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Añadir</button>
                             </div>
                         </div>
@@ -326,23 +326,23 @@
 
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-                            <h3 className="text-lg font-medium text-gray-900 mb-4">Añadir Nueva Mesa</h3>
+                        <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6">
+                            <h3 className="text-lg font-medium text-white mb-4">Añadir Nueva Mesa</h3>
                             <input
                                 ref={inputRef}
                                 type="text"
                                 value={tableName}
                                 onChange={(e) => setTableName(e.target.value)}
                                 placeholder="Ej: M1, B2..."
-                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4"
+                                className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-3 mb-4 placeholder-gray-400"
                             />
                             <div className="my-4">
-                                <label htmlFor="add-table-shape" className="block mb-2 text-sm font-medium text-gray-900">Forma</label>
+                                <label htmlFor="add-table-shape" className="block mb-2 text-sm font-medium text-white">Forma</label>
                                 <select
                                     id="add-table-shape"
                                     value={tableShape}
                                     onChange={(e) => setTableShape(e.target.value)}
-                                    className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5"
+                                    className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5"
                                 >
                                     <option value="square">Cuadrada (2x2)</option>
                                     <option value="rectangle">Rectangular (4x2)</option>
@@ -350,7 +350,7 @@
                                 </select>
                             </div>
                             <div className="flex justify-end gap-3">
-                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">Cancelar</button>
+                                <button onClick={onClose} className="px-4 py-2 rounded-lg bg-slate-600 hover:bg-slate-500 text-white">Cancelar</button>
                                 <button onClick={handleSave} className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white">Guardar</button>
                             </div>
                         </div>
@@ -365,6 +365,7 @@
                         <div className="bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6 text-center">
                             <Icon name="TriangleAlert" className="mx-auto mb-4 h-14 w-14 text-red-500" />
                             <h3 className="mb-5 text-lg font-normal text-gray-300">¿Seguro que quieres eliminar la zona "{zoneName}"?</h3>
+                            <p className="text-sm text-gray-500 mb-6">Esta acción no se puede deshacer.</p>
                             <div className="flex justify-center gap-4">
                                 <button onClick={onClose} className="px-5 py-2.5 rounded-lg bg-gray-600 hover:bg-gray-500 text-white">Cancelar</button>
                                 <button onClick={onConfirm} className="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white">Sí, eliminar</button>
@@ -418,16 +419,16 @@
                 };
 
                 return (
-                    <div className={`fixed top-0 left-0 z-40 h-screen bg-white border-r border-gray-200 shadow-sm transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
+                    <div className={`fixed top-0 left-0 z-40 h-screen bg-slate-800 border-r border-slate-700 shadow-sm transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
                         <div className="flex flex-col h-full p-4">
                             <div>
                                 <div className={`flex items-center mb-6 h-[2.125rem] ${isSidebarOpen ? 'justify-between' : 'justify-center'} lg:justify-start`}>
                                     <a href="#" className={`flex items-center ps-2.5`}>
                                         <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
-                                        <span className={`self-center text-2xl font-semibold whitespace-nowrap text-gray-900 ${isSidebarOpen ? 'inline' : 'hidden'}`}>ZONAS</span>
+                                        <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'}`}>ZONAS</span>
                                     </a>
-                                    <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-100`}>
-                                        <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6" />
+                                    <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-700`}>
+                                        <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6 text-white" />
                                     </button>
                                 </div>
                                 <ul className="space-y-3 font-medium">
@@ -436,8 +437,8 @@
                                             <button
                                                 onClick={() => handleZoneClick(zone.id)}
                                                 onDoubleClick={() => { setZoneToEdit({ id: zone.id, name: zone.name }); setShowZoneActionsModal(true); }}
-                                                className={`w-full flex items-center p-3 text-gray-700 rounded-lg group transition-colors ${activeZoneId === zone.id ? 'bg-yellow-100' : 'hover:bg-gray-100'} ${!isSidebarOpen && 'justify-center'}`}>
-                                                <Icon name={zone.name === 'Salón' ? 'Armchair' : zone.name.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeZoneId === zone.id ? 'text-cyan-500' : 'text-gray-500 group-hover:text-gray-900'}`} />
+                                                className={`w-full flex items-center p-3 text-white rounded-lg group transition-colors ${activeZoneId === zone.id ? 'bg-cyan-500' : 'hover:bg-slate-700'} ${!isSidebarOpen && 'justify-center'}`}>
+                                                <Icon name={zone.name === 'Salón' ? 'Armchair' : zone.name.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeZoneId === zone.id ? 'text-white' : 'text-gray-400 group-hover:text-white'}`} />
                                                 <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>{zone.name}</span>
                                                 <span className={`text-sm font-semibold whitespace-nowrap ${!isSidebarOpen ? 'inline' : 'hidden'}`}>{getInitials(zone.name)}</span>
                                             </button>
@@ -447,14 +448,14 @@
                             </div>
                             <div className="mt-auto pt-4">
                                 <div className="space-y-3">
-                                    <h3 className={`text-lg font-semibold text-gray-800 mb-2 px-2 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Herramientas</h3>
-                                    <button onClick={() => { setIsAddingMode(prev => !prev); setIsAddingDecorationMode(false); setIsAddingWallMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Table" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Mesa</span></button>
-                                    <button onClick={() => { setIsAddingDecorationMode(prev => !prev); setIsAddingMode(false); setIsAddingWallMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingDecorationMode ? 'bg-purple-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="PlusCircle" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Decoración</span></button>
-                                    <button onClick={() => { setIsAddingWallMode(prev => !prev); setIsAddingMode(false); setIsAddingDecorationMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingWallMode ? 'bg-yellow-500 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'} ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}><Icon name="Pencil" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Añadir Pared</span></button>
+                                    <h3 className={`text-lg font-semibold text-white mb-2 px-2 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Herramientas</h3>
+                                                                        <button onClick={() => { setIsAddingMode(prev => !prev); setIsAddingDecorationMode(false); setIsAddingWallMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingMode ? 'bg-cyan-500 text-white' : 'bg-slate-700 hover:bg-slate-600 text-white'} ${!isSidebarOpen && 'justify-center'}`}><Icon name="Table" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Añadir Mesa</span></button>
+                                                                        <button onClick={() => { setIsAddingDecorationMode(prev => !prev); setIsAddingMode(false); setIsAddingWallMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingDecorationMode ? 'bg-purple-500 text-white' : 'bg-slate-700 hover:bg-slate-600 text-white'} ${!isSidebarOpen && 'justify-center'}`}><Icon name="PlusCircle" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Añadir Decoración</span></button>
+                                                                        <button onClick={() => { setIsAddingWallMode(prev => !prev); setIsAddingMode(false); setIsAddingDecorationMode(false); }} className={`w-full flex items-center p-3 rounded-lg transition-colors ${isAddingWallMode ? 'bg-yellow-500 text-white' : 'bg-slate-700 hover:bg-slate-600 text-white'} ${!isSidebarOpen && 'justify-center'}`}><Icon name="Pencil" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Añadir Pared</span></button>
                                 </div>
-                                <div className="space-y-3 pt-4 mt-4 border-t border-gray-200">
-                                    <button onClick={() => setShowAddZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg transition-colors bg-blue-600 hover:bg-blue-700 text-white justify-center`}><Icon name="LayoutGrid" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Nueva Zona</span></button>
-                                    <button onClick={handleSaveChanges} disabled={!isDirty || isSaving} className={`w-full flex items-center p-3 rounded-lg transition-colors text-white disabled:opacity-50 ${isDirty ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400'} justify-center`}>
+                                <div className="space-y-3 pt-4 mt-4 border-t border-slate-700">
+                                    <button onClick={() => setShowAddZoneModal(true)} className={`w-full flex items-center p-3 rounded-lg bg-blue-500 hover:bg-blue-600 text-white justify-center`}><Icon name="LayoutGrid" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'}`}>Nueva Zona</span></button>
+                                    <button onClick={handleSaveChanges} disabled={!isDirty || isSaving} className={`w-full flex items-center p-3 rounded-lg transition-colors text-white disabled:opacity-50 ${isDirty ? 'bg-green-500 hover:bg-green-600' : 'bg-slate-700 hover:bg-slate-600'} justify-center`}>
                                         {isSaving ? 
                                             <Icon name="Loader" className="animate-spin flex-shrink-0" /> : 
                                             <Icon name="Save" className="flex-shrink-0" />
@@ -1143,7 +1144,7 @@
                                                                     height: `${(deco.height || typeInfo.height) * 40}px`,
                                                                 }}>
                                                                 {typeInfo.isSvgIcon ?
-                                                                    <Icon name={typeInfo.icon} className="w-full h-full text-gray-600" /> :
+                                                                    <Icon name={typeInfo.icon} className="w-full h-full text-slate-400" /> :
                                                                     <img src={deco.icon || typeInfo.icon} alt={typeInfo.name} className="w-full h-full object-cover pointer-events-none" />
                                                                 }
                                                             </div>
@@ -1160,7 +1161,7 @@
                                                             top: `${wallRect.y + (isHorizontal ? 18 : 0)}px`,
                                                             width: `${wallRect.width}px`,
                                                             height: `${wallRect.height}px`,
-                                                            backgroundColor: selectedWallId === wall.id ? '#ef4444' : '#4a5568',
+                                                            backgroundColor: selectedWallId === wall.id ? '#f87171' : '#94a3b8',
                                                             borderRadius: '9999px',
                                                             cursor: 'pointer',
                                                             zIndex: selectedWallId === wall.id ? 20 : 10
