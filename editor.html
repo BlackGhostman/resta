@@ -424,7 +424,6 @@
                             <div>
                                 <div className={`flex items-center mb-6 h-[2.125rem] ${isSidebarOpen ? 'justify-between' : 'justify-center'} lg:justify-start`}>
                                     <a href="#" className={`flex items-center ps-2.5`}>
-                                        <Icon name="UtensilsCrossed" className="h-6 w-6 me-3 text-cyan-400" />
                                         <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'}`}>ZONAS</span>
                                     </a>
                                     <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-700`}>
@@ -1057,8 +1056,8 @@
                             <Sidebar {...{ getInitials, zones, activeZoneId, setActiveZoneId, isAddingMode, setIsAddingMode, isAddingDecorationMode, setIsAddingDecorationMode, isAddingWallMode, setIsAddingWallMode, selectedTable, setSelectedTable, setShowAddZoneModal, setShowDeleteZoneModal, setZoneToEdit, setShowZoneActionsModal, isSidebarOpen, setIsSidebarOpen, handleSaveChanges, isDirty, isSaving }} />
                             <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64 ml-20' : 'ml-20'}`}>
                                 <Header activeZoneName={zones.find(z => z.id === activeZoneId)?.name || 'Sin Zonas'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-                                <main className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 ${isAddingMode || isAddingDecorationMode || isAddingWallMode ? 'adding-mode' : ''}`}>
-                                    <h1 className="hidden lg:block text-4xl font-bold text-gray-800 mb-8">Editor de Plano: {zones.find(z => z.id === activeZoneId)?.name || ''}</h1>
+                                <main className={`flex-1 overflow-auto p-4 sm:p-6 md:p-8 bg-gray-900 ${isAddingMode || isAddingDecorationMode || isAddingWallMode ? 'adding-mode' : ''}`}>
+                                                                        <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Editor de Plano: {zones.find(z => z.id === activeZoneId)?.name || ''}</h1>
                                     <div className="bg-white p-4 rounded-lg shadow-md inline-block">
                                         {(() => {
                                             const activeZone = zones.find(z => z.id === activeZoneId);
