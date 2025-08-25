@@ -267,8 +267,9 @@
 
                 if (!show) return null;
 
-                const handleSave = () => {
-                    onSave(decorationType);
+                                const handleSave = () => {
+                    const typeInfo = DECORATION_TYPES[decorationType];
+                    onSave(decorationType, typeInfo.width, typeInfo.height);
                     onClose();
                 };
 
@@ -531,7 +532,16 @@
                             const sanitizedZones = (data || []).map(zone => ({
                                 ...zone,
                                 tables: (zone.tables || []).map(t => ({ ...t, x: t.x ?? (t.col - 1) * 40, y: t.y ?? (t.row - 1) * 40 })),
-                                decorations: (zone.decorations || []).map(d => ({ ...d, x: d.x ?? (d.col - 1) * 40, y: d.y ?? (d.row - 1) * 40 })),
+                                                                decorations: (zone.decorations || []).map(d => {
+                                    const typeInfo = DECORATION_TYPES[d.type];
+                                    return {
+                                        ...d,
+                                        x: d.x ?? (d.col - 1) * 40,
+                                        y: d.y ?? (d.row - 1) * 40,
+                                        width: d.width ?? typeInfo?.width ?? 1,
+                                        height: d.height ?? typeInfo?.height ?? 1
+                                    };
+                                }),
                                 walls: zone.walls || []
                             }));
                             setZones(sanitizedZones);
@@ -598,9 +608,9 @@
                         return { x: item.x, y: item.y, width, height, id: item.id };
                     }
                     if (itemType === 'decoration') {
-                        const typeInfo = DECORATION_TYPES[item.type];
-                        if (!typeInfo) return { x: item.x, y: item.y, width: 0, height: 0, id: item.id };
-                        return { x: item.x, y: item.y, width: typeInfo.width * 40, height: typeInfo.height * 40, id: item.id };
+                        const width = (item.width || 1) * 40;
+                        const height = (item.height || 1) * 40;
+                        return { x: item.x, y: item.y, width, height, id: item.id };
                     }
                     return { x: 0, y: 0, width: 0, height: 0, id: null };
                 };
@@ -797,7 +807,7 @@
                     }
                 };
 
-                const handleAddDecoration = (type) => {
+                const handleAddDecoration = (type, width, height) => {
                     const typeInfo = DECORATION_TYPES[type];
                     if (typeInfo && typeInfo.isDrawable) {
                         setIsAddingWallMode(true);
@@ -811,7 +821,7 @@
                         return;
                     }
                     const { x, y } = newDecorationCoords;
-                    const newDecoration = { id: `decor-temp-${Date.now()}`, type, x, y };
+                    const newDecoration = { id: `decor-temp-${Date.now()}`, type, x, y, width, height };
                     const newDecoRect = getItemRect(newDecoration, 'decoration');
 
                     if (isPositionOccupied(newDecoRect, null)) {
