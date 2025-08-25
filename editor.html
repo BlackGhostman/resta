@@ -128,15 +128,33 @@
                     });
                 };
 
-                const handleChange = (e) => {
+                                const handleChange = (e) => {
                     const { name, value } = e.target;
-                    setEditedDecoration(prev => ({ ...prev, [name]: value }));
+                    if (name === 'type') {
+                        const typeInfo = DECORATION_TYPES[value];
+                        setEditedDecoration(prev => ({
+                            ...prev,
+                            type: value,
+                            width: typeInfo?.width ?? 1,
+                            height: typeInfo?.height ?? 1
+                        }));
+                    } else {
+                        setEditedDecoration(prev => ({ ...prev, [name]: value }));
+                    }
                 };
 
                 return (
                     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
                         <div className="bg-slate-800 rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4">
                             <h3 className="text-xl font-semibold text-white">Editar Decoración</h3>
+                                                        <div>
+                                <label className="block text-sm font-medium text-gray-300">Tipo de Elemento</label>
+                                <select name="type" value={editedDecoration.type} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500">
+                                    {Object.entries(DECORATION_TYPES).map(([key, { name }]) => (
+                                        <option key={key} value={key}>{name}</option>
+                                    ))}
+                                </select>
+                            </div>
                             <div className="flex gap-4">
                                 <div className="flex-1">
                                     <label className="block text-sm font-medium text-gray-300">Ancho (celdas)</label>
