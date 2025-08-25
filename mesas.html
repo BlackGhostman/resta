@@ -419,7 +419,7 @@
                                                 className={isDesktopView ? 'relative' : 'flex flex-col gap-3'}
                                                 style={{ height: isDesktopView ? `${GRID_ROWS * 90}px` : 'auto' }}
                                             >
-                                                {activeZone.walls && activeZone.walls.map(wall => {
+                                                {isDesktopView && activeZone.walls && activeZone.walls.map(wall => {
                                                     const x1 = wall.x1, y1 = wall.y1, x2 = wall.x2, y2 = wall.y2;
                                                     const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
                                                     const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
@@ -436,7 +436,7 @@
                                                     return <div key={wall.id} style={style}></div>;
                                                 })}
 
-                                                {activeZone.decorations && activeZone.decorations.map(decor => {
+                                                {isDesktopView && activeZone.decorations && activeZone.decorations.map(decor => {
                                         const decorType = DECORATION_TYPES[decor.type];
                                         if (!decorType) return null;
 
