@@ -130,6 +130,7 @@
 
                                 const handleChange = (e) => {
                     const { name, value } = e.target;
+                    const { name: typeName, icon, isSvgIcon, rotation } = DECORATION_TYPES[value];
                     if (name === 'type') {
                         const typeInfo = DECORATION_TYPES[value];
                         setEditedDecoration(prev => ({
@@ -273,11 +274,14 @@
                 );
             }
 
-            const DECORATION_TYPES = {
-                'bar': { name: 'Barra', icon: 'BarTopView', width: 6, height: 6, isSvgIcon: true },
-                'plant': { name: 'Planta', icon: 'PlantTopView2', width: 2, height: 2, isSvgIcon: true },
-                'fountain': { name: 'Fuente', icon: 'FountainTopView', width: 3, height: 3, isSvgIcon: true },
-                'garden': { name: 'Jardín', icon: 'GardenTopView', width: 5, height: 5, isSvgIcon: true }
+                        const DECORATION_TYPES = {
+                'bar_bottom': { name: 'Barra (Abajo)', icon: 'BarTopView', width: 6, height: 6, rotation: 0, isSvgIcon: true },
+                'bar_left':   { name: 'Barra (Izquierda)', icon: 'BarTopView', width: 6, height: 6, rotation: 270, isSvgIcon: true },
+                'bar_top':    { name: 'Barra (Arriba)', icon: 'BarTopView', width: 6, height: 6, rotation: 180, isSvgIcon: true },
+                'bar_right':  { name: 'Barra (Derecha)', icon: 'BarTopView', width: 6, height: 6, rotation: 90, isSvgIcon: true },
+                'plant':      { name: 'Planta', icon: 'PlantTopView2', width: 2, height: 2, isSvgIcon: true },
+                'fountain':   { name: 'Fuente', icon: 'FountainTopView', width: 3, height: 3, isSvgIcon: true },
+                'garden':     { name: 'Jardín', icon: 'GardenTopView', width: 5, height: 5, isSvgIcon: true }
             };
 
             function AddDecorationModal({ show, onClose, onSave }) {
@@ -1169,6 +1173,7 @@
                                                                     left: `${deco.x}px`,
                                                                     width: `${(deco.width || typeInfo.width) * 40}px`,
                                                                     height: `${(deco.height || typeInfo.height) * 40}px`,
+                                                                    transform: `rotate(${typeInfo.rotation || 0}deg)`
                                                                 }}>
                                                                 {typeInfo.isSvgIcon ?
                                                                     <Icon name={typeInfo.icon} className="w-full h-full text-slate-400" /> :
