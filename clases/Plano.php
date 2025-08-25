@@ -16,7 +16,7 @@ class Plano extends ConexionDB {
         foreach ($zonas as $zona) {
             $zona_id = $zona['id'];
 
-            $mesas_sql = "SELECT id_salones_mesas as id, identificador as number, shape, x, y, 50 as ancho, 50 as alto FROM salones_mesas WHERE id_ubicacion_mesa = ?";
+                        $mesas_sql = "SELECT id_salones_mesas as id, identificador as number, shape, x, y, 50 as ancho, 50 as alto FROM salones_mesas WHERE id_ubicacion_mesa = ?";
             $mesas = $this->consultar($mesas_sql, [$zona_id]);
 
             $paredes_sql = "SELECT id, x1, y1, x2, y2 FROM paredes WHERE zona_id = ?";
@@ -48,6 +48,44 @@ class Plano extends ConexionDB {
         }
 
         return $plano;
+    }
+
+    public function obtenerPlanoParaMesas() {
+        $zonas_sql = "SELECT id_ubicaciones_mesas as id, nombre_ubicacion as nombre FROM ubicaciones_mesas ORDER BY id_ubicaciones_mesas ASC";
+        $zonas = $this->consultar($zonas_sql);
+
+        $plano_completo = [];
+
+        foreach ($zonas as $zona) {
+            $zona_id = $zona['id'];
+
+            $mesas_sql = "SELECT sm.id_salones_mesas as id, sm.identificador as number, sm.shape, sm.x, sm.y, 50 as ancho, 50 as alto, sm.estado, fm.nombre_cliente, fm.cantidad_personas FROM salones_mesas sm LEFT JOIN facturas_maestro fm ON sm.id_salones_mesas = fm.id_mesa AND fm.estado = 'credito' WHERE sm.id_ubicacion_mesa = ?";
+            $mesas = $this->consultar($mesas_sql, [$zona_id]);
+
+            $paredes_sql = "SELECT id, x1, y1, x2, y2 FROM paredes WHERE zona_id = ?";
+            $paredes_db = $this->consultar($paredes_sql, [$zona_id]);
+            $paredes = array_map(function($p) {
+                $p['id'] = 'wall-' . $p['id'];
+                return $p;
+            }, $paredes_db);
+
+            $decoraciones_sql = "SELECT id, tipo as type, x, y, ancho, alto FROM decoraciones WHERE zona_id = ?";
+            $decoraciones_db = $this->consultar($decoraciones_sql, [$zona_id]);
+            $decoraciones = array_map(function($d) {
+                $d['id'] = 'decor-' . $d['id'];
+                return $d;
+            }, $decoraciones_db);
+
+            $plano_completo[] = [
+                'id' => $zona['id'],
+                'name' => $zona['nombre'],
+                'tables' => $mesas,
+                'walls' => $paredes,
+                'decorations' => $decoraciones
+            ];
+        }
+
+        return $plano_completo;
     }
 
     public function guardarPlano($planoData) {
