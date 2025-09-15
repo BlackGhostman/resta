@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantenimiento de Familias</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide-react@0.390.0/dist/lucide-react.js"></script>
+</head>
+<body>
+    <div id="app-container">
+        <header id="main-header">
+            <i data-lucide="home"></i>
+            <div class="header-title">
+                <span>sistema.com</span>
+            </div>
+            <div class="header-icons">
+                <i data-lucide="user"></i>
+                <i data-lucide="more-vertical"></i>
+            </div>
+        </header>
+
+        <div id="main-layout">
+            <aside id="sidebar">
+                <div class="sidebar-header">
+                    <h1>MENÚ</h1>
+                </div>
+                <nav class="sidebar-nav">
+                    <div class="active-user">
+                        <i data-lucide="user" class="text-yellow"></i>
+                        <span class="text-yellow">Camilo B</span>
+                    </div>
+                    <div class="nav-buttons"></div>
+                </nav>
+            </aside>
+
+            <main id="main-content">
+                <div class="container">
+                    <div class="header-with-button">
+                        <h1>Mantenimiento de Familias</h1>
+                        <button id="btn-abrir-modal" class="btn-primary">Agregar Familia</button>
+                    </div>
+
+                    <!-- The Modal -->
+                    <div id="familia-modal" class="modal">
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 id="modal-title">Agregar Familia</h2>
+                                <span class="close-button">&times;</span>
+                            </div>
+                            <div class="modal-body">
+                                <form id="form-familia">
+                                    <input type="hidden" id="id_familias">
+                                    <div class="form-grid">
+                                        <div class="form-group full-width">
+                                            <label for="descripcion">Descripción</label>
+                                            <input type="text" id="descripcion" name="descripcion" required>
+                                        </div>
+                                    </div>
+                                    <div class="button-container">
+                                        <button type="submit" id="btn-guardar">Guardar</button>
+                                        <button type="button" id="btn-limpiar">Limpiar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <h2>Listado de Familias</h2>
+                    <table id="tabla-familias">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th class="acciones">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-familias">
+                            <!-- Filas de familias se insertarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/main.js"></script>
+    <script src="js/familias.js"></script>
+    <script>
+        // La inicialización de lucide ahora se maneja dentro de main.js
+    </script>
+</body>
+</html>
