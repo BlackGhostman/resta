@@ -466,6 +466,63 @@ table[id^="tabla-"] tr:last-child td {
     padding-top: 10px;
 }
 
+/* Estilos para Pestañas (Tabs) */
+.tab-container {
+    margin-top: 20px;
+    border: 1px solid var(--gray-600);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.tab-header {
+    display: flex;
+    background-color: var(--gray-900);
+}
+
+.tab-link {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    color: var(--gray-300);
+    font-size: 14px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab-link:hover {
+    background-color: var(--gray-800);
+}
+
+.tab-link.active {
+    color: var(--yellow-500);
+    border-bottom-color: var(--yellow-500);
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    animation: fadeIn 0.3s;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.modal-content.large {
+    max-width: 900px;
+}
+
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+}
+
 @keyframes fadeIn {
     from {opacity: 0; transform: scale(0.95);}
     to {opacity: 1; transform: scale(1);}

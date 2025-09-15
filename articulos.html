@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantenimiento de Artículos</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide-react@0.390.0/dist/lucide-react.js"></script>
+</head>
+<body>
+    <div id="app-container">
+        <header id="main-header">
+            <i data-lucide="home"></i>
+            <div class="header-title"><span>sistema.com</span></div>
+            <div class="header-icons"><i data-lucide="user"></i><i data-lucide="more-vertical"></i></div>
+        </header>
+
+        <div id="main-layout">
+            <aside id="sidebar">
+                <div class="sidebar-header"><h1>MENÚ</h1></div>
+                <nav class="sidebar-nav">
+                    <div class="active-user"><i data-lucide="user" class="text-yellow"></i><span class="text-yellow">Camilo B</span></div>
+                    <div class="nav-buttons"></div>
+                </nav>
+            </aside>
+
+            <main id="main-content">
+                <div class="container">
+                    <div class="header-with-button">
+                        <h1>Mantenimiento de Artículos</h1>
+                        <button id="btn-abrir-modal" class="btn-primary">Agregar Artículo</button>
+                    </div>
+
+                    <!-- The Modal -->
+                    <div id="articulo-modal" class="modal">
+                        <div class="modal-content large">
+                            <div class="modal-header">
+                                <h2 id="modal-title">Agregar Artículo</h2>
+                                <span class="close-button">&times;</span>
+                            </div>
+                            <div class="modal-body">
+                                <form id="form-articulo">
+                                    <input type="hidden" id="id_articulos">
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="nombre">Nombre</label>
+                                            <input type="text" id="nombre" name="nombre" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_proveedor">Proveedor</label>
+                                            <select id="id_proveedor" name="id_proveedor"></select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tabs -->
+                                    <div class="tab-container">
+                                        <div class="tab-header">
+                                            <button type="button" class="tab-link active" data-tab="tab-generales">Datos Generales</button>
+                                            <button type="button" class="tab-link" data-tab="tab-precios">Precios</button>
+                                            <button type="button" class="tab-link" data-tab="tab-existencias">Existencias</button>
+                                        </div>
+                                        <div id="tab-generales" class="tab-content active">
+                                            <div class="form-grid">
+                                                <div class="form-group"><label for="id_familia">Familia</label><select id="id_familia" name="id_familia"></select></div>
+                                                <div class="form-group"><label for="id_subfamilia">Subfamilia</label><select id="id_subfamilia" name="id_subfamilia"></select></div>
+                                                <div class="form-group"><label for="id_ubicacion_inventario">Ubicación</label><select id="id_ubicacion_inventario" name="id_ubicacion_inventario"></select></div>
+                                                <div class="form-group"><label for="id_medida">Unidad de Medida</label><select id="id_medida" name="id_medida"></select></div>
+                                            </div>
+                                        </div>
+                                        <div id="tab-precios" class="tab-content">
+                                            <div class="form-grid">
+                                                <div class="form-group"><label for="costo_promedio">Costo Promedio</label><input type="number" id="costo_promedio" name="costo_promedio" step="0.01"></div>
+                                                <div class="form-group"><label for="precio_venta">Precio Venta</label><input type="number" id="precio_venta" name="precio_venta" step="0.01"></div>
+                                                <div class="form-group"><label for="impuesto_porcentaje">% Impuesto</label><input type="number" id="impuesto_porcentaje" name="impuesto_porcentaje" step="0.01"></div>
+                                            </div>
+                                        </div>
+                                        <div id="tab-existencias" class="tab-content">
+                                            <div class="form-grid">
+                                                <div class="form-group"><label for="existencia">Existencia Actual</label><input type="number" id="existencia" name="existencia" step="0.01"></div>
+                                                <div class="form-group"><label for="stock_minimo">Stock Mínimo</label><input type="number" id="stock_minimo" name="stock_minimo" step="0.01"></div>
+                                                <div class="form-group checkbox-group"><label for="es_inventariable">Es Inventariable</label><input type="checkbox" id="es_inventariable" name="es_inventariable" value="1"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="button-container">
+                                        <button type="submit" id="btn-guardar">Guardar</button>
+                                        <button type="button" id="btn-limpiar">Limpiar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <input type="text" id="filtro-articulos" class="filter-input" placeholder="Buscar por nombre, familia, subfamilia...">
+                    <table id="tabla-articulos">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Familia</th>
+                                <th>Subfamilia</th>
+                                <th>Precio Venta</th>
+                                <th>Existencia</th>
+                                <th class="acciones">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-articulos"></tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/main.js"></script>
+    <script src="js/articulos.js"></script>
+</body>
+</html>
