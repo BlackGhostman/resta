@@ -3,10 +3,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const tablaCuerpo = document.getElementById('cuerpo-tabla-proveedores');
     const btnLimpiar = document.getElementById('btn-limpiar');
     const idProveedorInput = document.getElementById('id_proveedor');
-
     const API_URL = 'api/proveedores.php';
 
-    // Cargar todos los proveedores al iniciar
+    // --- Modal Elements ---
+    const modal = document.getElementById('proveedor-modal');
+    const btnAbrirModal = document.getElementById('btn-abrir-modal');
+    const closeButton = document.querySelector('.close-button');
+    const modalTitle = document.getElementById('modal-title');
+    const btnGuardar = document.getElementById('btn-guardar');
+
+    // --- Modal Logic ---
+    const openModal = () => modal.style.display = 'block';
+    const closeModal = () => modal.style.display = 'none';
+
+    btnAbrirModal.addEventListener('click', () => {
+        limpiarFormulario();
+        modalTitle.textContent = 'Agregar Proveedor';
+        btnGuardar.textContent = 'Guardar';
+        openModal();
+    });
+
+    closeButton.addEventListener('click', closeModal);
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    // --- Core Functions ---
     const cargarProveedores = async () => {
         try {
             const response = await fetch(API_URL);
@@ -24,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Mostrar proveedores en la tabla
     const mostrarProveedores = (proveedores) => {
         tablaCuerpo.innerHTML = '';
         if (proveedores.length === 0) {
@@ -48,14 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Limpiar el formulario
     const limpiarFormulario = () => {
         form.reset();
         idProveedorInput.value = '';
-        document.getElementById('btn-guardar').textContent = 'Guardar';
     };
 
-    // Manejar envío del formulario (Crear/Actualizar)
+    // --- Event Listeners ---
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(form);
@@ -76,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.success) {
                 alert(result.message);
-                limpiarFormulario();
+                closeModal();
                 cargarProveedores();
             } else {
                 throw new Error(result.message || 'Error en la operación');
@@ -87,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Manejar clics en la tabla (Editar/Eliminar)
     tablaCuerpo.addEventListener('click', async (e) => {
         const id = e.target.dataset.id;
         if (!id) return;
@@ -100,10 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (result.success && result.data) {
                     const proveedor = result.data;
+                    limpiarFormulario(); // Limpia por si acaso
                     Object.keys(proveedor).forEach(key => {
                         const input = form.querySelector(`#${key}`);
                         if (input) {
-                            // Formatear la fecha para el input type="date"
                             if (input.type === 'date' && proveedor[key]) {
                                 input.value = proveedor[key].split(' ')[0];
                             } else {
@@ -112,8 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
                     idProveedorInput.value = proveedor.id_proveedores;
-                    document.getElementById('btn-guardar').textContent = 'Actualizar';
-                    window.scrollTo(0, 0);
+                    modalTitle.textContent = 'Editar Proveedor';
+                    btnGuardar.textContent = 'Actualizar';
+                    openModal();
                 } else {
                     throw new Error(result.message || 'Proveedor no encontrado.');
                 }
@@ -141,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Botón Limpiar
     btnLimpiar.addEventListener('click', limpiarFormulario);
 
     // Carga inicial

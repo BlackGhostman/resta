@@ -36,47 +36,60 @@
 
             <main id="main-content">
                 <div class="container">
-                    <h1>Mantenimiento de Proveedores</h1>
-            
-                    <form id="form-proveedor">
-                        <input type="hidden" id="id_proveedor">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="nombre">Nombre</label>
-                                <input type="text" id="nombre" name="nombre" required>
+                    <div class="header-with-button">
+                        <h1>Mantenimiento de Proveedores</h1>
+                        <button id="btn-abrir-modal" class="btn-primary">Agregar Proveedor</button>
+                    </div>
+
+                    <!-- The Modal -->
+                    <div id="proveedor-modal" class="modal">
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 id="modal-title">Agregar Proveedor</h2>
+                                <span class="close-button">&times;</span>
                             </div>
-                            <div class="form-group">
-                                <label for="contacto">Contacto</label>
-                                <input type="text" id="contacto" name="contacto">
-                            </div>
-                            <div class="form-group">
-                                <label for="cedula_juridica">Cédula Jurídica</label>
-                                <input type="text" id="cedula_juridica" name="cedula_juridica">
-                            </div>
-                            <div class="form-group">
-                                <label for="telefono">Teléfono</label>
-                                <input type="tel" id="telefono" name="telefono">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email">
-                            </div>
-                            <div class="form-group">
-                                <label for="fecha_inicio_relacion">Fecha Inicio Relación</label>
-                                <input type="date" id="fecha_inicio_relacion" name="fecha_inicio_relacion">
-                            </div>
-                            <div class="form-group full-width">
-                                <label for="direccion">Dirección</label>
-                                <input type="text" id="direccion" name="direccion">
+                            <div class="modal-body">
+                                <form id="form-proveedor">
+                                    <input type="hidden" id="id_proveedor">
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="nombre">Nombre</label>
+                                            <input type="text" id="nombre" name="nombre" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="contacto">Contacto</label>
+                                            <input type="text" id="contacto" name="contacto">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cedula_juridica">Cédula Jurídica</label>
+                                            <input type="text" id="cedula_juridica" name="cedula_juridica">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="telefono">Teléfono</label>
+                                            <input type="tel" id="telefono" name="telefono">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input type="email" id="email" name="email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="fecha_inicio_relacion">Fecha Inicio Relación</label>
+                                            <input type="date" id="fecha_inicio_relacion" name="fecha_inicio_relacion">
+                                        </div>
+                                        <div class="form-group full-width">
+                                            <label for="direccion">Dirección</label>
+                                            <input type="text" id="direccion" name="direccion">
+                                        </div>
+                                    </div>
+                                    <div class="button-container">
+                                        <button type="submit" id="btn-guardar">Guardar</button>
+                                        <button type="button" id="btn-limpiar">Limpiar</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div class="button-container">
-                            <button type="submit" id="btn-guardar">Guardar</button>
-                            <button type="button" id="btn-limpiar">Limpiar</button>
-                        </div>
-                    </form>
-            
-                    <hr>
+                    </div>
             
                     <h2>Listado de Proveedores</h2>
                     <table id="tabla-proveedores">
