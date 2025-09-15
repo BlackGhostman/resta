@@ -5,7 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const idSubfamiliaInput = document.getElementById('id_subfamilias');
     const familiaSelect = document.getElementById('id_familia');
     const API_URL = 'api/subfamilias.php';
-    const FAMILIAS_API_URL = 'api/familias.php'; // Usamos el API de familias existente
+    const FAMILIAS_API_URL = 'api/familias.php';
+    const filtroInput = document.getElementById('filtro-subfamilias');
+
+    let todasLasSubfamilias = []; // Almacenar la lista completa
 
     // --- Modal Elements ---
     const modal = document.getElementById('subfamilia-modal');
@@ -63,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
             
             if (result.success) {
-                mostrarSubfamilias(result.data);
+                todasLasSubfamilias = result.data;
+                mostrarSubfamilias(todasLasSubfamilias);
             } else {
                 console.error('Error del API:', result.message);
                 tablaCuerpo.innerHTML = `<tr><td colspan="3">Error: ${result.message}</td></tr>`;
@@ -181,6 +185,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
+    });
+
+    filtroInput.addEventListener('input', () => {
+        const termino = filtroInput.value.toLowerCase();
+        const subfamiliasFiltradas = todasLasSubfamilias.filter(sf => 
+            sf.descripcion.toLowerCase().includes(termino) || 
+            sf.familia_descripcion.toLowerCase().includes(termino)
+        );
+        mostrarSubfamilias(subfamiliasFiltradas);
     });
 
     btnLimpiar.addEventListener('click', limpiarFormulario);
