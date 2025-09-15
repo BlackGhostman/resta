@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mantenimiento de Ubicaciones de Inventario</title>
+    <title>Mantenimiento de Medidas</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/lucide-react@0.390.0/dist/lucide-react.js"></script>
 </head>
@@ -27,24 +27,28 @@
             <main id="main-content">
                 <div class="container">
                     <div class="header-with-button">
-                        <h1>Mantenimiento de Ubicaciones de Inventario</h1>
-                        <button id="btn-abrir-modal" class="btn-primary">Agregar Ubicación</button>
+                        <h1>Mantenimiento de Medidas</h1>
+                        <button id="btn-abrir-modal" class="btn-primary">Agregar Medida</button>
                     </div>
 
                     <!-- The Modal -->
-                    <div id="ubicacion-modal" class="modal">
+                    <div id="medida-modal" class="modal">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h2 id="modal-title">Agregar Ubicación</h2>
+                                <h2 id="modal-title">Agregar Medida</h2>
                                 <span class="close-button">&times;</span>
                             </div>
                             <div class="modal-body">
-                                <form id="form-ubicacion">
-                                    <input type="hidden" id="id_ubicacion_inventario">
+                                <form id="form-medida">
+                                    <input type="hidden" id="id_medidas">
                                     <div class="form-grid">
-                                        <div class="form-group full-width">
+                                        <div class="form-group">
                                             <label for="descripcion">Descripción</label>
                                             <input type="text" id="descripcion" name="descripcion" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="abreviatura">Abreviatura</label>
+                                            <input type="text" id="abreviatura" name="abreviatura" required>
                                         </div>
                                     </div>
                                     <div class="button-container">
@@ -56,15 +60,16 @@
                         </div>
                     </div>
             
-                    <input type="text" id="filtro-ubicaciones" class="filter-input" placeholder="Buscar por descripción...">
-                    <table id="tabla-ubicaciones">
+                    <input type="text" id="filtro-medidas" class="filter-input" placeholder="Buscar por descripción o abreviatura...">
+                    <table id="tabla-medidas">
                         <thead>
                             <tr>
                                 <th>Descripción</th>
+                                <th>Abreviatura</th>
                                 <th class="acciones">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="cuerpo-tabla-ubicaciones"></tbody>
+                        <tbody id="cuerpo-tabla-medidas"></tbody>
                     </table>
                 </div>
             </main>
@@ -73,6 +78,6 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="js/main.js"></script>
-    <script src="js/gestionar_ubicaciones.js"></script>
+    <script src="js/medidas.js"></script>
 </body>
 </html>

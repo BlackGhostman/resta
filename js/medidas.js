@@ -1,21 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Elementos del DOM ---
-    const form = document.getElementById('form-ubicacion');
-    const tablaCuerpo = document.getElementById('cuerpo-tabla-ubicaciones');
-    const filtroInput = document.getElementById('filtro-ubicaciones');
-    const modal = document.getElementById('ubicacion-modal');
+    const form = document.getElementById('form-medida');
+    const tablaCuerpo = document.getElementById('cuerpo-tabla-medidas');
+    const filtroInput = document.getElementById('filtro-medidas');
+    const modal = document.getElementById('medida-modal');
     const btnAbrirModal = document.getElementById('btn-abrir-modal');
     const closeButton = modal.querySelector('.close-button');
     const modalTitle = document.getElementById('modal-title');
     const btnGuardar = document.getElementById('btn-guardar');
     const btnLimpiar = document.getElementById('btn-limpiar');
-    const idUbicacionInput = document.getElementById('id_ubicacion_inventario');
+    const idMedidaInput = document.getElementById('id_medidas');
 
     // --- URL de API ---
-    const API_URL = 'api/ubicaciones_inventario.php';
+    const API_URL = 'api/medidas.php';
 
     // --- Almacenamiento de datos ---
-    let todasLasUbicaciones = [];
+    let todasLasMedidas = [];
 
     // --- Lógica del Modal ---
     const openModal = () => modal.style.display = 'block';
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnAbrirModal.addEventListener('click', () => {
         limpiarFormulario();
-        modalTitle.textContent = 'Agregar Ubicación';
+        modalTitle.textContent = 'Agregar Medida';
         btnGuardar.textContent = 'Guardar';
         openModal();
     });
@@ -33,37 +33,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Carga de Datos ---
-    const cargarUbicaciones = async () => {
+    const cargarMedidas = async () => {
         try {
             const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('Error al obtener las ubicaciones');
+            if (!response.ok) throw new Error('Error al obtener las medidas');
             const result = await response.json();
             if (result.success) {
-                todasLasUbicaciones = result.data;
-                mostrarUbicaciones(todasLasUbicaciones);
+                todasLasMedidas = result.data;
+                mostrarMedidas(todasLasMedidas);
             } else {
                 throw new Error(result.message);
             }
         } catch (error) {
-            console.error('Error al cargar ubicaciones:', error);
-            alert('No se pudieron cargar las ubicaciones.');
+            console.error('Error al cargar medidas:', error);
+            alert('No se pudieron cargar las medidas.');
         }
     };
 
     // --- Funciones de Ayuda ---
-    const mostrarUbicaciones = (ubicaciones) => {
+    const mostrarMedidas = (medidas) => {
         tablaCuerpo.innerHTML = '';
-        if (!ubicaciones || ubicaciones.length === 0) {
-            tablaCuerpo.innerHTML = '<tr><td colspan="2">No hay ubicaciones registradas.</td></tr>';
+        if (!medidas || medidas.length === 0) {
+            tablaCuerpo.innerHTML = '<tr><td colspan="3">No hay medidas registradas.</td></tr>';
             return;
         }
-        ubicaciones.forEach(u => {
+        medidas.forEach(m => {
             const fila = document.createElement('tr');
             fila.innerHTML = `
-                <td>${u.descripcion}</td>
+                <td>${m.descripcion}</td>
+                <td>${m.abreviatura}</td>
                 <td class="acciones">
-                    <button class="btn-editar" data-id="${u.id_ubicaciones_inventario}">Editar</button>
-                    <button class="btn-eliminar" data-id="${u.id_ubicaciones_inventario}">Eliminar</button>
+                    <button class="btn-editar" data-id="${m.id_medidas}">Editar</button>
+                    <button class="btn-eliminar" data-id="${m.id_medidas}">Eliminar</button>
                 </td>
             `;
             tablaCuerpo.appendChild(fila);
@@ -72,23 +73,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const limpiarFormulario = () => {
         form.reset();
-        idUbicacionInput.value = '';
+        idMedidaInput.value = '';
     };
 
     // --- Event Listeners ---
     filtroInput.addEventListener('input', () => {
         const termino = filtroInput.value.toLowerCase();
-        const ubicacionesFiltradas = todasLasUbicaciones.filter(u => 
-            u.descripcion.toLowerCase().includes(termino)
+        const medidasFiltradas = todasLasMedidas.filter(m => 
+            m.descripcion.toLowerCase().includes(termino) ||
+            m.abreviatura.toLowerCase().includes(termino)
         );
-        mostrarUbicaciones(ubicacionesFiltradas);
+        mostrarMedidas(medidasFiltradas);
     });
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(form);
         const datos = Object.fromEntries(formData.entries());
-        const id = idUbicacionInput.value;
+        const id = idMedidaInput.value;
         const url = id ? `${API_URL}?id=${id}` : API_URL;
         const method = id ? 'PUT' : 'POST';
 
@@ -102,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success) {
                 alert(result.message);
                 closeModal();
-                cargarUbicaciones();
+                cargarMedidas();
             } else {
                 throw new Error(result.message);
             }
@@ -121,11 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`${API_URL}?id=${id}`);
                 const result = await response.json();
                 if (result.success && result.data) {
-                    const ubicacion = result.data;
+                    const medida = result.data;
                     limpiarFormulario();
-                    document.getElementById('descripcion').value = ubicacion.descripcion;
-                    idUbicacionInput.value = ubicacion.id_ubicaciones_inventario;
-                    modalTitle.textContent = 'Editar Ubicación';
+                    document.getElementById('descripcion').value = medida.descripcion;
+                    document.getElementById('abreviatura').value = medida.abreviatura;
+                    idMedidaInput.value = medida.id_medidas;
+                    modalTitle.textContent = 'Editar Medida';
                     btnGuardar.textContent = 'Actualizar';
                     openModal();
                 } else {
@@ -136,13 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(`Error: ${error.message}`);
             }
         } else if (e.target.classList.contains('btn-eliminar')) {
-            if (confirm('¿Estás seguro de que deseas eliminar esta ubicación?')) {
+            if (confirm('¿Estás seguro de que deseas eliminar esta medida?')) {
                 try {
                     const response = await fetch(`${API_URL}?id=${id}`, { method: 'DELETE' });
                     const result = await response.json();
                     if (result.success) {
                         alert(result.message);
-                        cargarUbicaciones();
+                        cargarMedidas();
                     } else {
                         throw new Error(result.message);
                     }
@@ -157,5 +160,5 @@ document.addEventListener('DOMContentLoaded', () => {
     btnLimpiar.addEventListener('click', limpiarFormulario);
 
     // --- Carga Inicial ---
-    cargarUbicaciones();
+    cargarMedidas();
 });
