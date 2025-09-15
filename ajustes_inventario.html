@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajustes de Inventario</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide-react@0.390.0/dist/lucide-react.js"></script>
+</head>
+<body>
+    <div id="app-container">
+        <header id="main-header">
+            <i data-lucide="home"></i>
+            <div class="header-title"><span>sistema.com</span></div>
+            <div class="header-icons"><i data-lucide="user"></i><i data-lucide="more-vertical"></i></div>
+        </header>
+
+        <div id="main-layout">
+            <aside id="sidebar">
+                <div class="sidebar-header"><h1>MENÚ</h1></div>
+                <nav class="sidebar-nav">
+                    <div class="active-user"><i data-lucide="user" class="text-yellow"></i><span class="text-yellow">Camilo B</span></div>
+                    <div class="nav-buttons"></div>
+                </nav>
+            </aside>
+
+            <main id="main-content">
+                <div class="container">
+                    <div class="header-with-button">
+                        <h1>Ajustes de Inventario</h1>
+                        <button id="btn-abrir-modal" class="btn-primary">Nuevo Ajuste</button>
+                    </div>
+
+                    <!-- The Modal -->
+                    <div id="ajuste-modal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 id="modal-title">Nuevo Ajuste de Inventario</h2>
+                                <span class="close-button">&times;</span>
+                            </div>
+                            <div class="modal-body">
+                                <form id="form-ajuste">
+                                    <div class="form-grid">
+                                        <div class="form-group full-width">
+                                            <label for="id_articulo">Artículo</label>
+                                            <select id="id_articulo" name="id_articulo" required></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id_tipo_ajuste">Tipo de Ajuste</label>
+                                            <select id="id_tipo_ajuste" name="id_tipo_ajuste" required></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cantidad">Cantidad</label>
+                                            <input type="number" id="cantidad" name="cantidad" step="0.01" required>
+                                        </div>
+                                        <div class="form-group full-width">
+                                            <label for="observaciones">Observaciones</label>
+                                            <textarea id="observaciones" name="observaciones" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="button-container">
+                                        <button type="submit" id="btn-guardar">Guardar Ajuste</button>
+                                        <button type="button" id="btn-limpiar">Limpiar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <input type="text" id="filtro-ajustes" class="filter-input" placeholder="Buscar por artículo o tipo de ajuste...">
+                    <table id="tabla-ajustes">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Artículo</th>
+                                <th>Tipo de Ajuste</th>
+                                <th>Movimiento</th>
+                                <th>Cantidad</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-ajustes"></tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/main.js"></script>
+    <script src="js/ajustes_inventario.js"></script>
+</body>
+</html>
