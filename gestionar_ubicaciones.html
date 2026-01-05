@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/lucide-react@0.390.0/dist/lucide-react.js"></script>
 </head>
+
 <body>
     <div id="app-container">
         <header id="main-header">
@@ -17,24 +19,12 @@
 
         <div id="main-layout">
             <aside id="sidebar">
-                <div class="sidebar-header"><h1>MENÚ</h1></div>
+                <div class="sidebar-header">
+                    <h1>MENÚ</h1>
+                </div>
                 <nav class="sidebar-nav">
-                    <div class="active-user"><i data-lucide="user" class="text-yellow"></i><span class="text-yellow">Camilo B</span></div>
-                    <div class="nav-buttons">
-                        <a href="mesas.html" class="nav-button"><i data-lucide="layout-grid"></i><span>Mesas</span></a>
-                        <a href="editor.html" class="nav-button"><i data-lucide="edit"></i><span>Editor de Mesas</span></a>
-                        <hr>
-                        <a href="articulos.html" class="nav-button"><i data-lucide="package"></i><span>Artículos</span></a>
-                        <a href="proveedores.html" class="nav-button"><i data-lucide="truck"></i><span>Proveedores</span></a>
-                        <a href="familias.html" class="nav-button"><i data-lucide="folder-tree"></i><span>Familias</span></a>
-                        <a href="subfamilias.html" class="nav-button"><i data-lucide="folder"></i><span>Subfamilias</span></a>
-                        <a href="medidas.html" class="nav-button"><i data-lucide="ruler"></i><span>Medidas</span></a>
-                        <a href="gestionar_ubicaciones.html" class="nav-button"><i data-lucide="map-pin"></i><span>Ubicaciones Inv.</span></a>
-                        <hr>
-                        <a href="ajustes_inventario.html" class="nav-button"><i data-lucide="move"></i><span>Ajustes Inventario</span></a>
-                        <a href="tipos_ajuste_inventario.html" class="nav-button"><i data-lucide="settings-2"></i><span>Tipos de Ajuste</span></a>
-                        <a href="tipos_cuenta.html" class="nav-button"><i data-lucide="arrow-right-left"></i><span>Tipos de Cuenta</span></a>
-                    </div>
+                    <div class="active-user"><i data-lucide="user" class="text-yellow"></i><span
+                            class="text-yellow">Camilo B</span></div>
                 </nav>
             </aside>
 
@@ -69,8 +59,9 @@
                             </div>
                         </div>
                     </div>
-            
-                    <input type="text" id="filtro-ubicaciones" class="filter-input" placeholder="Buscar por descripción...">
+
+                    <input type="text" id="filtro-ubicaciones" class="filter-input"
+                        placeholder="Buscar por descripción...">
                     <table id="tabla-ubicaciones">
                         <thead>
                             <tr>
@@ -86,7 +77,9 @@
     </div>
 
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/sidebar.js"></script>
     <script src="js/main.js"></script>
     <script src="js/gestionar_ubicaciones.js"></script>
 </body>
+
 </html>

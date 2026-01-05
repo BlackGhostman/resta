@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/lucide-react@0.390.0/dist/lucide-react.js"></script>
 </head>
+
 <body>
     <div id="app-container">
         <header id="main-header">
@@ -17,24 +19,12 @@
 
         <div id="main-layout">
             <aside id="sidebar">
-                <div class="sidebar-header"><h1>MENÚ</h1></div>
+                <div class="sidebar-header">
+                    <h1>MENÚ</h1>
+                </div>
                 <nav class="sidebar-nav">
-                    <div class="active-user"><i data-lucide="user" class="text-yellow"></i><span class="text-yellow">Camilo B</span></div>
-                    <div class="nav-buttons">
-                        <a href="mesas.html" class="nav-button"><i data-lucide="layout-grid"></i><span>Mesas</span></a>
-                        <a href="editor.html" class="nav-button"><i data-lucide="edit"></i><span>Editor de Mesas</span></a>
-                        <hr>
-                        <a href="articulos.html" class="nav-button"><i data-lucide="package"></i><span>Artículos</span></a>
-                        <a href="proveedores.html" class="nav-button"><i data-lucide="truck"></i><span>Proveedores</span></a>
-                        <a href="familias.html" class="nav-button"><i data-lucide="folder-tree"></i><span>Familias</span></a>
-                        <a href="subfamilias.html" class="nav-button"><i data-lucide="folder"></i><span>Subfamilias</span></a>
-                        <a href="medidas.html" class="nav-button"><i data-lucide="ruler"></i><span>Medidas</span></a>
-                        <a href="gestionar_ubicaciones.html" class="nav-button"><i data-lucide="map-pin"></i><span>Ubicaciones Inv.</span></a>
-                        <hr>
-                        <a href="ajustes_inventario.html" class="nav-button"><i data-lucide="move"></i><span>Ajustes Inventario</span></a>
-                        <a href="tipos_ajuste_inventario.html" class="nav-button"><i data-lucide="settings-2"></i><span>Tipos de Ajuste</span></a>
-                        <a href="tipos_cuenta.html" class="nav-button"><i data-lucide="arrow-right-left"></i><span>Tipos de Cuenta</span></a>
-                    </div>
+                    <div class="active-user"><i data-lucide="user" class="text-yellow"></i><span
+                            class="text-yellow">Camilo B</span></div>
                 </nav>
             </aside>
 
@@ -69,33 +59,55 @@
                                     <!-- Tabs -->
                                     <div class="tab-container">
                                         <div class="tab-header">
-                                            <button type="button" class="tab-link active" data-tab="tab-generales">Datos Generales</button>
-                                            <button type="button" class="tab-link" data-tab="tab-precios">Precios</button>
-                                            <button type="button" class="tab-link" data-tab="tab-existencias">Existencias</button>
+                                            <button type="button" class="tab-link active" data-tab="tab-generales">Datos
+                                                Generales</button>
+                                            <button type="button" class="tab-link"
+                                                data-tab="tab-precios">Precios</button>
+                                            <button type="button" class="tab-link"
+                                                data-tab="tab-existencias">Existencias</button>
                                         </div>
                                         <div id="tab-generales" class="tab-content active">
                                             <div class="form-grid">
-                                                <div class="form-group"><label for="id_familia">Familia</label><select id="id_familia" name="id_familia"></select></div>
-                                                <div class="form-group"><label for="id_subfamilia">Subfamilia</label><select id="id_subfamilia" name="id_subfamilia"></select></div>
-                                                <div class="form-group"><label for="id_ubicacion_inventario">Ubicación</label><select id="id_ubicacion_inventario" name="id_ubicacion_inventario"></select></div>
-                                                <div class="form-group"><label for="id_medida">Unidad de Medida</label><select id="id_medida" name="id_medida"></select></div>
+                                                <div class="form-group"><label for="id_familia">Familia</label><select
+                                                        id="id_familia" name="id_familia"></select></div>
+                                                <div class="form-group"><label
+                                                        for="id_subfamilia">Subfamilia</label><select id="id_subfamilia"
+                                                        name="id_subfamilia"></select></div>
+                                                <div class="form-group"><label
+                                                        for="id_ubicacion_inventario">Ubicación</label><select
+                                                        id="id_ubicacion_inventario"
+                                                        name="id_ubicacion_inventario"></select></div>
+                                                <div class="form-group"><label for="id_medida">Unidad de
+                                                        Medida</label><select id="id_medida" name="id_medida"></select>
+                                                </div>
                                             </div>
                                         </div>
                                         <div id="tab-precios" class="tab-content">
                                             <div class="form-grid">
-                                                <div class="form-group"><label for="costo_promedio">Costo Promedio</label><input type="number" id="costo_promedio" name="costo_promedio" step="0.01"></div>
-                                                <div class="form-group"><label for="precio_venta">Precio Venta</label><input type="number" id="precio_venta" name="precio_venta" step="0.01"></div>
-                                                <div class="form-group"><label for="impuesto_porcentaje">% Impuesto</label><input type="number" id="impuesto_porcentaje" name="impuesto_porcentaje" step="0.01"></div>
+                                                <div class="form-group"><label for="costo_promedio">Costo
+                                                        Promedio</label><input type="number" id="costo_promedio"
+                                                        name="costo_promedio" step="0.01"></div>
+                                                <div class="form-group"><label for="precio_venta">Precio
+                                                        Venta</label><input type="number" id="precio_venta"
+                                                        name="precio_venta" step="0.01"></div>
+                                                <div class="form-group"><label for="impuesto_porcentaje">%
+                                                        Impuesto</label><input type="number" id="impuesto_porcentaje"
+                                                        name="impuesto_porcentaje" step="0.01"></div>
                                             </div>
                                         </div>
                                         <div id="tab-existencias" class="tab-content">
                                             <div class="form-grid">
-                                                <div class="form-group"><label for="existencia">Existencia Actual</label><input type="number" id="existencia" name="existencia" step="0.01"></div>
-                                                <div class="form-group"><label for="stock_minimo">Stock Mínimo</label><input type="number" id="stock_minimo" name="stock_minimo" step="0.01"></div>
-                                                                                                <div class="form-group toggle-container">
+                                                <div class="form-group"><label for="existencia">Existencia
+                                                        Actual</label><input type="number" id="existencia"
+                                                        name="existencia" step="0.01"></div>
+                                                <div class="form-group"><label for="stock_minimo">Stock
+                                                        Mínimo</label><input type="number" id="stock_minimo"
+                                                        name="stock_minimo" step="0.01"></div>
+                                                <div class="form-group toggle-container">
                                                     <label for="es_inventariable">Es Inventariable</label>
                                                     <label class="toggle-switch">
-                                                        <input type="checkbox" id="es_inventariable" name="es_inventariable" value="1">
+                                                        <input type="checkbox" id="es_inventariable"
+                                                            name="es_inventariable" value="1">
                                                         <span class="slider"></span>
                                                     </label>
                                                 </div>
@@ -111,8 +123,9 @@
                             </div>
                         </div>
                     </div>
-            
-                    <input type="text" id="filtro-articulos" class="filter-input" placeholder="Buscar por nombre, familia, subfamilia...">
+
+                    <input type="text" id="filtro-articulos" class="filter-input"
+                        placeholder="Buscar por nombre, familia, subfamilia...">
                     <table id="tabla-articulos">
                         <thead>
                             <tr>
@@ -132,7 +145,9 @@
     </div>
 
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/sidebar.js"></script>
     <script src="js/main.js"></script>
     <script src="js/articulos.js"></script>
 </body>
+
 </html>

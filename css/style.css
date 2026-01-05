@@ -580,3 +580,89 @@ input:checked + .slider:before {
     from {opacity: 0; transform: scale(0.95);}
     to {opacity: 1; transform: scale(1);}
 }
+
+/* Estilos para el Menú Acordeón (Sidebar) */
+
+/* Contenedor de grupos */
+.nav-group {
+    margin-bottom: 0.25rem;
+}
+
+/* Cabecera del grupo (Botón principal) */
+.nav-group-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 0.5rem;
+    color: var(--gray-300);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.nav-group-trigger:hover {
+    background-color: var(--white-transparent-5);
+    color: #ffffff;
+}
+
+.nav-group-trigger .trigger-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.nav-group-trigger .trigger-content i {
+    width: 20px;
+    height: 20px;
+}
+
+.nav-group-trigger .chevron-icon {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+/* Items del submenú */
+.nav-group-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background-color: rgba(0, 0, 0, 0.2); /* Fondo ligeramente más oscuro para subitems */
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.nav-group-content.open {
+    max-height: 500px; /* Altura arbitraria suficiente para el contenido */
+    transition: max-height 0.5s ease-in;
+}
+
+.nav-sub-item {
+    display: block;
+    padding: 0.6rem 0.6rem 0.6rem 2.5rem; /* Indentación para jerarquía */
+    color: var(--gray-400);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s, background-color 0.2s;
+    border-left: 2px solid transparent;
+}
+
+.nav-sub-item:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.nav-sub-item.active {
+    color: var(--yellow-500);
+    background-color: rgba(234, 179, 8, 0.1); /* Tinte amarillo sutil */
+    border-left-color: var(--yellow-500);
+}
+
+/* Modificación para Active User spacing */
+.active-user {
+    margin-bottom: 1rem;
+}
