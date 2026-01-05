@@ -96,31 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (data.success) {
-                // Update Sidebar
-                const userDiv = document.createElement('div');
-                userDiv.className = 'active-user';
-                userDiv.style.justifyContent = 'space-between'; // Spacing for logout icon
-                userDiv.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:0.5rem;">
-                        <i data-lucide="user" class="text-yellow"></i>
-                        <span class="text-yellow font-medium">${data.user_name}</span>
-                    </div>
-                    <button id="sidebar-logout" style="background:none; border:none; cursor:pointer; padding:0; display:flex; align-items:center;" title="Cerrar Sesión">
-                        <i data-lucide="log-out" class="text-yellow"></i>
-                    </button>
-                `;
-                sidebarNav.prepend(userDiv);
-
-                // Add Sidebar Logout Listener
-                const logoutBtn = document.getElementById('sidebar-logout');
-                if (logoutBtn) {
-                    logoutBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        window.confirmLogout();
-                    });
-                }
-
                 // Update Header
                 const headerIcons = document.querySelector('#main-header .header-icons');
                 if (headerIcons) {
