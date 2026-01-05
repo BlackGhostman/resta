@@ -1,15 +1,25 @@
 // Global Logout Handler
 window.confirmLogout = async () => {
-    if (confirm('¿Desea cerrar sesión?')) {
-        try {
-            const response = await fetch('api/logout.php');
-            const data = await response.json();
-            if (data.success && data.redirect) {
-                window.location.href = data.redirect;
-            }
-        } catch (error) {
-            console.error('Error logging out:', error);
+    try {
+        const response = await fetch('api/logout.php?t=' + Date.now());
+
+        if (!response.ok) {
+            throw new Error(`Logout failed with status: ${response.status} `);
         }
+
+        const data = await response.json();
+
+        if (data.success) {
+            window.location.replace('login.html');
+        } else {
+            // If backend says failed (unlikely), force logout anyway on client
+            window.location.replace('login.html');
+        }
+    } catch (error) {
+        console.error('Error logging out:', error);
+        // Fallback: If fetch fails (network, CORB, etc), force redirect
+        // This assumes the user wants to leave, even if backend cleanup failed slightly
+        window.location.replace('login.html');
     }
 };
 
@@ -79,6 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .then(data => {
+            if (!data.success) {
+                // Redirect to login if no session
+                window.location.href = 'login.html';
+                return;
+            }
+
             if (data.success) {
                 // Update Sidebar
                 const userDiv = document.createElement('div');
@@ -89,12 +105,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i data-lucide="user" class="text-yellow"></i>
                         <span class="text-yellow font-medium">${data.user_name}</span>
                     </div>
-                    <i data-lucide="log-out" class="text-yellow" style="cursor:pointer;" id="sidebar-logout" title="Cerrar Sesión"></i>
+                    <button id="sidebar-logout" style="background:none; border:none; cursor:pointer; padding:0; display:flex; align-items:center;" title="Cerrar Sesión">
+                        <i data-lucide="log-out" class="text-yellow"></i>
+                    </button>
                 `;
                 sidebarNav.prepend(userDiv);
 
                 // Add Sidebar Logout Listener
-                document.getElementById('sidebar-logout').addEventListener('click', confirmLogout);
+                const logoutBtn = document.getElementById('sidebar-logout');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.confirmLogout();
+                    });
+                }
 
                 // Update Header
                 const headerIcons = document.querySelector('#main-header .header-icons');
@@ -113,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const dropdown = document.createElement('div');
                         dropdown.className = 'header-dropdown hidden';
                         dropdown.innerHTML = `
-                            <div class="dropdown-item" onclick="confirmLogout()">
+                            <div class="dropdown-item" id="header-logout-btn">
                                 <i data-lucide="log-out"></i>
                                 <span>Cerrar Sesión</span>
                             </div>
@@ -121,6 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Append to header-icons container
                         headerIcons.style.position = 'relative';
                         headerIcons.appendChild(dropdown);
+
+                        // Attach event listener to the new button
+                        document.getElementById('header-logout-btn').addEventListener('click', window.confirmLogout);
 
                         // Event Delegation for clicking header icons (User or Dots)
                         headerIcons.addEventListener('click', (e) => {

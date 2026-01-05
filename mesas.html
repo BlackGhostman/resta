@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,26 +13,34 @@
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #111827; }
-        .grid-cell { min-height: 80px; min-width: 80px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+        }
+
+        .grid-cell {
+            min-height: 80px;
+            min-width: 80px;
+        }
     </style>
 </head>
+
 <body class="text-gray-200">
 
     <div id="root"></div>
 
     <script type="text/babel">
-        window.onload = function() {
+        window.onload = function () {
             const { useState, useEffect, useCallback, useRef } = React;
 
             const DECORATION_TYPES = {
                 'bar_bottom': { name: 'Barra (Abajo)', icon: 'BarTopView', width: 240, height: 240, rotation: 0 },
-                'bar_left':   { name: 'Barra (Izquierda)', icon: 'BarTopView', width: 240, height: 240, rotation: 270 },
-                'bar_top':    { name: 'Barra (Arriba)', icon: 'BarTopView', width: 240, height: 240, rotation: 180 },
-                'bar_right':  { name: 'Barra (Derecha)', icon: 'BarTopView', width: 240, height: 240, rotation: 90 },
-                'plant':      { name: 'Planta', icon: 'PlantTopView2', width: 80, height: 80 },
-                'fountain':   { name: 'Fuente', icon: 'FountainTopView', width: 120, height: 120 },
-                'garden':     { name: 'Jardín', icon: 'GardenTopView', width: 200, height: 200 }
+                'bar_left': { name: 'Barra (Izquierda)', icon: 'BarTopView', width: 240, height: 240, rotation: 270 },
+                'bar_top': { name: 'Barra (Arriba)', icon: 'BarTopView', width: 240, height: 240, rotation: 180 },
+                'bar_right': { name: 'Barra (Derecha)', icon: 'BarTopView', width: 240, height: 240, rotation: 90 },
+                'plant': { name: 'Planta', icon: 'PlantTopView2', width: 80, height: 80 },
+                'fountain': { name: 'Fuente', icon: 'FountainTopView', width: 120, height: 120 },
+                'garden': { name: 'Jardín', icon: 'GardenTopView', width: 200, height: 200 }
             };
 
             const Icon = ({ name, className = '', ...props }) => (
@@ -61,20 +70,20 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ id_mesa: table.id })
                         })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert(data.message || 'Mesa desocupada correctamente.');
-                                onTableFreedUp();
-                                onClose();
-                            } else {
-                                alert('Error: ' + data.error);
-                            }
-                        })
-                        .catch(err => {
-                            console.error('Error en la petición:', err);
-                            alert('Ocurrió un error de conexión.');
-                        });
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert(data.message || 'Mesa desocupada correctamente.');
+                                    onTableFreedUp();
+                                    onClose();
+                                } else {
+                                    alert('Error: ' + data.error);
+                                }
+                            })
+                            .catch(err => {
+                                console.error('Error en la petición:', err);
+                                alert('Ocurrió un error de conexión.');
+                            });
                     }
                 };
 
@@ -87,11 +96,11 @@
                                     <Icon name="LogOut" />
                                     <span>Desocupar Mesa</span>
                                 </button>
-                                                                <button onClick={() => onChangeTableClick(table)} className="w-full flex items-center justify-center gap-3 text-lg bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                                <button onClick={() => onChangeTableClick(table)} className="w-full flex items-center justify-center gap-3 text-lg bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
                                     <Icon name="ArrowRightLeft" />
                                     <span>Cambiar de Mesa</span>
                                 </button>
-                                                                <button onClick={() => handleCreateSeparateAccount(table.id)} className="w-full flex items-center justify-center gap-3 text-lg bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                                <button onClick={() => handleCreateSeparateAccount(table.id)} className="w-full flex items-center justify-center gap-3 text-lg bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
                                     <Icon name="CopyPlus" />
                                     <span>Crear Cuenta Aparte</span>
                                 </button>
@@ -102,7 +111,7 @@
                 );
             };
 
-                        const ChangeTableModal = ({ isOpen, onClose, onConfirm, tables, sourceTable }) => {
+            const ChangeTableModal = ({ isOpen, onClose, onConfirm, tables, sourceTable }) => {
                 if (!isOpen) return null;
 
                 const [selectedDestinationId, setSelectedDestinationId] = useState(null);
@@ -120,7 +129,7 @@
                             <h2 className="text-2xl font-bold text-white mb-6 text-center">Cambiar Mesa {sourceTable?.number} a:</h2>
                             <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 max-h-96 overflow-y-auto p-4 bg-gray-900/50 rounded-lg">
                                 {availableTables.length > 0 ? availableTables.map(table => (
-                                    <div 
+                                    <div
                                         key={table.id}
                                         onClick={() => setSelectedDestinationId(table.id)}
                                         className={`p-2 h-20 w-20 flex flex-col items-center justify-center rounded-xl shadow-lg cursor-pointer transition-all duration-200 ${selectedDestinationId === table.id ? 'ring-4 ring-cyan-400' : ''} bg-green-500 text-white`}
@@ -131,8 +140,8 @@
                             </div>
                             <div className="flex items-center justify-end gap-4 mt-6">
                                 <button type="button" onClick={onClose} className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Cancelar</button>
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     onClick={handleConfirm}
                                     disabled={!selectedDestinationId}
                                     className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-6 rounded-lg transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
@@ -190,17 +199,17 @@
                         <div className="flex flex-col h-full p-4">
                             <div>
                                 <div className={`flex items-center mb-6 h-[2.125rem] ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
-                                        <a href="#" className={`flex items-center ps-2.5 ${!isSidebarOpen && 'hidden'} lg:flex`}>
-                                            <Icon name="UtensilsCrossed" className="h-6 w-6 me-3" />
-                                            <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>ZONAS</span>
-                                        </a>
-                                        <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden`}>
-                                            <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6" />
-                                        </button>
-                                        <button onClick={() => setIsSidebarOpen(true)} className={`p-2 rounded-md hover:bg-gray-700 hidden ${!isSidebarOpen ? 'lg:inline' : ''}`}>
-                                            <Icon name="Menu" className="w-6 h-6" />
-                                        </button>
-                                    </div>
+                                    <a href="#" className={`flex items-center ps-2.5 ${!isSidebarOpen && 'hidden'} lg:flex`}>
+                                        <Icon name="UtensilsCrossed" className="h-6 w-6 me-3" />
+                                        <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>ZONAS</span>
+                                    </a>
+                                    <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden`}>
+                                        <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6" />
+                                    </button>
+                                    <button onClick={() => setIsSidebarOpen(true)} className={`p-2 rounded-md hover:bg-gray-700 hidden ${!isSidebarOpen ? 'lg:inline' : ''}`}>
+                                        <Icon name="Menu" className="w-6 h-6" />
+                                    </button>
+                                </div>
                                 <ul className="space-y-3 font-medium">
                                     {zones.map(zone => (
                                         <li key={zone.id}>
@@ -229,7 +238,7 @@
             function Header({ activeZoneName, isSidebarOpen, setIsSidebarOpen }) {
                 return (
                     <header className="flex items-center justify-between p-4 bg-gray-800/80 backdrop-blur-sm border-b border-gray-700/50 lg:hidden">
-                                                <h1 className="text-xl font-bold text-white">{activeZoneName}</h1>
+                        <h1 className="text-xl font-bold text-white">{activeZoneName}</h1>
                         <a href="#" className="p-2 rounded-full hover:bg-gray-700"><Icon name="CircleUser" className="w-6 h-6" /></a>
                     </header>
                 );
@@ -251,6 +260,16 @@
                 const [isDesktopView, setIsDesktopView] = useState(window.innerWidth >= 768);
 
                 useEffect(() => {
+                    // Auth Check
+                    fetch('api/current_user.php')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.success) {
+                                window.location.href = 'login.html';
+                            }
+                        })
+                        .catch(() => window.location.href = 'login.html');
+
                     const handleResize = () => {
                         setIsDesktopView(window.innerWidth >= 768);
                     };
@@ -325,51 +344,51 @@
                     fetch('api/cambiar_mesa.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
+                        body: JSON.stringify({
                             source_id: sourceId,
                             destination_id: destinationId
                         })
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        if(data.success) {
-                            alert(data.message);
-                            setIsChangeTableModalOpen(false);
-                            fetchTables(); // Para refrescar el plano de mesas
-                        } else {
-                            alert('Error: ' + data.error);
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Error en la petición:', err);
-                        alert('Ocurrió un error de conexión al intentar cambiar la mesa.');
-                    });
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert(data.message);
+                                setIsChangeTableModalOpen(false);
+                                fetchTables(); // Para refrescar el plano de mesas
+                            } else {
+                                alert('Error: ' + data.error);
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error en la petición:', err);
+                            alert('Ocurrió un error de conexión al intentar cambiar la mesa.');
+                        });
                 };
 
                 const handleOpenTable = (tableId, personCount, clientName) => {
                     fetch('api/guardar_datos_mesa.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            id_mesa: tableId, 
-                            cantidad_personas: personCount, 
-                            nombre_cliente: clientName 
+                        body: JSON.stringify({
+                            id_mesa: tableId,
+                            cantidad_personas: personCount,
+                            nombre_cliente: clientName
                         })
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        if(data.success) {
-                            // Redirigir a la página de productos con el ID de la mesa
-                            window.location.href = `productos.html?id_mesa=${tableId}`;
-                        } else {
-                            console.error('Error al abrir la mesa:', data.error);
-                            alert('Error: ' + data.error);
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Error en la petición:', err);
-                        alert('Ocurrió un error de conexión.');
-                    });
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Redirigir a la página de productos con el ID de la mesa
+                                window.location.href = `productos.html?id_mesa=${tableId}`;
+                            } else {
+                                console.error('Error al abrir la mesa:', data.error);
+                                alert('Error: ' + data.error);
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error en la petición:', err);
+                            alert('Ocurrió un error de conexión.');
+                        });
                 };
 
                 if (loading && zones.length === 0) {
@@ -377,7 +396,7 @@
                 }
 
                 const getTableColor = (estado) => {
-                    switch(estado) {
+                    switch (estado) {
                         case 'ocupada': return 'bg-red-500 text-white';
                         case 'disponible': return 'bg-green-500 text-white';
                         case 'reservada': return 'bg-yellow-500 text-white';
@@ -385,20 +404,20 @@
                     }
                 }
 
-                                const allTables = zones.flatMap(z => z.tables);
+                const allTables = zones.flatMap(z => z.tables);
                 const activeZone = zones.find(z => z.id === activeZoneId);
 
                 return (
                     <div className="relative min-h-screen bg-gray-900">
                         <PersonCountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleOpenTable} table={tableForModal} />
-                                                <OccupiedTableModal 
-                            isOpen={isOccupiedModalOpen} 
-                            onClose={() => setIsOccupiedModalOpen(false)} 
-                            table={occupiedTableForModal} 
-                            onTableFreedUp={fetchTables} 
+                        <OccupiedTableModal
+                            isOpen={isOccupiedModalOpen}
+                            onClose={() => setIsOccupiedModalOpen(false)}
+                            table={occupiedTableForModal}
+                            onTableFreedUp={fetchTables}
                             onChangeTableClick={handleOpenChangeTableModal}
                         />
-                        <ChangeTableModal 
+                        <ChangeTableModal
                             isOpen={isChangeTableModalOpen}
                             onClose={() => setIsChangeTableModalOpen(false)}
                             onConfirm={handleConfirmChangeTable}
@@ -415,7 +434,7 @@
                                         {!activeZone ? (
                                             <div className="text-center text-gray-400 py-8">Selecciona una zona para ver las mesas.</div>
                                         ) : (
-                                            <div 
+                                            <div
                                                 className={isDesktopView ? 'relative' : 'flex flex-col gap-3'}
                                                 style={{ height: isDesktopView ? `${GRID_ROWS * 90}px` : 'auto' }}
                                             >
@@ -437,30 +456,30 @@
                                                 })}
 
                                                 {isDesktopView && activeZone.decorations && activeZone.decorations.map(decor => {
-                                        const decorType = DECORATION_TYPES[decor.type];
-                                        if (!decorType) return null;
+                                                    const decorType = DECORATION_TYPES[decor.type];
+                                                    if (!decorType) return null;
 
-                                        const style = {
-                                            left: decor.x,
-                                            top: decor.y,
-                                            width: decorType.width,
-                                            height: decorType.height,
-                                            transform: `rotate(${decor.rotation || 0}deg)`,
-                                            position: 'absolute'
-                                        };
+                                                    const style = {
+                                                        left: decor.x,
+                                                        top: decor.y,
+                                                        width: decorType.width,
+                                                        height: decorType.height,
+                                                        transform: `rotate(${decor.rotation || 0}deg)`,
+                                                        position: 'absolute'
+                                                    };
 
-                                        return (
-                                            <div key={decor.id} style={style}>
-                                                <Icon name={decorType.icon} className="w-full h-full text-gray-800" />
-                                            </div>
-                                        );
-                                    })}
+                                                    return (
+                                                        <div key={decor.id} style={style}>
+                                                            <Icon name={decorType.icon} className="w-full h-full text-gray-800" />
+                                                        </div>
+                                                    );
+                                                })}
 
                                                 {activeZone.tables.map(table => (
-                                                    <div 
+                                                    <div
                                                         key={table.id}
                                                         onClick={() => handleTableClick(table)}
-                                                        onDoubleClick={() => handleTableDoubleClick(table)} 
+                                                        onDoubleClick={() => handleTableDoubleClick(table)}
                                                         className={`p-3 rounded-xl shadow-lg cursor-pointer transition-all duration-200 ${selectedTable === table.id ? 'ring-4 ring-offset-2 ring-offset-gray-800 ring-cyan-400' : ''} ${getTableColor(table.estado)} ${isDesktopView ? 'absolute h-20 w-20 flex-col justify-center items-center transform hover:-translate-y-1' : 'flex-row justify-between items-center'}`}
                                                         style={isDesktopView ? {
                                                             top: `${table.y}px`,
@@ -498,4 +517,5 @@
     </script>
 
 </body>
+
 </html>
