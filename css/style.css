@@ -1,10 +1,12 @@
 /* Estilos Globales y Variables de Color */
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     height: 100%;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #111827; /* bg-gray-900 */
+    background-color: #111827;
+    /* bg-gray-900 */
     color: #ffffff;
 }
 
@@ -39,14 +41,18 @@ body, html {
     top: 0;
     z-index: 10;
 }
+
 .header-title {
     font-size: 0.875rem;
 }
+
 .header-icons {
     display: flex;
     gap: 1rem;
 }
-.header-icons i, #main-header > i {
+
+.header-icons i,
+#main-header>i {
     width: 24px;
     height: 24px;
 }
@@ -54,7 +60,8 @@ body, html {
 /* Layout Principal (Sidebar + Contenido) */
 #main-layout {
     display: flex;
-    height: calc(100vh - 49px); /* Altura total menos la cabecera */
+    height: calc(100vh - 49px);
+    /* Altura total menos la cabecera */
 }
 
 /* Menú Lateral */
@@ -65,21 +72,25 @@ body, html {
     border-right: 1px solid var(--gray-800);
     flex-shrink: 0;
 }
+
 .sidebar-header {
     padding: 1rem;
     border-bottom: 1px solid var(--gray-800);
 }
+
 .sidebar-header h1 {
     font-size: 1.25rem;
     font-weight: bold;
     margin: 0;
 }
+
 .sidebar-nav {
     padding: 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
+
 .active-user {
     display: flex;
     align-items: center;
@@ -88,9 +99,11 @@ body, html {
     background-color: var(--white-transparent-5);
     border-radius: 0.5rem;
 }
+
 .text-yellow {
     color: var(--yellow-500);
 }
+
 .active-user i {
     width: 16px;
     height: 16px;
@@ -111,17 +124,21 @@ body, html {
     text-align: left;
     transition: background-color 0.2s;
 }
+
 .nav-button:hover {
     background-color: var(--white-transparent-5);
 }
+
 .nav-button.active {
     background-color: var(--yellow-500);
     color: #000000;
 }
+
 .nav-button i {
     width: 16px;
     height: 16px;
 }
+
 .nav-button.active i {
     color: #000000;
 }
@@ -132,7 +149,8 @@ body, html {
     /* background-image: url('../img/fondo-mesas.jpg'); */
     background-size: cover;
     background-position: center;
-    overflow-y: auto; /* Para scroll si el contenido es largo */
+    overflow-y: auto;
+    /* Para scroll si el contenido es largo */
 }
 
 .page-content-wrapper {
@@ -141,18 +159,23 @@ body, html {
 
 /* Vistas de Contenido */
 .view {
-    display: none; /* Oculto por defecto */
+    display: none;
+    /* Oculto por defecto */
     padding: 1rem;
 }
+
 .view.active {
-    display: block; /* Mostrado si está activo */
+    display: block;
+    /* Mostrado si está activo */
 }
+
 .view h2 {
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 1rem;
     margin-top: 0;
 }
+
 .filter-input {
     width: 100%;
     margin-bottom: 1rem;
@@ -163,6 +186,7 @@ body, html {
     color: #000;
     box-sizing: border-box;
 }
+
 .filter-input::placeholder {
     color: var(--gray-600);
 }
@@ -173,6 +197,7 @@ body, html {
     flex-direction: column;
     gap: 0.5rem;
 }
+
 .list-item {
     width: 100%;
     padding: 0.75rem;
@@ -190,6 +215,7 @@ body, html {
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
+
 .submit-button {
     width: 100%;
     padding: 0.75rem;
@@ -201,6 +227,7 @@ body, html {
     cursor: pointer;
     transition: background-color 0.2s;
 }
+
 .submit-button:hover {
     background-color: var(--teal-500);
 }
@@ -218,11 +245,14 @@ body, html {
     background-color: #ffffff;
     color: #000000;
 }
+
 .table-button:hover {
     background-color: #e5e5e5;
 }
+
 .table-button.occupied {
-    background-color: #f97316; /* orange-500 */
+    background-color: #f97316;
+    /* orange-500 */
     color: #ffffff;
 }
 
@@ -232,7 +262,8 @@ body, html {
     background-color: transparent;
 }
 
-#main-content h1, #main-content h2 {
+#main-content h1,
+#main-content h2 {
     color: var(--gray-300);
     border-bottom: 1px solid var(--gray-600);
     padding-bottom: 10px;
@@ -318,6 +349,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--teal-500);
     color: white;
 }
+
 #btn-guardar:hover {
     background-color: var(--teal-400);
 }
@@ -326,6 +358,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--gray-600);
     color: var(--gray-300);
 }
+
 #btn-limpiar:hover {
     background-color: var(--gray-500);
 }
@@ -341,10 +374,12 @@ table[id^="tabla-"] {
     margin-top: 20px;
     background-color: var(--gray-800);
     border-radius: 0.5rem;
-    overflow: hidden; /* Para que el borde redondeado afecte a la tabla */
+    overflow: hidden;
+    /* Para que el borde redondeado afecte a la tabla */
 }
 
-table[id^="tabla-"] th, table[id^="tabla-"] td {
+table[id^="tabla-"] th,
+table[id^="tabla-"] td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid var(--gray-900);
@@ -364,23 +399,27 @@ table[id^="tabla-"] tr:last-child td {
     margin-right: 5px;
     padding: 5px 10px;
     border: none;
-    border-radius: 0.375rem; /* rounded-md */
+    border-radius: 0.375rem;
+    /* rounded-md */
     cursor: pointer;
     color: white;
     font-size: 12px;
     font-weight: bold;
     transition: opacity 0.2s;
 }
+
 .acciones button:hover {
     opacity: 0.8;
 }
 
 .acciones .btn-editar {
-    background-color: #3b82f6; /* blue-500 */
+    background-color: #3b82f6;
+    /* blue-500 */
 }
 
 .acciones .btn-eliminar {
-    background-color: #ef4444; /* red-500 */
+    background-color: #ef4444;
+    /* red-500 */
 }
 
 /* Estilos para el botón principal y la cabecera con botón */
@@ -409,27 +448,28 @@ table[id^="tabla-"] tr:last-child td {
 
 /* Estilos para la Ventana Modal */
 .modal {
-    display: none; /* Oculto por defecto */
-    position: fixed; 
-    z-index: 100; 
+    display: none;
+    /* Oculto por defecto */
+    position: fixed;
+    z-index: 100;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.6); 
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(5px);
 }
 
 .modal-content {
     background-color: var(--gray-800);
-    margin: 10% auto; 
+    margin: 10% auto;
     padding: 20px;
     border: 1px solid var(--gray-600);
     width: 80%;
     max-width: 700px;
     border-radius: 0.75rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     animation: fadeIn 0.3s;
 }
 
@@ -527,8 +567,10 @@ table[id^="tabla-"] tr:last-child td {
 .toggle-container {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Alinea label y switch */
-    grid-column: 1 / -1; /* Ocupa todo el ancho en el grid */
+    justify-content: space-between;
+    /* Alinea label y switch */
+    grid-column: 1 / -1;
+    /* Ocupa todo el ancho en el grid */
 }
 
 .toggle-switch {
@@ -568,17 +610,24 @@ table[id^="tabla-"] tr:last-child td {
     border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: var(--teal-500);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     transform: translateX(22px);
 }
 
 @keyframes fadeIn {
-    from {opacity: 0; transform: scale(0.95);}
-    to {opacity: 1; transform: scale(1);}
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* Estilos para el Menú Acordeón (Sidebar) */
@@ -632,18 +681,21 @@ input:checked + .slider:before {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out;
-    background-color: rgba(0, 0, 0, 0.2); /* Fondo ligeramente más oscuro para subitems */
+    background-color: rgba(0, 0, 0, 0.2);
+    /* Fondo ligeramente más oscuro para subitems */
     border-radius: 0 0 0.5rem 0.5rem;
 }
 
 .nav-group-content.open {
-    max-height: 500px; /* Altura arbitraria suficiente para el contenido */
+    max-height: 500px;
+    /* Altura arbitraria suficiente para el contenido */
     transition: max-height 0.5s ease-in;
 }
 
 .nav-sub-item {
     display: block;
-    padding: 0.6rem 0.6rem 0.6rem 2.5rem; /* Indentación para jerarquía */
+    padding: 0.6rem 0.6rem 0.6rem 2.5rem;
+    /* Indentación para jerarquía */
     color: var(--gray-400);
     text-decoration: none;
     font-size: 0.9rem;
@@ -658,11 +710,58 @@ input:checked + .slider:before {
 
 .nav-sub-item.active {
     color: var(--yellow-500);
-    background-color: rgba(234, 179, 8, 0.1); /* Tinte amarillo sutil */
+    background-color: rgba(234, 179, 8, 0.1);
+    /* Tinte amarillo sutil */
     border-left-color: var(--yellow-500);
 }
 
 /* Modificación para Active User spacing */
 .active-user {
     margin-bottom: 1rem;
+}
+
+/* CSS for Header Name and Dropdown */
+.header-user-name {
+    margin-left: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--yellow-500);
+}
+
+.header-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background-color: var(--gray-800);
+    border: 1px solid var(--gray-600);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    min-width: 150px;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.header-dropdown.hidden {
+    display: none;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    color: var(--gray-300);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: var(--gray-700);
+    color: white;
+}
+
+.dropdown-item i {
+    width: 16px;
+    height: 16px;
 }

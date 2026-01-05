@@ -1,3 +1,18 @@
+// Global Logout Handler
+window.confirmLogout = async () => {
+    if (confirm('¿Desea cerrar sesión?')) {
+        try {
+            const response = await fetch('api/logout.php');
+            const data = await response.json();
+            if (data.success && data.redirect) {
+                window.location.href = data.redirect;
+            }
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // Definición de la estructura del menú
     const menuStructure = [
@@ -50,17 +65,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sidebarNav = document.querySelector('.sidebar-nav');
 
-    // Mantener la sección de usuario activo si existe
-    const activeUserSection = sidebarNav.querySelector('.active-user');
-
-    // Limpiar navegación existente (excepto usuario activo si se quiere preservar, o recrearlo)
-    // Para simplificar, reconstruiremos la lista de botones.
-    // Guardamos el usuario activo para reinsertarlo al principio si es necesario.
-
     sidebarNav.innerHTML = ''; // Limpiar todo
-    if (activeUserSection) {
-        sidebarNav.appendChild(activeUserSection);
-    }
+
+    // Fetch and render active user
+    fetch('api/current_user.php')
+        .then(async response => {
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Invalid JSON response:', text);
+                throw new Error('Invalid JSON');
+            }
+        })
+        .then(data => {
+            if (data.success) {
+                // Update Sidebar
+                const userDiv = document.createElement('div');
+                userDiv.className = 'active-user';
+                userDiv.style.justifyContent = 'space-between'; // Spacing for logout icon
+                userDiv.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <i data-lucide="user" class="text-yellow"></i>
+                        <span class="text-yellow font-medium">${data.user_name}</span>
+                    </div>
+                    <i data-lucide="log-out" class="text-yellow" style="cursor:pointer;" id="sidebar-logout" title="Cerrar Sesión"></i>
+                `;
+                sidebarNav.prepend(userDiv);
+
+                // Add Sidebar Logout Listener
+                document.getElementById('sidebar-logout').addEventListener('click', confirmLogout);
+
+                // Update Header
+                const headerIcons = document.querySelector('#main-header .header-icons');
+                if (headerIcons) {
+                    // Find or create user name span
+                    const headerUserIcon = headerIcons.querySelector('i[data-lucide="user"]') || headerIcons.querySelector('svg.lucide-user');
+                    if (headerUserIcon && !document.querySelector('.header-user-name')) {
+                        const userNameSpan = document.createElement('span');
+                        userNameSpan.textContent = data.user_name;
+                        userNameSpan.className = 'header-user-name';
+                        headerUserIcon.parentNode.insertBefore(userNameSpan, headerUserIcon.nextSibling);
+                    }
+
+                    // Setup Header Dropdown (One-time setup)
+                    if (!document.querySelector('.header-dropdown')) {
+                        const dropdown = document.createElement('div');
+                        dropdown.className = 'header-dropdown hidden';
+                        dropdown.innerHTML = `
+                            <div class="dropdown-item" onclick="confirmLogout()">
+                                <i data-lucide="log-out"></i>
+                                <span>Cerrar Sesión</span>
+                            </div>
+                        `;
+                        // Append to header-icons container
+                        headerIcons.style.position = 'relative';
+                        headerIcons.appendChild(dropdown);
+
+                        // Event Delegation for clicking header icons (User or Dots)
+                        headerIcons.addEventListener('click', (e) => {
+                            // Check if clicked the dropdown itself
+                            if (e.target.closest('.header-dropdown')) return;
+
+                            // Toggle dropdown if clicked on icons or name
+                            dropdown.classList.toggle('hidden');
+                            lucide.createIcons();
+                            e.stopPropagation();
+                        });
+
+                        // Close when clicking outside
+                        document.addEventListener('click', (e) => {
+                            if (!headerIcons.contains(e.target)) {
+                                dropdown.classList.add('hidden');
+                            }
+                        });
+                    }
+                }
+
+                lucide.createIcons();
+            }
+        })
+        .catch(err => console.error('Error fetching user:', err));
+
+
 
     const navContainer = document.createElement('div');
     navContainer.className = 'nav-buttons';
@@ -107,10 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Evento click para colapsar/expandir
         groupTrigger.addEventListener('click', () => {
             const isOpen = groupContent.classList.contains('open');
-            // Opcional: Cerrar otros grupos
-            // document.querySelectorAll('.nav-group-content').forEach(c => c.classList.remove('open'));
-            // document.querySelectorAll('.chevron-icon').forEach(i => i.style.transform = 'rotate(0deg)');
-
             if (!isOpen) {
                 groupContent.classList.add('open');
                 groupTrigger.querySelector('.chevron-icon').style.transform = 'rotate(180deg)';

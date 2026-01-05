@@ -1,178 +1,122 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - Sistema</title>
+    <title>Iniciar Sesión - Sistema Restaurante</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Dependencies: React, ReactDOM, Babel -->
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        .pin-dot {
-            transition: all 0.2s ease-in-out;
-        }
-        .keypad-btn {
-            transition: all 0.1s ease-in-out;
-        }
-        .keypad-btn:active {
-            transform: scale(0.95);
-            background-color: #4b5563; /* bg-gray-600 */
-        }
     </style>
 </head>
-<body>
 
-    <div id="root"></div>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
 
-    <script type="text/babel">
-        window.onload = function() {
-            const { useState, useEffect } = React;
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1572116469696-31de0f17cc34?q=80&w=2070&auto=format&fit=crop"
+            class="w-full h-full object-cover opacity-30 blur-sm" alt="Background">
+    </div>
 
-            const SVG_ICONS = {
-                UtensilsCrossed: '<path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8" /><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7" /><path d="m2.1 2.1 6.4 6.4" />',
-                Delete: '<path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/>',
-                ChevronRight: '<path d="m9 18 6-6-6-6"/>'
-            };
+    <!-- Login Container -->
+    <div
+        class="relative z-10 w-full max-w-md bg-gray-800/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-gray-700">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-500/10 mb-4">
+                <i data-lucide="utensils-crossed" class="w-8 h-8 text-cyan-400"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-white tracking-wide">PIKA BAR</h1>
+            <p class="text-gray-400 mt-2 text-sm">Ingrese sus credenciales para continuar</p>
+        </div>
 
-            const Icon = ({ name, className = '', ...props }) => (
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props} dangerouslySetInnerHTML={{ __html: SVG_ICONS[name] || '' }} />
-            );
-
-            // --- Main Login Screen Component ---
-            function LoginScreen() {
-                const [pin, setPin] = useState('');
-                const [error, setError] = useState('');
-                const [success, setSuccess] = useState(false);
-                const PIN_LENGTH = 6;
-                const CORRECT_PIN = '1234'; // Demo PIN
-
-                // Handle number/key presses
-                const handleKeyPress = (key) => {
-                    if (success) return;
-                    setError('');
-                    if (pin.length < PIN_LENGTH) {
-                        setPin(pin + key);
-                    }
-                };
-                
-                // Handle backspace
-                const handleDelete = () => {
-                    if (success) return;
-                    setError('');
-                    setPin(pin.slice(0, -1));
-                };
-
-                // Handle PIN submission
-                const handleSubmit = () => {
-                    if (pin === CORRECT_PIN) {
-                        setError('');
-                        setSuccess(true);
-                        // Here you would typically redirect the user
-                        // For demo, we'll just show a success message
-                        setTimeout(() => {
-                           // Reset for another try
-                           setPin('');
-                           setSuccess(false);
-                        }, 2000);
-                    } else {
-                        setError('Código incorrecto. Inténtalo de nuevo.');
-                        setPin(''); // Clear PIN on error
-                    }
-                };
-                
-                // Automatically submit when PIN is full length
-                useEffect(() => {
-                    if (pin.length === PIN_LENGTH) {
-                        handleSubmit();
-                    }
-                }, [pin]);
-
-
-                const PinDots = () => (
-                    <div className="flex justify-center items-center space-x-3 mb-8">
-                        {[...Array(PIN_LENGTH)].map((_, i) => (
-                            <div
-                                key={i}
-                                className={`pin-dot w-5 h-5 rounded-full border-2 ${
-                                    i < pin.length ? 'bg-cyan-400 border-cyan-400' : 'border-gray-500'
-                                } ${error ? '!border-red-500 !bg-transparent' : ''} ${success ? '!border-green-500 !bg-green-500' : ''}`}
-                            ></div>
-                        ))}
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label for="usuario" class="block text-sm font-medium text-gray-300 mb-1">Usuario</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="user" class="h-5 w-5 text-gray-500"></i>
                     </div>
-                );
+                    <input type="text" id="usuario" name="usuario" required
+                        class="block w-full pl-10 pr-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white placeholder-gray-400 transition-colors"
+                        placeholder="jdoe">
+                </div>
+            </div>
 
-                const Keypad = () => {
-                    const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-                    return (
-                        <div className="grid grid-cols-3 gap-4">
-                            {keys.map(key => (
-                                <button key={key} onClick={() => handleKeyPress(key)} className="keypad-btn text-3xl font-bold bg-gray-800/50 hover:bg-gray-700/70 rounded-full h-20 w-20 flex items-center justify-center text-white">
-                                    {key}
-                                </button>
-                            ))}
-                            <div className="flex items-center justify-center">
-                                <button onClick={handleDelete} className="keypad-btn bg-gray-800/50 hover:bg-gray-700/70 rounded-full h-20 w-20 flex items-center justify-center text-white">
-                                    <Icon name="Delete" className="w-8 h-8 text-red-400"/>
-                                </button>
-                            </div>
-                            <div className="flex items-center justify-center">
-                                <button onClick={() => handleKeyPress('0')} className="keypad-btn text-3xl font-bold bg-gray-800/50 hover:bg-gray-700/70 rounded-full h-20 w-20 flex items-center justify-center text-white">
-                                    0
-                                </button>
-                            </div>
-                            <div className="flex items-center justify-center">
-                                <button onClick={handleSubmit} className="keypad-btn bg-cyan-600/80 hover:bg-cyan-500/80 rounded-full h-20 w-20 flex items-center justify-center text-white">
-                                    <Icon name="ChevronRight" className="w-10 h-10"/>
-                                </button>
-                            </div>
-                        </div>
-                    );
-                };
-
-                return (
-                    <div className="relative min-h-screen flex items-center justify-center p-4 bg-gray-900 text-white">
-                        {/* Background Image */}
-                        <div 
-                            className="absolute inset-0 w-full h-full bg-cover bg-center z-0" 
-                            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1572116469696-31de0f17cc34?q=80&w=2070&auto=format&fit=crop')", filter: 'blur(8px) brightness(0.4)'}}
-                        ></div>
-
-                        {/* Login Box */}
-                        <div className="relative z-10 w-full max-w-sm mx-auto bg-gray-900/60 backdrop-blur-md p-8 rounded-2xl shadow-2xl text-center">
-                            <div className="mb-6">
-                                <Icon name="UtensilsCrossed" className="h-12 w-12 mx-auto text-cyan-400" />
-                                <h1 className="text-2xl font-bold text-white mt-4 tracking-wider">PIKA BAR</h1>
-                            </div>
-                            
-                            <h2 className="text-lg font-semibold text-gray-300 mb-4">INTRODUCÍ EL CÓDIGO ASIGNADO</h2>
-
-                            <PinDots />
-
-                            <Keypad />
-                            
-                            <div className="h-6 mt-6 text-sm">
-                                {error && <p className="text-red-400 font-medium">{error}</p>}
-                                {success && <p className="text-green-400 font-medium">¡Acceso concedido!</p>}
-                            </div>
-                        </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Contraseña</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="lock" class="h-5 w-5 text-gray-500"></i>
                     </div>
-                );
+                    <input type="password" id="password" name="password" required
+                        class="block w-full pl-10 pr-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white placeholder-gray-400 transition-colors"
+                        placeholder="••••••••">
+                </div>
+            </div>
+
+            <div id="errorMessage"
+                class="hidden p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm text-center">
+            </div>
+
+            <button type="submit"
+                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-500 transition-all transform hover:scale-[1.02]">
+                Iniciar Sesión
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const usuario = document.getElementById('usuario').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+
+            // Reset error
+            errorDiv.classList.add('hidden');
+            errorDiv.textContent = '';
+
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin h-5 w-5"></i>';
+            lucide.createIcons();
+
+            try {
+                const response = await fetch('api/login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = data.redirect || 'index.html';
+                } else {
+                    throw new Error(data.message || 'Error al iniciar sesión');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Iniciar Sesión';
             }
-
-            ReactDOM.render(<LoginScreen />, document.getElementById('root'));
-        }
+        });
     </script>
-
 </body>
+
 </html>
