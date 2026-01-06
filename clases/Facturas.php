@@ -114,5 +114,130 @@ class Facturas {
             throw $e;
         }
     }
+
+    /**
+     * Obtener mesas ocupadas
+     */
+    public function obtenerMesasOcupadas() {
+        $sql = "SELECT id_salones_mesas, identificador, descripcion 
+                FROM salones_mesas 
+                WHERE estado = 'ocupada'
+                ORDER BY identificador";
+        return $this->db->consultar($sql);
+    }
+
+    /**
+     * Obtener tipos de pago
+     */
+    public function obtenerTiposPago() {
+        $sql = "SELECT id_tipos_pago, descripcion 
+                FROM tipos_pago 
+                ORDER BY descripcion";
+        return $this->db->consultar($sql);
+    }
+
+    /**
+     * Buscar artículos por nombre
+     */
+    public function buscarArticulos($query) {
+        $sql = "SELECT id_articulos, nombre, precio_venta, existencia
+                FROM articulos 
+                WHERE nombre LIKE ? 
+                AND existencia > 0
+                ORDER BY nombre
+                LIMIT 20";
+        return $this->db->consultar($sql, ['%' . $query . '%']);
+    }
+
+    /**
+     * Crear factura completa (nueva versión para facturar.html)
+     */
+    public function crearFacturaCompleta($datos, $idUsuario) {
+        try {
+            $this->db->iniciarTransaccion();
+
+            // 1. Crear factura maestro
+            $sqlMaestro = "INSERT INTO facturas_maestro (
+                id_cliente, id_usuario, id_mesa, id_tipo_pago,
+                subtotal, monto_descuento, monto_impuestos, total_factura,
+                estado, cantidad_personas, nombre_cliente
+            ) VALUES (
+                NULL, ?, ?, ?,
+                ?, ?, ?, ?,
+                'pagada', ?, ?
+            )";
+
+            $this->db->ejecutar($sqlMaestro, [
+                $idUsuario,
+                $datos['id_mesa'],
+                $datos['id_tipo_pago'],
+                $datos['subtotal'],
+                $datos['descuento'],
+                $datos['impuestos'],
+                $datos['total'],
+                $datos['cantidad_personas'],
+                $datos['nombre_cliente']
+            ]);
+
+            $idFactura = $this->db->obtenerUltimoId();
+
+            // 2. Crear detalle de factura
+            $sqlDetalle = "INSERT INTO facturas_detalle (
+                id_factura_maestro, id_articulo, cantidad, 
+                precio_unitario, costo_unitario, monto_impuesto_linea, 
+                monto_descuento_linea, es_cortesia
+            ) VALUES (?, ?, ?, ?, 0, 0, 0, 0)";
+
+            foreach ($datos['articulos'] as $articulo) {
+                $this->db->ejecutar($sqlDetalle, [
+                    $idFactura,
+                    $articulo['id'],
+                    $articulo['cantidad'],
+                    $articulo['precio']
+                ]);
+
+                // 3. Descontar del inventario (solo si es inventariable)
+                $this->descontarInventario($articulo['id'], $articulo['cantidad']);
+            }
+
+            // 4. Actualizar estado de la mesa a disponible
+            $sqlMesa = "UPDATE salones_mesas 
+                        SET estado = 'disponible' 
+                        WHERE id_salones_mesas = ?";
+            $this->db->ejecutar($sqlMesa, [$datos['id_mesa']]);
+
+            $this->db->confirmarTransaccion();
+
+            return [
+                'success' => true,
+                'message' => 'Factura creada exitosamente',
+                'id_factura' => $idFactura
+            ];
+
+        } catch (Exception $e) {
+            $this->db->cancelarTransaccion();
+            return [
+                'success' => false,
+                'message' => 'Error al crear factura: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Descontar artículo del inventario
+     */
+    private function descontarInventario($idArticulo, $cantidad) {
+        // Verificar si el artículo es inventariable
+        $sql = "SELECT es_inventariable FROM articulos WHERE id_articulos = ?";
+        $articulo = $this->db->consultar($sql, [$idArticulo]);
+
+        if (!empty($articulo) && $articulo[0]['es_inventariable']) {
+            // Descontar del inventario
+            $sqlUpdate = "UPDATE articulos 
+                          SET existencia = existencia - ? 
+                          WHERE id_articulos = ?";
+            $this->db->ejecutar($sqlUpdate, [$cantidad, $idArticulo]);
+        }
+    }
 }
 ?>

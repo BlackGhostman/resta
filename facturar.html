@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facturar - Sistema de Restaurante</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/facturacion.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="layout">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h2>MENÚ</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <!-- El menú se cargará dinámicamente -->
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header id="main-header">
+                <h1>Facturar</h1>
+                <div class="header-icons">
+                    <i data-lucide="user"></i>
+                    <i data-lucide="more-vertical"></i>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="facturacion-container">
+                    <!-- Sección de información de la factura -->
+                    <div class="factura-info-section">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="mesa-select">Mesa</label>
+                                <select id="mesa-select" class="form-control">
+                                    <option value="">Seleccione una mesa...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="nombre-cliente">Nombre del Cliente</label>
+                                <input type="text" id="nombre-cliente" class="form-control"
+                                    placeholder="Nombre del cliente">
+                            </div>
+                            <div class="form-group">
+                                <label for="cantidad-personas">Cantidad de Personas</label>
+                                <input type="number" id="cantidad-personas" class="form-control" min="1" value="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de búsqueda de artículos -->
+                    <div class="busqueda-section">
+                        <div class="form-group">
+                            <label for="buscar-articulo">Buscar Artículo</label>
+                            <div class="search-container">
+                                <input type="text" id="buscar-articulo" class="form-control"
+                                    placeholder="Escriba para buscar artículos...">
+                                <div id="resultados-busqueda" class="search-results hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de artículos agregados -->
+                    <div class="articulos-section">
+                        <h3>Artículos de la Factura</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th style="width: 100px;">Cantidad</th>
+                                        <th style="width: 120px;">Precio Unit.</th>
+                                        <th style="width: 120px;">Subtotal</th>
+                                        <th style="width: 80px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="articulos-tbody">
+                                    <tr class="empty-state">
+                                        <td colspan="5" class="text-center">No hay artículos agregados</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Sección de totales y pago -->
+                    <div class="totales-section">
+                        <div class="totales-grid">
+                            <div class="form-group">
+                                <label for="tipo-pago">Método de Pago</label>
+                                <select id="tipo-pago" class="form-control">
+                                    <option value="">Seleccione...</option>
+                                </select>
+                            </div>
+                            <div class="totales-box">
+                                <div class="total-row">
+                                    <span>Subtotal:</span>
+                                    <span id="subtotal-display">₡0.00</span>
+                                </div>
+                                <div class="total-row">
+                                    <span>Descuento:</span>
+                                    <span id="descuento-display">₡0.00</span>
+                                </div>
+                                <div class="total-row">
+                                    <span>Impuestos:</span>
+                                    <span id="impuestos-display">₡0.00</span>
+                                </div>
+                                <div class="total-row total-final">
+                                    <span>Total:</span>
+                                    <span id="total-display">₡0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="actions-section">
+                        <button type="button" class="btn btn-secondary" onclick="cancelarFactura()">
+                            <i data-lucide="x"></i>
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="guardarFactura()">
+                            <i data-lucide="save"></i>
+                            Guardar Factura
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+    <script src="js/facturar.js"></script>
+</body>
+
+</html>
