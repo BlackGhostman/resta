@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket #<span id="title-id"></span></title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
+
+        body {
+            font-family: 'Courier Prime', 'Courier New', monospace;
+            font-size: 12px;
+            color: #000;
+            background: #fff;
+            width: 80mm;
+            /* Standard thermal width */
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 16px;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            margin: 2px 0;
+        }
+
+        .info {
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 10px;
+        }
+
+        .info div {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th {
+            text-align: left;
+            border-bottom: 1px solid #000;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        td {
+            padding: 4px 0;
+        }
+
+        .qty {
+            width: 10%;
+        }
+
+        .item {
+            width: 60%;
+        }
+
+        .price {
+            width: 30%;
+            text-align: right;
+        }
+
+        .totals {
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .totals div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+
+        .total-final {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            margin-top: 20px;
+        }
+
+        @media print {
+            body {
+                width: auto;
+                margin: 0;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="window.print()" class="no-print"
+        style="width:100%; padding: 10px; margin-bottom: 10px; cursor: pointer;">🖨️ IMPRIMIR</button>
+
+    <div class="header">
+        <h1>RESTAURANTE EL PEREGRINO</h1>
+        <p>Cédula: 3-101-123456</p>
+        <p>Tel: 2222-2222</p>
+        <p>San José, Costa Rica</p>
+    </div>
+
+    <div class="info">
+        <div><span>Fecha:</span> <span id="t-fecha">--/--/--</span></div>
+        <div><span>Factura:</span> <span id="t-id">#0000</span></div>
+        <div><span>Cliente:</span> <span id="t-cliente">Cliente Generico</span></div>
+        <div><span>Mesa:</span> <span id="t-mesa">--</span></div>
+        <!-- Added placeholder, though API might not return it directly in header -->
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="qty">Cant</th>
+                <th class="item">Desc</th>
+                <th class="price">Total</th>
+            </tr>
+        </thead>
+        <tbody id="t-items">
+            <!-- Items injected here -->
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <div><span>Subtotal:</span> <span id="t-subtotal">0.00</span></div>
+        <div><span>Impuestos:</span> <span id="t-impuestos">0.00</span></div>
+        <div class="total-final"><span>TOTAL:</span> <span id="t-total">0.00</span></div>
+    </div>
+
+    <div class="footer">
+        <p>¡Gracias por su visita!</p>
+        <p>Documento no válido para efectos tributarios (si es Proforma)</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (!id) {
+                document.body.innerHTML = '<p style="text-align:center; color:red; margin-top:50px;">Error: No se ha especificado un ID de factura.</p>';
+                return;
+            }
+
+            try {
+                // 1. Fetch Invoice Header Data
+                // We reuse the search API filtering by ID to get header info
+                const headerRes = await fetch(`api/reimpresion.php?id=${id}`);
+                const headerData = await headerRes.json();
+
+                if (!headerData.success || headerData.facturas.length === 0) {
+                    throw new Error("Factura no encontrada");
+                }
+
+                const factura = headerData.facturas[0];
+
+                // Populate Header
+                document.title = `Ticket #${factura.id_facturas_maestro}`;
+                document.getElementById('t-id').textContent = `#${factura.id_facturas_maestro}`;
+                document.getElementById('t-fecha').textContent = new Date(factura.fecha).toLocaleString('es-CR');
+                document.getElementById('t-cliente').textContent = factura.nombre_cliente || 'Cliente Genérico';
+                document.getElementById('t-total').textContent = formatMoney(factura.total_factura);
+
+                // Note: subtotal and tax might not be in the search result depending on query select * or specific fields.
+                // The current API selects `total_factura` explicitly. Let's assume for this mock we treat total as net for now 
+                // or we update API later. For display purposes:
+                document.getElementById('t-subtotal').textContent = formatMoney(factura.total_factura / 1.13); // Rough proxy
+                document.getElementById('t-impuestos').textContent = formatMoney(factura.total_factura - (factura.total_factura / 1.13));
+
+                // 2. Fetch Invoice Details
+                const detailsRes = await fetch(`api/detalles_factura.php?id_factura=${id}`);
+                const detailsData = await detailsRes.json();
+
+                if (detailsData.success) {
+                    const tbody = document.getElementById('t-items');
+                    tbody.innerHTML = '';
+
+                    detailsData.detalles.forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td class="qty">${item.cantidad}</td>
+                            <td class="item">${item.nombre}</td>
+                            <td class="price">${formatMoney(item.precio * item.cantidad)}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Auto Print after short delay to ensure render
+                setTimeout(() => {
+                    window.print();
+                }, 500);
+
+            } catch (error) {
+                console.error(error);
+                alert('Error cargando el ticket: ' + error.message);
+            }
+        });
+
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(amount);
+        }
+    </script>
+</body>
+
+</html>
