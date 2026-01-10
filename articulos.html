@@ -1,152 +1,320 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mantenimiento de Artículos</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://unpkg.com/lucide-react@0.390.0/dist/lucide-react.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#0f172a",
+                        "surface-dark": "#1e293b",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Compatibility styles for js/articulos.js tabs logic */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Toggle Switch Styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #13ec5b;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #13ec5b;
+        }
+    </style>
 </head>
 
-<body>
-    <div id="app-container">
-        <header id="main-header">
-            <i data-lucide="home"></i>
-            <div class="header-title"><span>sistema.com</span></div>
-            <div class="header-icons"><i data-lucide="user"></i><i data-lucide="more-vertical"></i></div>
-        </header>
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display overflow-hidden">
+    <div class="flex h-screen">
+        <!-- Sidebar container - populated by sidebar.js -->
+        <aside id="sidebar"
+            class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300">
+        </aside>
 
-        <div id="main-layout">
-            <aside id="sidebar">
-                <div class="sidebar-header">
-                    <h1>MENÚ</h1>
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark">
+            <!-- Header -->
+            <header id="main-header"
+                class="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 px-8 backdrop-blur-md">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xl font-bold tracking-tight">Inventario</h2>
                 </div>
-                <nav class="sidebar-nav">
+                <!-- User Placeholder for sidebar.js -->
+                <div class="header-user-placeholder flex items-center gap-2"></div>
+            </header>
 
-                </nav>
-            </aside>
+            <main class="flex-1 overflow-auto p-8">
+                <div class="max-w-[1400px] mx-auto space-y-6">
 
-            <main id="main-content">
-                <div class="container">
-                    <div class="header-with-button">
-                        <h1>Mantenimiento de Artículos</h1>
-                        <button id="btn-abrir-modal" class="btn-primary">Agregar Artículo</button>
+                    <!-- Title and Add Button -->
+                    <div class="flex flex-col sm:flex-row justify-between gap-4 items-center">
+                        <div>
+                            <h1 class="text-3xl font-bold">Mantenimiento de Artículos</h1>
+                            <p class="text-slate-500 dark:text-slate-400 mt-1">Gestione el catálogo de productos del
+                                restaurante.</p>
+                        </div>
+                        <button id="btn-abrir-modal"
+                            class="bg-primary hover:bg-primary/90 text-slate-900 font-bold py-2.5 px-5 rounded-xl flex items-center gap-2 transition-transform active:scale-95 shadow-lg shadow-primary/20">
+                            <span class="material-symbols-outlined">add</span>
+                            Agregar Artículo
+                        </button>
                     </div>
 
-                    <!-- The Modal -->
-                    <div id="articulo-modal" class="modal">
-                        <div class="modal-content large">
-                            <div class="modal-header">
-                                <h2 id="modal-title">Agregar Artículo</h2>
-                                <span class="close-button">&times;</span>
-                            </div>
-                            <div class="modal-body">
-                                <form id="form-articulo">
-                                    <input type="hidden" id="id_articulos">
-                                    <div class="form-grid">
-                                        <div class="form-group">
-                                            <label for="nombre">Nombre</label>
-                                            <input type="text" id="nombre" name="nombre" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="id_proveedor">Proveedor</label>
-                                            <select id="id_proveedor" name="id_proveedor"></select>
-                                        </div>
-                                    </div>
+                    <!-- Search Filter -->
+                    <div class="relative group">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+                        <input type="text" id="filtro-articulos"
+                            class="w-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
+                            placeholder="Buscar por nombre, familia, subfamilia...">
+                    </div>
 
-                                    <!-- Tabs -->
-                                    <div class="tab-container">
-                                        <div class="tab-header">
-                                            <button type="button" class="tab-link active" data-tab="tab-generales">Datos
-                                                Generales</button>
-                                            <button type="button" class="tab-link"
-                                                data-tab="tab-precios">Precios</button>
-                                            <button type="button" class="tab-link"
-                                                data-tab="tab-existencias">Existencias</button>
-                                        </div>
-                                        <div id="tab-generales" class="tab-content active">
-                                            <div class="form-grid">
-                                                <div class="form-group"><label for="id_familia">Familia</label><select
-                                                        id="id_familia" name="id_familia"></select></div>
-                                                <div class="form-group"><label
-                                                        for="id_subfamilia">Subfamilia</label><select id="id_subfamilia"
-                                                        name="id_subfamilia"></select></div>
-                                                <div class="form-group"><label
-                                                        for="id_ubicacion_inventario">Ubicación</label><select
-                                                        id="id_ubicacion_inventario"
-                                                        name="id_ubicacion_inventario"></select></div>
-                                                <div class="form-group"><label for="id_medida">Unidad de
-                                                        Medida</label><select id="id_medida" name="id_medida"></select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="tab-precios" class="tab-content">
-                                            <div class="form-grid">
-                                                <div class="form-group"><label for="costo_promedio">Costo
-                                                        Promedio</label><input type="number" id="costo_promedio"
-                                                        name="costo_promedio" step="0.01"></div>
-                                                <div class="form-group"><label for="precio_venta">Precio
-                                                        Venta</label><input type="number" id="precio_venta"
-                                                        name="precio_venta" step="0.01"></div>
-                                                <div class="form-group"><label for="impuesto_porcentaje">%
-                                                        Impuesto</label><input type="number" id="impuesto_porcentaje"
-                                                        name="impuesto_porcentaje" step="0.01"></div>
-                                            </div>
-                                        </div>
-                                        <div id="tab-existencias" class="tab-content">
-                                            <div class="form-grid">
-                                                <div class="form-group"><label for="existencia">Existencia
-                                                        Actual</label><input type="number" id="existencia"
-                                                        name="existencia" step="0.01"></div>
-                                                <div class="form-group"><label for="stock_minimo">Stock
-                                                        Mínimo</label><input type="number" id="stock_minimo"
-                                                        name="stock_minimo" step="0.01"></div>
-                                                <div class="form-group toggle-container">
-                                                    <label for="es_inventariable">Es Inventariable</label>
-                                                    <label class="toggle-switch">
-                                                        <input type="checkbox" id="es_inventariable"
-                                                            name="es_inventariable" value="1">
-                                                        <span class="slider"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="button-container">
-                                        <button type="submit" id="btn-guardar">Guardar</button>
-                                        <button type="button" id="btn-limpiar">Limpiar</button>
-                                    </div>
-                                </form>
-                            </div>
+                    <!-- Table -->
+                    <div
+                        class="bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table id="tabla-articulos" class="w-full text-left text-sm">
+                                <thead
+                                    class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-xs">
+                                    <tr>
+                                        <th class="px-6 py-4">Nombre</th>
+                                        <th class="px-6 py-4">Familia</th>
+                                        <th class="px-6 py-4">Subfamilia</th>
+                                        <th class="px-6 py-4">Precio Venta</th>
+                                        <th class="px-6 py-4">Existencia</th>
+                                        <th class="px-6 py-4 text-right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cuerpo-tabla-articulos"
+                                    class="divide-y divide-slate-100 dark:divide-slate-800">
+                                    <!-- Rows injected by JS -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-
-                    <input type="text" id="filtro-articulos" class="filter-input"
-                        placeholder="Buscar por nombre, familia, subfamilia...">
-                    <table id="tabla-articulos">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Familia</th>
-                                <th>Subfamilia</th>
-                                <th>Precio Venta</th>
-                                <th>Existencia</th>
-                                <th class="acciones">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cuerpo-tabla-articulos"></tbody>
-                    </table>
                 </div>
             </main>
         </div>
     </div>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Modal -->
+    <div id="articulo-modal" class="modal hidden fixed inset-0 z-[100] overflow-y-auto" aria-labelledby="modal-title"
+        role="dialog" aria-modal="true" style="display: none;">
+        <!-- JS toggles 'display' style directly, keep class structure compatible -->
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" aria-hidden="true"></div>
+
+        <!-- Modal Panel -->
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div
+                class="relative transform w-full max-w-4xl rounded-2xl bg-white dark:bg-surface-dark text-left shadow-2xl transition-all border border-slate-200 dark:border-slate-700">
+
+                <!-- Header -->
+                <div
+                    class="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-700">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white" id="modal-title">Agregar Artículo</h3>
+                    <button type="button"
+                        class="close-button p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-500 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="px-6 py-6">
+                    <form id="form-articulo" class="space-y-6">
+                        <input type="hidden" id="id_articulos">
+
+                        <!-- Top Inputs -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-1.5">
+                                <label for="nombre"
+                                    class="block text-sm font-bold text-slate-700 dark:text-slate-300">Nombre</label>
+                                <input type="text" id="nombre" name="nombre" required
+                                    class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label for="id_proveedor"
+                                    class="block text-sm font-bold text-slate-700 dark:text-slate-300">Proveedor</label>
+                                <select id="id_proveedor" name="id_proveedor"
+                                    class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"></select>
+                            </div>
+                        </div>
+
+                        <!-- Tab Headers -->
+                        <div class="flex border-b border-slate-200 dark:border-slate-700 gap-8 mt-2">
+                            <button type="button"
+                                class="tab-link active relative pb-3 text-sm font-bold text-primary transition-colors hover:text-primary/80"
+                                data-tab="tab-generales">
+                                Datos Generales
+                                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-t-full"></span>
+                            </button>
+                            <!-- Note: The JS adds 'active' class which we need to style manually in CSS or handle logic. 
+                                     The 'active' class logic in JS: removes active from all, adds to clicked. 
+                                     We will style .tab-link.active in the inline CSS above. -->
+                            <button type="button"
+                                class="tab-link relative pb-3 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
+                                data-tab="tab-precios">
+                                Precios
+                            </button>
+                            <button type="button"
+                                class="tab-link relative pb-3 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
+                                data-tab="tab-existencias">
+                                Existencias
+                            </button>
+                        </div>
+
+                        <!-- Tab Content: Generales -->
+                        <div id="tab-generales" class="tab-content active pt-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-1.5"><label
+                                        class="block text-sm font-medium text-slate-400">Familia</label><select
+                                        id="id_familia" name="id_familia"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary"></select>
+                                </div>
+                                <div class="space-y-1.5"><label
+                                        class="block text-sm font-medium text-slate-400">Subfamilia</label><select
+                                        id="id_subfamilia" name="id_subfamilia"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary"></select>
+                                </div>
+                                <div class="space-y-1.5"><label
+                                        class="block text-sm font-medium text-slate-400">Ubicación</label><select
+                                        id="id_ubicacion_inventario" name="id_ubicacion_inventario"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary"></select>
+                                </div>
+                                <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-400">Unidad
+                                        de Medida</label><select id="id_medida" name="id_medida"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content: Precios -->
+                        <div id="tab-precios" class="tab-content pt-2">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-400">Costo
+                                        Promedio</label><input type="number" id="costo_promedio" name="costo_promedio"
+                                        step="0.01"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary">
+                                </div>
+                                <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-400">Precio
+                                        Venta</label><input type="number" id="precio_venta" name="precio_venta"
+                                        step="0.01"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary">
+                                </div>
+                                <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-400">%
+                                        Impuesto</label><input type="number" id="impuesto_porcentaje"
+                                        name="impuesto_porcentaje" step="0.01"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content: Existencias -->
+                        <div id="tab-existencias" class="tab-content pt-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-1.5"><label
+                                        class="block text-sm font-medium text-slate-400">Existencia Actual</label><input
+                                        type="number" id="existencia" name="existencia" step="0.01"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary">
+                                </div>
+                                <div class="space-y-1.5"><label class="block text-sm font-medium text-slate-400">Stock
+                                        Mínimo</label><input type="number" id="stock_minimo" name="stock_minimo"
+                                        step="0.01"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-primary">
+                                </div>
+
+                                <div class="flex items-center gap-3 pt-4">
+                                    <div
+                                        class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" name="es_inventariable" id="es_inventariable" value="1"
+                                            class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-300" />
+                                        <label for="es_inventariable"
+                                            class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer"></label>
+                                    </div>
+                                    <label for="es_inventariable"
+                                        class="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer">Es
+                                        Inventariable</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="flex justify-end gap-3 pt-6 border-t border-slate-200 dark:border-slate-700">
+                            <button type="button" id="btn-limpiar"
+                                class="px-5 py-2.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold transition-colors">Limpiar</button>
+                            <button type="submit" id="btn-guardar"
+                                class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-slate-900 font-bold transition-colors shadow-lg shadow-primary/20">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="js/sidebar.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/articulos.js"></script>
+
+    <style>
+        /* Specific overrides for tab active states if needed */
+        .tab-link.active {
+            color: #13ec5b;
+            /* primary */
+        }
+
+        .tab-link.active span {
+            background-color: #13ec5b;
+        }
+    </style>
 </body>
 
 </html>

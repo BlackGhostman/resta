@@ -1,94 +1,142 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mantenimiento de Familias</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://unpkg.com/lucide-react@0.390.0/dist/lucide-react.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#0f172a",
+                        "surface-dark": "#1e293b",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 </head>
 
-<body>
-    <div id="app-container">
-        <header id="main-header">
-            <i data-lucide="home"></i>
-            <div class="header-title">
-                <span>sistema.com</span>
-            </div>
-            <div class="header-icons">
-                <i data-lucide="user"></i>
-                <i data-lucide="more-vertical"></i>
-            </div>
-        </header>
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display overflow-hidden">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300">
+        </aside>
 
-        <div id="main-layout">
-            <aside id="sidebar">
-                <div class="sidebar-header">
-                    <h1>MENÚ</h1>
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark">
+            <!-- Header -->
+            <header id="main-header"
+                class="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 px-8 backdrop-blur-md">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xl font-bold tracking-tight">Inventario</h2>
                 </div>
-                <nav class="sidebar-nav">
+                <div class="header-user-placeholder flex items-center gap-2"></div>
+            </header>
 
-                </nav>
-            </aside>
+            <main class="flex-1 overflow-auto p-8">
+                <div class="max-w-[1400px] mx-auto space-y-6">
 
-            <main id="main-content">
-                <div class="container">
-                    <div class="header-with-button">
-                        <h1>Mantenimiento de Familias</h1>
-                        <button id="btn-abrir-modal" class="btn-primary">Agregar Familia</button>
+                    <!-- Title and Add Button -->
+                    <div class="flex flex-col sm:flex-row justify-between gap-4 items-center">
+                        <div>
+                            <h1 class="text-3xl font-bold">Mantenimiento de Familias</h1>
+                            <p class="text-slate-500 dark:text-slate-400 mt-1">Gestione las categorías principales de
+                                productos.</p>
+                        </div>
+                        <button id="btn-abrir-modal"
+                            class="bg-primary hover:bg-primary/90 text-slate-900 font-bold py-2.5 px-5 rounded-xl flex items-center gap-2 transition-transform active:scale-95 shadow-lg shadow-primary/20">
+                            <span class="material-symbols-outlined">add</span>
+                            Agregar Familia
+                        </button>
                     </div>
 
-                    <!-- The Modal -->
-                    <div id="familia-modal" class="modal">
-                        <!-- Modal content -->
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h2 id="modal-title">Agregar Familia</h2>
-                                <span class="close-button">&times;</span>
-                            </div>
-                            <div class="modal-body">
-                                <form id="form-familia">
-                                    <input type="hidden" id="id_familias">
-                                    <div class="form-grid">
-                                        <div class="form-group full-width">
-                                            <label for="descripcion">Descripción</label>
-                                            <input type="text" id="descripcion" name="descripcion" required>
-                                        </div>
-                                    </div>
-                                    <div class="button-container">
-                                        <button type="submit" id="btn-guardar">Guardar</button>
-                                        <button type="button" id="btn-limpiar">Limpiar</button>
-                                    </div>
-                                </form>
-                            </div>
+                    <!-- Table -->
+                    <div
+                        class="bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table id="tabla-familias" class="w-full text-left text-sm">
+                                <thead
+                                    class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-xs">
+                                    <tr>
+                                        <th class="px-6 py-4">Descripción</th>
+                                        <th class="px-6 py-4 text-right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cuerpo-tabla-familias"
+                                    class="divide-y divide-slate-100 dark:divide-slate-800">
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-
-                    <h2>Listado de Familias</h2>
-                    <table id="tabla-familias">
-                        <thead>
-                            <tr>
-                                <th>Descripción</th>
-                                <th class="acciones">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cuerpo-tabla-familias">
-                            <!-- Filas de familias se insertarán aquí -->
-                        </tbody>
-                    </table>
                 </div>
             </main>
         </div>
     </div>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Modal -->
+    <div id="familia-modal" class="modal hidden fixed inset-0 z-[100] overflow-y-auto" style="display: none;">
+        <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" aria-hidden="true"></div>
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div
+                class="relative transform w-full max-w-lg rounded-2xl bg-white dark:bg-surface-dark text-left shadow-2xl transition-all border border-slate-200 dark:border-slate-700">
+                <div
+                    class="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-700">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white" id="modal-title">Agregar Familia</h3>
+                    <button type="button"
+                        class="close-button p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-500 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="px-6 py-6">
+                    <form id="form-familia" class="space-y-6">
+                        <input type="hidden" id="id_familias">
+                        <div class="space-y-1.5">
+                            <label for="descripcion"
+                                class="block text-sm font-bold text-slate-700 dark:text-slate-300">Descripción</label>
+                            <input type="text" id="descripcion" name="descripcion" required
+                                class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div class="flex justify-end gap-3 pt-4">
+                            <button type="button" id="btn-limpiar"
+                                class="px-5 py-2.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold transition-colors">Limpiar</button>
+                            <button type="submit" id="btn-guardar"
+                                class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-slate-900 font-bold transition-colors shadow-lg shadow-primary/20">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="js/sidebar.js"></script>
     <script src="js/main.js"></script>
     <script src="js/familias.js"></script>
-    <script>
-        // La inicialización de lucide ahora se maneja dentro de main.js
-    </script>
 </body>
 
 </html>

@@ -1,16 +1,79 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roles - Próximamente</title>
-    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#0f172a",
+                        "surface-dark": "#1e293b",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 </head>
 
-<body>
-    <h1>Gestión de Roles</h1>
-    <p>Este módulo está en construcción.</p>
-    <a href="index.html">Volver al Inicio</a>
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display overflow-hidden">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300">
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark">
+            <!-- Header -->
+            <header id="main-header"
+                class="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 px-8 backdrop-blur-md">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xl font-bold tracking-tight">Seguridad</h2>
+                </div>
+                <!-- User Placeholder for sidebar.js -->
+                <div class="header-user-placeholder flex items-center gap-2"></div>
+            </header>
+
+            <main class="flex-1 overflow-auto p-8 flex items-center justify-center">
+                <div class="text-center space-y-4">
+                    <span class="material-symbols-outlined text-6xl text-slate-400">lock_clock</span>
+                    <h1 class="text-3xl font-bold">Gestión de Roles</h1>
+                    <p class="text-slate-500 dark:text-slate-400">Este módulo está en construcción.</p>
+                    <a href="index.html"
+                        class="inline-block px-5 py-2.5 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 font-bold transition-colors">Volver
+                        al Inicio</a>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/sidebar.js"></script>
 </body>
 
 </html>

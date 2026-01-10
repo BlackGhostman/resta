@@ -12,13 +12,10 @@ window.confirmLogout = async () => {
         if (data.success) {
             window.location.replace('login.html');
         } else {
-            // If backend says failed (unlikely), force logout anyway on client
             window.location.replace('login.html');
         }
     } catch (error) {
         console.error('Error logging out:', error);
-        // Fallback: If fetch fails (network, CORB, etc), force redirect
-        // This assumes the user wants to leave, even if backend cleanup failed slightly
         window.location.replace('login.html');
     }
 };
@@ -28,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuStructure = [
         {
             title: "Facturación",
-            icon: "receipt", // Lucide icon name
+            icon: "receipt_long", // Material Symbol
             items: [
                 { label: "Facturar", url: "facturar.html" },
                 { label: "Consulta cuentas x cobrar", url: "cuentas_cobrar.html" },
@@ -40,23 +37,23 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: "Inventario",
-            icon: "boxes",
+            icon: "inventory_2",
             items: [
                 { label: "Mantenimiento Artículos", url: "articulos.html" },
-                { label: "Mantenimiento Familias /Subfamilias", url: "familias.html" }, // Combined link based on request, or split logic if needed
+                { label: "Mantenimiento Familias", url: "familias.html" },
                 { label: "Ajustes Entrada /Salida", url: "ajustes_inventario.html" },
-                { label: "Mantenimiento Ubicaciones Inventario", url: "gestionar_ubicaciones.html" },
-                { label: "Mantenimiento unidades de medida", url: "medidas.html" },
+                { label: "Ubicaciones Inventario", url: "gestionar_ubicaciones.html" },
+                { label: "Unidades de Medida", url: "medidas.html" },
                 { label: "Reportes", url: "reportes_inventario.html" }
             ]
         },
         {
             title: "Misceláneos",
-            icon: "settings",
+            icon: "tune",
             items: [
-                { label: "Mantenimiento /Editor mesas", url: "mesas.html" },
-                { label: "Mantenimiento Proveedores", url: "proveedores.html" },
-                { label: "Tipos Ajuste de Inventario", url: "tipos_ajuste_inventario.html" },
+                { label: "Editor de Mesas", url: "editor.html" }, // Updated to point to new editor
+                { label: "Proveedores", url: "proveedores.html" },
+                { label: "Tipos Ajuste", url: "tipos_ajuste_inventario.html" },
                 { label: "Tipos de Cuenta", url: "tipos_cuenta.html" },
                 { label: "Tipos de Pago", url: "tipos_pago.html" },
                 { label: "Impresoras", url: "impresoras.html" }
@@ -64,162 +61,162 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             title: "Seguridad",
-            icon: "shield",
+            icon: "admin_panel_settings",
             items: [
-                { label: "Creación /Modificación Usuarios", url: "usuarios.html" },
-                { label: "Asignación Roles", url: "roles.html" },
-                { label: "Reportes de auditoría", url: "auditoria.html" }
+                { label: "Usuarios", url: "usuarios.html" },
+                { label: "Roles", url: "roles.html" },
+                { label: "Auditoría", url: "auditoria.html" }
             ]
         }
     ];
 
-    const sidebarNav = document.querySelector('.sidebar-nav');
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
 
-    sidebarNav.innerHTML = ''; // Limpiar todo
+    // Clear existing content
+    sidebar.innerHTML = '';
 
-    // Fetch and render active user
-    fetch('api/current_user.php')
-        .then(async response => {
-            const text = await response.text();
-            try {
-                return JSON.parse(text);
-            } catch (e) {
-                console.error('Invalid JSON response:', text);
-                throw new Error('Invalid JSON');
-            }
-        })
-        .then(data => {
-            if (!data.success) {
-                // Redirect to login if no session
-                window.location.href = 'login.html';
-                return;
-            }
-
-            if (data.success) {
-                // Update Header
-                const headerIcons = document.querySelector('#main-header .header-icons');
-                if (headerIcons) {
-                    // Find or create user name span
-                    const headerUserIcon = headerIcons.querySelector('i[data-lucide="user"]') || headerIcons.querySelector('svg.lucide-user');
-                    if (headerUserIcon && !document.querySelector('.header-user-name')) {
-                        const userNameSpan = document.createElement('span');
-                        userNameSpan.textContent = data.user_name;
-                        userNameSpan.className = 'header-user-name';
-                        headerUserIcon.parentNode.insertBefore(userNameSpan, headerUserIcon.nextSibling);
-                    }
-
-                    // Setup Header Dropdown (One-time setup)
-                    if (!document.querySelector('.header-dropdown')) {
-                        const dropdown = document.createElement('div');
-                        dropdown.className = 'header-dropdown hidden';
-                        dropdown.innerHTML = `
-                            <div class="dropdown-item" id="header-logout-btn">
-                                <i data-lucide="log-out"></i>
-                                <span>Cerrar Sesión</span>
-                            </div>
-                        `;
-                        // Append to header-icons container
-                        headerIcons.style.position = 'relative';
-                        headerIcons.appendChild(dropdown);
-
-                        // Attach event listener to the new button
-                        document.getElementById('header-logout-btn').addEventListener('click', window.confirmLogout);
-
-                        // Event Delegation for clicking header icons (User or Dots)
-                        headerIcons.addEventListener('click', (e) => {
-                            // Check if clicked the dropdown itself
-                            if (e.target.closest('.header-dropdown')) return;
-
-                            // Toggle dropdown if clicked on icons or name
-                            dropdown.classList.toggle('hidden');
-                            lucide.createIcons();
-                            e.stopPropagation();
-                        });
-
-                        // Close when clicking outside
-                        document.addEventListener('click', (e) => {
-                            if (!headerIcons.contains(e.target)) {
-                                dropdown.classList.add('hidden');
-                            }
-                        });
-                    }
-                }
-
-                lucide.createIcons();
-            }
-        })
-        .catch(err => console.error('Error fetching user:', err));
-
-
-
-    const navContainer = document.createElement('div');
-    navContainer.className = 'nav-buttons';
-
-    // Función para crear el HTML de cada grupo
-    menuStructure.forEach(group => {
-        // Contenedor del grupo
-        const groupContainer = document.createElement('div');
-        groupContainer.className = 'nav-group';
-
-        // Botón/Cabecera del grupo (Trigger)
-        const groupTrigger = document.createElement('button');
-        groupTrigger.className = 'nav-group-trigger';
-        groupTrigger.innerHTML = `
-            <div class="trigger-content">
-                <i data-lucide="${group.icon}"></i>
-                <span>${group.title}</span>
+    // 1. Sidebar Header (AdminPortal) - Fixed at top
+    // Created as a direct child of sidebar
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'px-6 pt-6 pb-4 flex-none';
+    headerDiv.innerHTML = `
+        <div class="flex items-center gap-3">
+            <div class="bg-primary/20 p-2 rounded-lg">
+                <span class="material-symbols-outlined text-primary text-2xl">restaurant</span>
             </div>
-            <i data-lucide="chevron-down" class="chevron-icon"></i>
-        `;
+            <div>
+                <h1 class="text-white text-lg font-bold leading-none">AdminPortal</h1>
+                <p class="text-slate-400 text-xs mt-1">Management Suite</p>
+            </div>
+        </div>
+    `;
+    sidebar.appendChild(headerDiv);
 
-        // Contenedor de los items (submenú)
-        const groupContent = document.createElement('div');
-        groupContent.className = 'nav-group-content';
+    // 2. Navigation Container (Scrollable)
+    const scrollContainer = document.createElement('div');
+    scrollContainer.className = 'flex-1 overflow-y-auto px-6 pb-4 min-h-0';
+    // Hide scrollbar for cleaner look but keep functionality
+    scrollContainer.style.cssText = `scrollbar-width: thin; scrollbar-color: #334155 transparent;`;
 
-        // Items individuales
+    const nav = document.createElement('nav');
+    nav.className = 'space-y-1';
+
+    // 3. Static Dashboard Link
+    const dashboardLink = document.createElement('a');
+    dashboardLink.href = 'dashboard.html';
+    dashboardLink.className = 'flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors mb-4';
+    dashboardLink.innerHTML = `
+        <span class="material-symbols-outlined text-[20px]">dashboard</span>
+        <span class="text-sm font-medium">Dashboard</span>
+    `;
+    nav.appendChild(dashboardLink);
+
+    // 4. Generate Dynamic Menu Items (Section Headers approach)
+    menuStructure.forEach(group => {
+        const groupContainer = document.createElement('div');
+        groupContainer.className = 'mb-6';
+
+        // Group Header
+        const groupHeader = document.createElement('p');
+        groupHeader.className = 'text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 px-3 transition-colors';
+        groupHeader.textContent = group.title;
+        groupContainer.appendChild(groupHeader);
+
+        // Submenu Container
+        const subMenu = document.createElement('nav');
+        subMenu.className = 'space-y-0.5';
+
+        // Add items
         group.items.forEach(item => {
             const link = document.createElement('a');
             link.href = item.url;
-            link.className = 'nav-sub-item';
-            link.innerHTML = `<span>${item.label}</span>`;
+            link.className = 'flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors group';
 
-            // Marcar activo si coincide la URL
+            // Check Active State
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-            if (item.url === currentPage) {
-                link.classList.add('active');
-                groupContent.classList.add('open'); // Abrir el grupo si tiene el item activo
-                groupTrigger.classList.add('active-group');
+            const isActive = item.url === currentPage;
+
+            if (isActive) {
+                link.className = 'flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary border border-primary/20 transition-colors';
             }
 
-            groupContent.appendChild(link);
+            link.innerHTML = `
+                <span class="material-symbols-outlined text-[20px] ${isActive ? '' : 'group-hover:text-white'} transition-colors" 
+                      style="${isActive ? "font-variation-settings: 'FILL' 1" : ''}">
+                      ${group.icon}
+                </span>
+                <span class="text-sm font-medium whitespace-nowrap">${item.label}</span>
+            `;
+
+            subMenu.appendChild(link);
         });
 
-        // Evento click para colapsar/expandir
-        groupTrigger.addEventListener('click', () => {
-            const isOpen = groupContent.classList.contains('open');
-            if (!isOpen) {
-                groupContent.classList.add('open');
-                groupTrigger.querySelector('.chevron-icon').style.transform = 'rotate(180deg)';
-            } else {
-                groupContent.classList.remove('open');
-                groupTrigger.querySelector('.chevron-icon').style.transform = 'rotate(0deg)';
-            }
-        });
-
-        // Inicializar rotación si ya estaba abierto por item activo
-        if (groupContent.classList.contains('open')) {
-            groupTrigger.querySelector('.chevron-icon').style.transform = 'rotate(180deg)';
-        }
-
-        groupContainer.appendChild(groupTrigger);
-        groupContainer.appendChild(groupContent);
-        navContainer.appendChild(groupContainer);
+        groupContainer.appendChild(subMenu);
+        nav.appendChild(groupContainer);
     });
 
-    sidebarNav.appendChild(navContainer);
+    scrollContainer.appendChild(nav);
+    sidebar.appendChild(scrollContainer);
 
-    // Re-renderizar iconos de Lucide
-    if (window.lucide) {
-        window.lucide.createIcons();
-    }
+    // 5. User Profile Footer (Async fetch) - Fixed
+    const footerDiv = document.createElement('div');
+    footerDiv.className = 'p-6 border-t border-slate-800 flex-none bg-slate-900 z-10';
+
+    // Initial loading state
+    footerDiv.innerHTML = `
+        <div class="animate-pulse flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-slate-700"></div>
+            <div class="h-4 bg-slate-700 rounded w-24"></div>
+        </div>
+    `;
+    sidebar.appendChild(footerDiv);
+
+    fetch('api/current_user.php')
+        .then(async response => {
+            const text = await response.text();
+            try { return JSON.parse(text); } catch { return { success: false }; }
+        })
+        .then(data => {
+            if (data.success) {
+                footerDiv.innerHTML = `
+                    <div class="flex flex-col gap-3">
+                         <div class="flex items-center gap-3 px-1">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 bg-cover bg-center flex items-center justify-center text-xs font-bold text-white uppercase" 
+                                 style="${data.photo_url ? `background-image: url('${data.photo_url}')` : 'background-color: #334155'}">
+                                 ${!data.photo_url ? data.user_name.substring(0, 2) : ''}
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <p class="text-white text-xs font-bold truncate">${data.user_name}</p>
+                                <p class="text-slate-400 text-[10px] truncate">Administrator</p>
+                            </div>
+                        </div>
+                        <button onclick="window.confirmLogout()" class="w-full flex items-center justify-center gap-2 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 py-2 text-xs font-bold hover:bg-slate-700 hover:text-white transition-all">
+                            <span class="material-symbols-outlined text-[14px]">logout</span>
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                `;
+
+                // Also update Header User Placeholder if exists
+                const headerUser = document.querySelector('.header-user-placeholder');
+                if (headerUser) {
+                    headerUser.innerHTML = `
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200 hidden md:block">${data.user_name}</span>
+                        <div class="size-8 rounded-full bg-slate-700 bg-center bg-cover flex items-center justify-center text-xs text-white" 
+                             style="${data.photo_url ? `background-image: url('${data.photo_url}')` : ''}">${!data.photo_url ? data.user_name.substring(0, 2) : ''}</div>
+                     `;
+                }
+
+            } else {
+                // Not logged in
+                window.location.href = 'login.html';
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            footerDiv.innerHTML = `
+                <div class="text-red-500 text-xs">Error de conexión</div>
+            `;
+        });
 });
