@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cierre Z</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
+
+        body {
+            font-family: 'Courier Prime', 'Courier New', monospace;
+            font-size: 12px;
+            color: #000;
+            background: #fff;
+            width: 80mm;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 16px;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            margin: 15px 0 5px 0;
+            border-bottom: 1px dashed #000;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+        }
+
+        .row.total {
+            font-weight: bold;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 10px;
+        }
+
+        @media print {
+            body {
+                width: auto;
+                margin: 0;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="window.print()" class="no-print"
+        style="width:100%; padding: 10px; margin-bottom: 10px; cursor: pointer;">🖨️ IMPRIMIR CIERRE</button>
+
+    <div class="header">
+        <h1>REPORTE DE CIERRE Z</h1>
+        <p>RESTAURANTE EL PEREGRINO</p>
+        <p>Fecha: <span id="t-fecha">--/--/--</span></p>
+        <p>Hora Generación: <span id="t-hora">--:--</span></p>
+    </div>
+
+    <div id="content">
+        <!-- Injected by JS -->
+    </div>
+
+    <div class="footer">
+        <p>--- FIN DEL REPORTE ---</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const fecha = params.get('fecha');
+
+            if (!fecha) {
+                document.body.innerHTML = '<p>Error: Fecha no especificada.</p>';
+                return;
+            }
+
+            document.getElementById('t-fecha').textContent = fecha;
+            document.getElementById('t-hora').textContent = new Date().toLocaleTimeString();
+
+            try {
+                const response = await fetch(`api/cierre_diario.php?fecha=${fecha}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const content = document.getElementById('content');
+                    const formatter = new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' });
+
+                    // 1. Resumen General
+                    content.innerHTML += `
+                        <div class="section-title">RESUMEN GENERAL</div>
+                        <div class="row">
+                            <span>Facturas Válidas:</span>
+                            <span>${data.resumen_general.total_facturas}</span>
+                        </div>
+                        <div class="row">
+                            <span>Ventas Netas:</span>
+                            <span>${formatter.format(data.resumen_general.total_subtotal)}</span>
+                        </div>
+                        <div class="row">
+                            <span>Impuestos (IVA):</span>
+                            <span>${formatter.format(data.resumen_general.total_impuestos)}</span>
+                        </div>
+                        <div class="row total">
+                            <span>VENTAS BRUTAS:</span>
+                            <span>${formatter.format(data.resumen_general.total_ventas)}</span>
+                        </div>
+                    `;
+
+                    // 2. Desglose
+                    content.innerHTML += `<div class="section-title">DESGLOSE POR ESTADO</div>`;
+                    data.desglose_estados.forEach(item => {
+                        content.innerHTML += `
+                            <div class="row">
+                                <span style="text-transform:uppercase">${item.estado} (${item.cantidad}):</span>
+                                <span>${formatter.format(item.total)}</span>
+                            </div>
+                        `;
+                    });
+
+                    // 3. Anulaciones
+                    content.innerHTML += `
+                        <div class="section-title">ANULACIONES</div>
+                        <div class="row">
+                            <span>Cantidad:</span>
+                            <span>${data.resumen_anuladas.total_anuladas}</span>
+                        </div>
+                         <div class="row">
+                            <span>Total Anulado:</span>
+                            <span>${formatter.format(data.resumen_anuladas.monto_anulado)}</span>
+                        </div>
+                    `;
+
+                    setTimeout(() => window.print(), 500);
+
+                } else {
+                    alert('Error cargando datos.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error de conexión.');
+            }
+        });
+    </script>
+</body>
+
+</html>

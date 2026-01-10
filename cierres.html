@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cierre Diario (Corte Z)</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#0f172a",
+                        "surface-dark": "#1e293b",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display overflow-hidden">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300">
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark">
+            <!-- Header -->
+            <header id="main-header"
+                class="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 px-8 backdrop-blur-md">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xl font-bold tracking-tight">Facturación</h2>
+                </div>
+                <!-- User Placeholder for sidebar.js -->
+                <div class="header-user-placeholder flex items-center gap-2"></div>
+            </header>
+
+            <main class="flex-1 overflow-auto p-8">
+                <div class="max-w-[1000px] mx-auto space-y-8">
+
+                    <!-- Title -->
+                    <div class="flex flex-col sm:flex-row justify-between gap-4 items-center">
+                        <div>
+                            <h1 class="text-3xl font-bold">Cierre Diario (Corte Z)</h1>
+                            <p class="text-slate-500 dark:text-slate-400 mt-1">Resumen de operaciones del día.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <input type="date" id="fecha-cierre"
+                                class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-sm font-bold shadow-sm outline-none focus:ring-2 focus:ring-primary">
+                            <button id="btn-actualizar"
+                                class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                                <span class="material-symbols-outlined">refresh</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Summary Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Ventas Totales -->
+                        <div
+                            class="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden group">
+                            <div
+                                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl text-primary">payments</span>
+                            </div>
+                            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Ventas Totales</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white" id="total-ventas">₡0.00
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-2 font-mono" id="conteo-facturas">0 Facturas</p>
+                        </div>
+
+                        <!-- Impuestos -->
+                        <div
+                            class="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden group">
+                            <div
+                                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl text-blue-500">account_balance</span>
+                            </div>
+                            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Impuestos (IVA)
+                            </p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white" id="total-impuestos">
+                                ₡0.00</h3>
+                            <p class="text-xs text-slate-400 mt-2 font-mono">13% General</p>
+                        </div>
+
+                        <!-- Anulaciones -->
+                        <div
+                            class="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden group">
+                            <div
+                                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl text-red-500">block</span>
+                            </div>
+                            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Anulaciones</p>
+                            <h3 class="text-3xl font-extrabold text-red-600 dark:text-red-400" id="total-anulado">₡0.00
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-2 font-mono" id="conteo-anuladas">0 Facturas Anuladas
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown Table -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">pie_chart</span>
+                            Desglose por Estado
+                        </h3>
+                        <div
+                            class="bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                            <table class="w-full text-left text-sm">
+                                <thead
+                                    class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-xs">
+                                    <tr>
+                                        <th class="px-6 py-4">Estado</th>
+                                        <th class="px-6 py-4 text-center">Cantidad</th>
+                                        <th class="px-6 py-4 text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-desglose" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Action Actions -->
+                    <div class="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800">
+                        <button id="btn-imprimir-cierre"
+                            class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 font-bold py-4 px-8 rounded-xl flex items-center gap-3 transition-transform active:scale-95 shadow-xl">
+                            <span class="material-symbols-outlined text-2xl">print</span>
+                            <span class="text-lg">IMPRIMIR CIERRE Z</span>
+                        </button>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/sidebar.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cierres.js"></script>
+</body>
+
+</html>
