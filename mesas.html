@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -27,7 +29,11 @@
 
 <body class="text-gray-200">
 
+    <aside id="sidebar"
+        class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300">
+    </aside>
     <div id="root"></div>
+    <script src="js/sidebar.js"></script>
 
     <script type="text/babel">
         window.onload = function () {
@@ -188,26 +194,23 @@
                 );
             };
 
-            const Sidebar = ({ zones, activeZoneId, setActiveZoneId, setSelectedTable, isSidebarOpen, setIsSidebarOpen }) => {
+            const ZonePanel = ({ zones, activeZoneId, setActiveZoneId, setSelectedTable, isSidebarOpen, setIsSidebarOpen }) => {
                 const handleZoneClick = (zoneId) => {
                     setActiveZoneId(zoneId);
                     setSelectedTable(null);
                 };
 
                 return (
-                    <div className={`fixed top-0 left-0 h-full bg-gray-900 text-white transition-all duration-300 z-30 ${isSidebarOpen ? 'w-64' : 'w-20'} lg:w-64`}>
+                    <div className={`fixed top-0 right-0 left-auto h-full bg-gray-900 border-l border-gray-800 text-white transition-all duration-300 z-30 ${isSidebarOpen ? 'w-64' : 'w-20'} lg:w-64`}>
                         <div className="flex flex-col h-full p-4">
                             <div>
                                 <div className={`flex items-center mb-6 h-[2.125rem] ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
-                                    <a href="#" className={`flex items-center ps-2.5 ${!isSidebarOpen && 'hidden'} lg:flex`}>
-                                        <Icon name="UtensilsCrossed" className="h-6 w-6 me-3" />
-                                        <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>ZONAS</span>
-                                    </a>
-                                    <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden`}>
-                                        <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6" />
-                                    </button>
                                     <button onClick={() => setIsSidebarOpen(true)} className={`p-2 rounded-md hover:bg-gray-700 hidden ${!isSidebarOpen ? 'lg:inline' : ''}`}>
                                         <Icon name="Menu" className="w-6 h-6" />
+                                    </button>
+                                    <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>ZONAS</span>
+                                    <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden`}>
+                                        <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6" />
                                     </button>
                                 </div>
                                 <ul className="space-y-3 font-medium">
@@ -221,14 +224,6 @@
                                         </li>
                                     ))}
                                 </ul>
-                            </div>
-                            <div className="mt-auto pt-8 space-y-3">
-                                <a href="../productos.html" className={`w-full flex items-center p-3 rounded-lg transition-colors bg-gray-700 hover:bg-gray-600 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}>
-                                    <Icon name="UtensilsCrossed" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Productos</span>
-                                </a>
-                                <a href="../editor.html" className={`w-full flex items-center p-3 rounded-lg transition-colors bg-gray-700 hover:bg-gray-600 text-gray-200 ${isSidebarOpen ? '' : 'justify-center'} lg:justify-start`}>
-                                    <Icon name="Pencil" className="flex-shrink-0" /> <span className={`ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>Modo Editor</span>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -408,7 +403,7 @@
                 const activeZone = zones.find(z => z.id === activeZoneId);
 
                 return (
-                    <div className="relative min-h-screen bg-gray-900">
+                    <div className="relative min-h-screen bg-gray-900 ml-64">
                         <PersonCountModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleOpenTable} table={tableForModal} />
                         <OccupiedTableModal
                             isOpen={isOccupiedModalOpen}
@@ -425,8 +420,7 @@
                             sourceTable={sourceTableForChange}
                         />
                         <div className="relative flex h-screen">
-                            <Sidebar {...{ zones, activeZoneId, setActiveZoneId, setSelectedTable, isSidebarOpen, setIsSidebarOpen }} />
-                            <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'} lg:ml-64`}>
+                            <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'mr-64' : 'mr-20'} lg:mr-64`}>
                                 <Header activeZoneName={activeZone?.name || 'Sin Zonas'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
                                 <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-800 p-4 lg:p-8 relative">
                                     <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Seleccionar Mesa: {activeZone?.name || ''}</h1>
@@ -507,6 +501,7 @@
                                     </div>
                                 </main>
                             </div>
+                            <ZonePanel {...{ zones, activeZoneId, setActiveZoneId, setSelectedTable, isSidebarOpen, setIsSidebarOpen }} />
                         </div>
                     </div>
                 );
