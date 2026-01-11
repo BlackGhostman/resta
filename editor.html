@@ -86,7 +86,11 @@
 
 <body class="bg-background-dark text-slate-100 font-display antialiased overflow-hidden">
 
+    <aside id="sidebar"
+        class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300">
+    </aside>
     <div id="root"></div>
+    <script src="js/sidebar.js"></script>
 
     <script type="text/babel">
         window.onload = function () {
@@ -453,7 +457,7 @@
                 return name.substring(0, 2).toUpperCase();
             };
 
-            const Sidebar = ({
+            const ToolsPanel = ({
                 zones, activeZoneId, setActiveZoneId,
                 isAddingMode, setIsAddingMode,
                 isAddingDecorationMode, setIsAddingDecorationMode,
@@ -461,18 +465,9 @@
                 setShowAddZoneModal, handleSaveChanges, isDirty, isSaving
             }) => {
                 return (
-                    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 left-0 z-50">
-                        <div className="p-6">
-                            <div className="flex items-center gap-3 mb-10">
-                                <div className="bg-primary/20 p-2 rounded-lg">
-                                    <span className="material-symbols-outlined text-primary text-2xl">restaurant</span>
-                                </div>
-                                <div>
-                                    <h1 className="text-white text-lg font-bold leading-none">AdminPortal</h1>
-                                    <p className="text-slate-400 text-xs mt-1">Management Suite</p>
-                                </div>
-                            </div>
+                    <aside className="w-64 bg-slate-900 border-l border-slate-800 flex-col fixed inset-y-0 right-0 z-50 flex">
 
+                        <div className="p-6">
                             <div className="mb-6">
                                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">Zonas</p>
                                 <nav className="space-y-1">
@@ -548,10 +543,6 @@
                         </div>
 
                         <div className="mt-auto p-6 border-t border-slate-800">
-                            <a href="index.html" className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 py-2.5 text-sm font-bold mb-3 hover:bg-slate-700 hover:text-white transition-all">
-                                <span className="material-symbols-outlined text-sm">arrow_back</span>
-                                Volver al Dashboard
-                            </a>
                             <button
                                 onClick={handleSaveChanges}
                                 disabled={!isDirty || isSaving}
@@ -563,47 +554,12 @@
                                 </span>
                                 {isSaving ? 'Guardando...' : 'Guardar Cambios'}
                             </button>
-
-                            <div className="mt-6 flex items-center gap-3 px-1">
-                                <div className="w-8 h-8 rounded-full bg-slate-700 bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuC6MZg_SRB7RwTDt38r3j3tlhn3LxdCo3aIjimwq1PNWiisZ63K-zqnXn927Ud6C82aUcPVYiU-Vk7M0Kj5Hr6npzZF5nvxx9uwCPGzi6KyyrTkHUGdNUmUyLC7S3Y0sdulYAD-fxlUv2boiEGYktINru4xmoJJpqBn9IaHAF2YzsSBR8U-1A8LYIuatHNv8XJY1I8rM9i_V_F5rP7p6iq6jVYB_rqDrrX62kfGckc9kHufqpAbbdVk_wjjQafhRU3njQzFOQwAShA')" }}></div>
-                                <div className="flex-1 overflow-hidden">
-                                    <p className="text-white text-xs font-bold truncate">Alex Johnson</p>
-                                    <p className="text-slate-400 text-[10px] truncate">System Admin</p>
-                                </div>
-                            </div>
                         </div>
                     </aside>
                 );
             }
 
-            const PropertiesPanel = ({ selectedTable, selectedWallId, activeZoneId }) => {
-                return (
-                    <aside className="w-80 bg-slate-900 border-l border-slate-800 flex-none z-40 overflow-y-auto hidden xl:block">
-                        <div className="p-6">
-                            <h2 className="text-lg font-bold text-white mb-6">Propiedades</h2>
-                            {(!selectedTable && !selectedWallId) ? (
-                                <div className="text-center text-slate-500 mt-10">
-                                    <span className="material-symbols-outlined text-4xl mb-4 opacity-50">touch_app</span>
-                                    <p className="text-sm">Selecciona una mesa, pared o elemento para editar sus detalles.</p>
-                                </div>
-                            ) : (
-                                <div className="bg-surface-dark p-4 rounded-xl border border-slate-800 animate-fade-in">
-                                    <p className="text-slate-400 text-xs uppercase font-bold tracking-wider mb-2">Seleccionado</p>
-                                    <p className="text-white font-medium text-lg flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-primary">
-                                            {selectedTable ? 'table_restaurant' : 'edit_road'}
-                                        </span>
-                                        {selectedTable ? `Mesa` : 'Pared'}
-                                    </p>
-                                    <div className="mt-4 pt-4 border-t border-slate-700">
-                                        <p className="text-slate-500 text-sm italic">Edición en panel próximamente...</p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </aside>
-                );
-            }
+
 
             function LayoutEditor() {
                 const [zones, setZones] = useState([]);
@@ -1167,7 +1123,7 @@
                 };
 
                 return (
-                    <div className="flex h-screen bg-background-dark text-slate-100 selection:bg-primary/30 selection:text-white">
+                    <div className="flex h-screen bg-background-dark text-slate-100 selection:bg-primary/30 selection:text-white ml-64">
                         <AddZoneModal show={showAddZoneModal} onClose={() => setShowAddZoneModal(false)} value={newZoneName} onChange={(e) => setNewZoneName(e.target.value)} onSave={handleAddZone} />
                         <ZoneActionsModal
                             show={showZoneActionsModal}
@@ -1187,7 +1143,7 @@
                         <EditTableModal show={showEditTableModal} onClose={() => setShowEditTableModal(false)} table={tableToEdit} onSave={handleEditTable} onDelete={handleDeleteFromModal} />
                         <EditDecorationModal show={showEditDecorationModal} onClose={() => setShowEditDecorationModal(false)} decoration={decorationToEdit} onSave={handleEditDecoration} onDelete={handleDeleteDecoration} />
 
-                        <Sidebar
+                        <ToolsPanel
                             zones={zones}
                             activeZoneId={activeZoneId}
                             setActiveZoneId={setActiveZoneId}
@@ -1203,8 +1159,11 @@
                             isSaving={isSaving}
                         />
 
-                        <div className="flex-1 ml-64 flex overflow-hidden">
+                        <div className="flex-1 mr-64 flex overflow-hidden">
+
+
                             <main className={`flex-1 overflow-auto bg-slate-950 p-6 md:p-8 relative ${isAddingMode || isAddingDecorationMode || isAddingWallMode ? 'cursor-copy' : ''}`}>
+
                                 <div className="flex items-center justify-between mb-6">
                                     <h1 className="text-3xl font-bold text-white tracking-tight">{zones.find(z => z.id === activeZoneId)?.name || ''}</h1>
                                 </div>
@@ -1320,8 +1279,6 @@
                                     })()}
                                 </div>
                             </main>
-
-                            <PropertiesPanel selectedTable={selectedTable} selectedWallId={selectedWallId} activeZoneId={activeZoneId} />
                         </div>
                     </div>
                 );
