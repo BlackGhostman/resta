@@ -62,9 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
             fila.innerHTML = `
                 <td>${m.descripcion}</td>
                 <td>${m.abreviatura}</td>
-                <td class="acciones">
-                    <button class="btn-editar" data-id="${m.id_medidas}">Editar</button>
-                    <button class="btn-eliminar" data-id="${m.id_medidas}">Eliminar</button>
+                <td class="acciones text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <button class="btn-editar p-2 rounded-lg text-blue-500 hover:bg-blue-500/10 hover:text-blue-600 transition-colors" title="Editar" data-id="${m.id_medidas}">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">edit</span>
+                        </button>
+                        <button class="btn-eliminar p-2 rounded-lg text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors" title="Eliminar" data-id="${m.id_medidas}">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">delete</span>
+                        </button>
+                    </div>
                 </td>
             `;
             tablaCuerpo.appendChild(fila);
@@ -79,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners ---
     filtroInput.addEventListener('input', () => {
         const termino = filtroInput.value.toLowerCase();
-        const medidasFiltradas = todasLasMedidas.filter(m => 
+        const medidasFiltradas = todasLasMedidas.filter(m =>
             m.descripcion.toLowerCase().includes(termino) ||
             m.abreviatura.toLowerCase().includes(termino)
         );

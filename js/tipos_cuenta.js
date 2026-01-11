@@ -61,9 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const fila = document.createElement('tr');
             fila.innerHTML = `
                 <td>${t.nombre}</td>
-                <td class="acciones">
-                    <button class="btn-editar" data-id="${t.id_tipo_cuenta}">Editar</button>
-                    <button class="btn-eliminar" data-id="${t.id_tipo_cuenta}">Eliminar</button>
+                <td class="acciones text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <button class="btn-editar p-2 rounded-lg text-blue-500 hover:bg-blue-500/10 hover:text-blue-600 transition-colors" title="Editar" data-id="${t.id_tipo_cuenta}">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">edit</span>
+                        </button>
+                        <button class="btn-eliminar p-2 rounded-lg text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors" title="Eliminar" data-id="${t.id_tipo_cuenta}">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">delete</span>
+                        </button>
+                    </div>
                 </td>
             `;
             tablaCuerpo.appendChild(fila);
@@ -78,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners ---
     filtroInput.addEventListener('input', () => {
         const termino = filtroInput.value.toLowerCase();
-        const tiposFiltrados = todosLosTipos.filter(t => 
+        const tiposFiltrados = todosLosTipos.filter(t =>
             t.nombre.toLowerCase().includes(termino)
         );
         mostrarTiposCuenta(tiposFiltrados);

@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: "Facturación",
             icon: "receipt_long", // Material Symbol
             items: [
+                { label: "Ordenar", url: "mesas.html" },
                 { label: "Facturar", url: "facturar.html" },
                 { label: "Consulta cuentas x cobrar", url: "cuentas_por_cobrar.html" },
                 { label: "Reimpresión", url: "reimpresion.html" },

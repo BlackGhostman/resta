@@ -114,9 +114,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${a.subfamilia || ''}</td>
                 <td>${a.precio_venta || ''}</td>
                 <td>${a.existencia || ''}</td>
-                <td class="acciones">
-                    <button class="btn-editar" data-id="${a.id_articulos}">Editar</button>
-                    <button class="btn-eliminar" data-id="${a.id_articulos}">Eliminar</button>
+                <td class="acciones text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <button class="btn-editar p-2 rounded-lg text-blue-500 hover:bg-blue-500/10 hover:text-blue-600 transition-colors" title="Editar" data-id="${a.id_articulos}">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">edit</span>
+                        </button>
+                        <button class="btn-eliminar p-2 rounded-lg text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors" title="Eliminar" data-id="${a.id_articulos}">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">delete</span>
+                        </button>
+                    </div>
                 </td>
             `;
             tablaCuerpo.appendChild(fila);
@@ -133,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners ---
     filtroInput.addEventListener('input', () => {
         const termino = filtroInput.value.toLowerCase();
-        const articulosFiltrados = todosLosArticulos.filter(a => 
+        const articulosFiltrados = todosLosArticulos.filter(a =>
             a.nombre.toLowerCase().includes(termino) ||
             (a.familia && a.familia.toLowerCase().includes(termino)) ||
             (a.subfamilia && a.subfamilia.toLowerCase().includes(termino))

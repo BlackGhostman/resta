@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(API_URL);
             if (!response.ok) throw new Error('Error al obtener los proveedores');
             const result = await response.json();
-            
+
             if (result.success) {
                 mostrarProveedores(result.data);
             } else {
@@ -62,9 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${p.contacto || ''}</td>
                 <td>${p.telefono || ''}</td>
                 <td>${p.email || ''}</td>
-                <td class="acciones">
-                    <button class="btn-editar" data-id="${p.id_proveedores}">Editar</button>
-                    <button class="btn-eliminar" data-id="${p.id_proveedores}">Eliminar</button>
+                <td class="acciones text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <button class="btn-editar p-2 rounded-lg text-blue-500 hover:bg-blue-500/10 hover:text-blue-600 transition-colors" title="Editar" data-id="${p.id_proveedores}">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">edit</span>
+                        </button>
+                        <button class="btn-eliminar p-2 rounded-lg text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors" title="Eliminar" data-id="${p.id_proveedores}">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">delete</span>
+                        </button>
+                    </div>
                 </td>
             `;
             tablaCuerpo.appendChild(fila);

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes de Facturación</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#0f172a",
+                        "surface-dark": "#1e293b",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display overflow-hidden">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300">
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark">
+            <!-- Header -->
+            <header id="main-header"
+                class="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 px-8 backdrop-blur-md">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xl font-bold tracking-tight">Facturación</h2>
+                </div>
+                <!-- User Placeholder for sidebar.js -->
+                <div class="header-user-placeholder flex items-center gap-2"></div>
+            </header>
+
+            <main class="flex-1 overflow-auto p-8">
+                <div class="max-w-[1400px] mx-auto space-y-8">
+
+                    <!-- Title -->
+                    <div class="flex flex-col sm:flex-row justify-between gap-4 items-center">
+                        <div>
+                            <h1 class="text-3xl font-bold text-white">Reportes de Facturación</h1>
+                            <p class="text-slate-400 mt-1">Consulte y descargue reportes detallados de las operaciones.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Report Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                        <!-- Reporte de Ventas -->
+                        <div
+                            class="group bg-slate-900 p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all cursor-pointer relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <span class="material-symbols-outlined text-8xl">bar_chart</span>
+                            </div>
+                            <div class="relative z-10">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <span
+                                        class="material-symbols-outlined text-emerald-500 text-2xl">point_of_sale</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">Reporte de Ventas</h3>
+                                <p class="text-slate-400 text-sm mb-6">Detalle de ventas por fecha, cliente, o tipo de
+                                    pago. Incluye gráficos de rendimiento.</p>
+                                <span
+                                    class="text-emerald-500 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                                    Ver Reporte <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Cierre X / Z -->
+                        <div
+                            class="group bg-slate-900 p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all cursor-pointer relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <span class="material-symbols-outlined text-8xl">receipt_long</span>
+                            </div>
+                            <div class="relative z-10">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-blue-500 text-2xl">summarize</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">Cierres de Caja (X / Z)</h3>
+                                <p class="text-slate-400 text-sm mb-6">Resumen de operaciones diarias. Arqueos de caja,
+                                    cortes parciales (X) y finales (Z).</p>
+                                <span
+                                    class="text-blue-500 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                                    Consultar Cierres <span
+                                        class="material-symbols-outlined text-lg">arrow_forward</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Reporte de Productos -->
+                        <div
+                            class="group bg-slate-900 p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all cursor-pointer relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <span class="material-symbols-outlined text-8xl">inventory_2</span>
+                            </div>
+                            <div class="relative z-10">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-purple-500 text-2xl">dataset</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">Ventas por Producto</h3>
+                                <p class="text-slate-400 text-sm mb-6">Análisis de productos más vendidos, rentabilidad
+                                    por ítem y movimientos de inventario.</p>
+                                <span
+                                    class="text-purple-500 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                                    Analizar Productos <span
+                                        class="material-symbols-outlined text-lg">arrow_forward</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Anulaciones -->
+                        <div
+                            class="group bg-slate-900 p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all cursor-pointer relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <span class="material-symbols-outlined text-8xl">block</span>
+                            </div>
+                            <div class="relative z-10">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <span
+                                        class="material-symbols-outlined text-red-500 text-2xl">remove_shopping_cart</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">Reporte de Anulaciones</h3>
+                                <p class="text-slate-400 text-sm mb-6">Auditoría de facturas y pedidos anulados.
+                                    Detalles de usuario y motivo de anulación.</p>
+                                <span
+                                    class="text-red-500 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                                    Ver Auditoría <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Impuestos -->
+                        <div
+                            class="group bg-slate-900 p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all cursor-pointer relative overflow-hidden">
+                            <div class="absolute right-0 top-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <span class="material-symbols-outlined text-8xl">account_balance</span>
+                            </div>
+                            <div class="relative z-10">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-amber-500 text-2xl">percent</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">Reporte Fiscal</h3>
+                                <p class="text-slate-400 text-sm mb-6">Desglose de impuestos recolectados (IVA) para
+                                    declaraciones tributarias.</p>
+                                <span
+                                    class="text-amber-500 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                                    Ver Impuestos <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+    <script>
+        // Placeholder for future interactivity logic
+        document.addEventListener('DOMContentLoaded', () => {
+            // Logic to handle card clicks could go here
+        });
+    </script>
+</body>
+
+</html>
