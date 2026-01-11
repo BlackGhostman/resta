@@ -54,29 +54,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
         facturas.forEach(factura => {
             const row = document.createElement('tr');
-            row.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors';
+            row.className = 'hover:bg-slate-800 transition-colors group';
 
             // Format currency
             const formatter = new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' });
 
-            // Determine badge color based on status (mock logic)
+            // Determine badge color based on status
             let statusBadge = '';
             if (factura.estado === 'credito') {
-                statusBadge = `<span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold">Pendiente</span>`;
+                statusBadge = `<div class="inline-flex items-center px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
+                                Pendiente
+                               </div>`;
             } else {
-                statusBadge = `<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">${factura.estado}</span>`;
+                statusBadge = `<div class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                ${factura.estado}
+                               </div>`;
             }
 
             row.innerHTML = `
-                <td class="px-6 py-4 font-bold text-slate-700 dark:text-slate-300">#${factura.id_facturas_maestro}</td>
-                <td class="px-6 py-4 text-slate-500 dark:text-slate-400">${new Date(factura.fecha).toLocaleDateString()}</td>
-                <td class="px-6 py-4 font-bold">${factura.nombre_cliente || 'Cliente Genérico'}</td>
-                <td class="px-6 py-4">${statusBadge}</td>
-                <td class="px-6 py-4 text-right font-mono">${formatter.format(factura.total_factura)}</td>
-                <td class="px-6 py-4 text-right font-mono text-red-500 font-bold">${formatter.format(factura.saldo_pendiente)}</td>
-                <td class="px-6 py-4 text-center">
-                    <button class="btn-pagar text-primary hover:text-green-400 font-bold text-sm transition-colors" data-id="${factura.id_facturas_maestro}" data-saldo="${factura.saldo_pendiente}">
-                        Registrar Pago
+                <td class="px-8 py-5 border-b border-slate-800 font-bold text-white text-sm">#${factura.id_facturas_maestro}</td>
+                <td class="px-8 py-5 border-b border-slate-800 text-slate-400 text-sm">${new Date(factura.fecha).toLocaleDateString()}</td>
+                <td class="px-8 py-5 border-b border-slate-800 font-medium text-slate-300">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center mr-3 text-xs font-bold text-slate-500">
+                            ${(factura.nombre_cliente || 'CG').substring(0, 2).toUpperCase()}
+                        </div>
+                        ${factura.nombre_cliente || 'Cliente Genérico'}
+                    </div>
+                </td>
+                <td class="px-8 py-5 border-b border-slate-800">${statusBadge}</td>
+                <td class="px-8 py-5 border-b border-slate-800 text-right font-mono text-slate-400 text-sm">${formatter.format(factura.total_factura)}</td>
+                <td class="px-8 py-5 border-b border-slate-800 text-right font-mono text-white font-bold text-sm">${formatter.format(factura.saldo_pendiente)}</td>
+                <td class="px-8 py-5 border-b border-slate-800 text-right">
+                    <button class="btn-pagar text-xs font-bold uppercase tracking-wider text-emerald-500 hover:text-emerald-400 transition-colors flex items-center justify-end gap-1 ml-auto group-hover:underline" data-id="${factura.id_facturas_maestro}" data-saldo="${factura.saldo_pendiente}">
+                        REGISTRAR PAGO
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </button>
                 </td>
             `;
@@ -86,9 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add event listeners to new buttons
         document.querySelectorAll('.btn-pagar').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const id = e.target.dataset.id;
-                const saldo = e.target.dataset.saldo;
-                openPaymentModal(id, saldo);
+                // Handle click on icon or text inside button
+                const target = e.target.closest('.btn-pagar');
+                if (target) {
+                    const id = target.dataset.id;
+                    const saldo = target.dataset.saldo;
+                    openPaymentModal(id, saldo);
+                }
             });
         });
     };

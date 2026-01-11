@@ -72,63 +72,164 @@
                     </div>
 
                     <!-- Filters -->
-                    <div
-                        class="bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-wrap gap-4 items-end">
-                        <div class="flex-1 min-w-[200px]">
-                            <label class="block text-xs font-bold text-slate-500 mb-1">Buscar Cliente</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-lg">search</span>
-                                <input type="text" id="filtro-cliente" placeholder="Nombre del cliente..."
-                                    class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none">
+                    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                            <div class="md:col-span-5">
+                                <label
+                                    class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Buscar
+                                    Cliente</label>
+                                <div class="relative group">
+                                    <span
+                                        class="material-symbols-outlined absolute left-4 top-3 text-slate-500 group-focus-within:text-emerald-500 transition-colors">search</span>
+                                    <input type="text" id="filtro-cliente" placeholder="Nombre del cliente..."
+                                        class="w-full pl-12 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 outline-none transition-all">
+                                </div>
+                            </div>
+                            <div class="md:col-span-3">
+                                <label
+                                    class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Desde</label>
+                                <div class="relative">
+                                    <input type="date" id="filtro-fecha-inicio"
+                                        class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 outline-none transition-all appearance-none">
+                                </div>
+                            </div>
+                            <div class="md:col-span-3">
+                                <label
+                                    class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Hasta</label>
+                                <div class="relative">
+                                    <input type="date" id="filtro-fecha-fin"
+                                        class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 outline-none transition-all appearance-none">
+                                </div>
+                            </div>
+                            <div class="md:col-span-1">
+                                <button id="btn-filtrar"
+                                    class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20">
+                                    <span class="material-symbols-outlined">filter_list</span>
+                                    Filtrar
+                                </button>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1">Desde</label>
-                            <input type="date" id="filtro-fecha-inicio"
-                                class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1">Hasta</label>
-                            <input type="date" id="filtro-fecha-fin"
-                                class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none">
-                        </div>
-                        <button id="btn-filtrar"
-                            class="bg-primary hover:bg-primary/90 text-slate-900 font-bold py-2 px-5 rounded-lg flex items-center gap-2 transition-colors">
-                            <span class="material-symbols-outlined">filter_list</span>
-                            Filtrar
-                        </button>
                     </div>
 
                     <!-- Table -->
-                    <div
-                        class="bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden mb-8">
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead
-                                    class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-xs">
-                                    <tr>
-                                        <th class="px-6 py-4">Factura #</th>
-                                        <th class="px-6 py-4">Fecha</th>
-                                        <th class="px-6 py-4">Cliente</th>
-                                        <th class="px-6 py-4">Estado</th>
-                                        <th class="px-6 py-4 text-right">Total</th>
-                                        <th class="px-6 py-4 text-right">Saldo Pendiente</th>
-                                        <th class="px-6 py-4 text-center">Acciones</th>
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="border-b border-slate-800 bg-slate-900/50">
+                                        <th class="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Factura #</th>
+                                        <th class="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Fecha</th>
+                                        <th class="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Cliente</th>
+                                        <th class="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Estado</th>
+                                        <th
+                                            class="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">
+                                            Total</th>
+                                        <th
+                                            class="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">
+                                            Saldo Pendiente</th>
+                                        <th
+                                            class="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">
+                                            Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabla-cxc" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                <tbody id="tabla-cxc" class="divide-y divide-slate-800/50">
                                     <!-- Populated by JS -->
                                 </tbody>
                             </table>
                         </div>
+
                         <!-- Empty State -->
-                        <div id="loading-indicator" class="p-8 text-center text-slate-500">
-                            Cargando cuentas...
+                        <div id="loading-indicator" class="p-12 text-center">
+                            <div
+                                class="animate-spin inline-block w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full mb-4">
+                            </div>
+                            <p class="text-slate-400">Cargando cuentas...</p>
                         </div>
-                        <div id="empty-state" class="hidden p-12 text-center text-slate-500">
-                            <span class="material-symbols-outlined text-4xl mb-2 opacity-50">inbox</span>
-                            <p>No se encontraron cuentas por cobrar pendientes.</p>
+                        <div id="empty-state" class="hidden p-16 text-center">
+                            <div
+                                class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="material-symbols-outlined text-3xl text-slate-600">inbox</span>
+                            </div>
+                            <h3 class="text-slate-300 text-lg font-bold mb-1">Sin Registros</h3>
+                            <p class="text-slate-500">No se encontraron cuentas por cobrar pendientes con los filtros
+                                actuales.</p>
+                        </div>
+
+                        <!-- Pagination / Footer -->
+                        <div class="px-8 py-4 border-t border-slate-800 flex items-center justify-between">
+                            <span class="text-sm text-slate-500 uppercase font-bold tracking-wide">Mostrando 1-5 de 24
+                                registros</span>
+                            <div class="flex items-center gap-2">
+                                <button
+                                    class="text-slate-500 hover:text-white font-bold text-sm transition-colors">Anterior</button>
+                                <button
+                                    class="w-8 h-8 rounded-lg bg-emerald-500 text-slate-900 font-bold flex items-center justify-center text-sm shadow-lg shadow-emerald-500/20">1</button>
+                                <button
+                                    class="w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-bold flex items-center justify-center text-sm transition-colors">2</button>
+                                <button
+                                    class="w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-bold flex items-center justify-center text-sm transition-colors">3</button>
+                                <button
+                                    class="text-slate-500 hover:text-white font-bold text-sm transition-colors">Siguiente</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div
+                            class="bg-slate-900 p-6 rounded-2xl border border-slate-800 relative overflow-hidden group hover:border-slate-700 transition-colors">
+                            <div class="absolute right-0 top-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl">account_balance_wallet</span>
+                            </div>
+                            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Total por Cobrar
+                            </h3>
+                            <p class="text-3xl font-bold text-white mb-2">$45,280.00</p>
+                            <div class="flex items-center text-emerald-500 text-xs font-bold">
+                                <span class="material-symbols-outlined text-base mr-1">trending_up</span>
+                                +5.2% vs mes anterior
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-slate-900 p-6 rounded-2xl border border-slate-800 relative overflow-hidden group hover:border-slate-700 transition-colors">
+                            <div class="absolute right-0 top-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl">warning</span>
+                            </div>
+                            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Cartera Vencida
+                            </h3>
+                            <p class="text-3xl font-bold text-white mb-2">$12,450.00</p>
+                            <div class="flex items-center text-amber-500 text-xs font-bold">
+                                <span class="material-symbols-outlined text-base mr-1">warning</span>
+                                18 facturas en mora
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-slate-900 p-6 rounded-2xl border border-slate-800 relative overflow-hidden group hover:border-slate-700 transition-colors">
+                            <div class="absolute right-0 top-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl">event_upcoming</span>
+                            </div>
+                            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Próximos
+                                Vencimientos</h3>
+                            <p class="text-3xl font-bold text-white mb-2">$8,900.00</p>
+                            <p class="text-slate-500 text-xs">Próximos 7 días</p>
+                        </div>
+
+                        <div
+                            class="bg-slate-900 p-6 rounded-2xl border border-slate-800 relative overflow-hidden group hover:border-slate-700 transition-colors">
+                            <div class="absolute right-0 top-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl">payments</span>
+                            </div>
+                            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Cobros del Mes
+                            </h3>
+                            <p class="text-3xl font-bold text-white mb-2">$32,120.00</p>
+                            <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2">
+                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 70%"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
