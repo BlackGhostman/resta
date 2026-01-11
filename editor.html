@@ -1176,7 +1176,8 @@
                                         }
 
                                         return (
-                                            <div className="relative grid bg-slate-900 border border-slate-800 rounded-lg overflow-hidden" style={{ gridTemplateRows: `repeat(${NUM_ROWS}, 40px)`, gridTemplateColumns: `repeat(${NUM_COLS}, 40px)` }}
+
+                                            <div className="relative grid bg-white border border-slate-200 rounded-lg overflow-hidden" style={{ gridTemplateRows: `repeat(${NUM_ROWS}, 40px)`, gridTemplateColumns: `repeat(${NUM_COLS}, 40px)` }}
                                                 onDragOver={handleDragOver}
                                                 onDrop={handleDrop}
                                                 onMouseDown={handleMouseDownOnGrid}
@@ -1188,7 +1189,7 @@
                                                     const row = Math.floor(index / NUM_COLS) + 1;
                                                     const col = (index % NUM_COLS) + 1;
                                                     return (
-                                                        <div key={`cell-${row}-${col}`} className="grid-cell border-r border-b border-slate-800/50"
+                                                        <div key={`cell-${row}-${col}`} className="grid-cell border-r border-b border-slate-100"
                                                             onDragLeave={handleDragLeave}
                                                             onClick={() => {
                                                                 if (isAddingMode || isAddingDecorationMode) {
