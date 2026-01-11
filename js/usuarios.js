@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    lucide.createIcons();
+    // lucide.createIcons(); // Removed: Using Material Symbols
 
     // Variables
     const modal = document.getElementById('usuario-modal');
@@ -48,26 +48,31 @@ document.addEventListener('DOMContentLoaded', () => {
         usuarios.forEach(user => {
             const row = document.createElement('tr');
 
-            const estadoClass = user.esta_activo == 1 ? 'status-active' : 'status-inactive';
+            const estadoClass = user.esta_activo == 1 ? 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400';
             const estadoText = user.esta_activo == 1 ? 'Activo' : 'Inactivo';
 
             row.innerHTML = `
-                <td><span class="font-medium">${user.usuario}</span></td>
-                <td>${user.nombre_completo}</td>
-                <td class="capitalize">${user.perfil}</td>
-                <td><span class="status-badge ${estadoClass}">${estadoText}</span></td>
-                <td class="acciones">
-                    <button class="btn-editar" onclick="editarUsuario(${user.id_usuarios})" title="Editar">
-                        <i data-lucide="edit-2" style="width:16px; height:16px;"></i>
-                    </button>
-                    <button class="btn-eliminar ml-2" onclick="eliminarUsuario(${user.id_usuarios})" title="Eliminar">
-                        <i data-lucide="trash-2" style="width:16px; height:16px;"></i>
-                    </button>
+                <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">${user.usuario}</td>
+                <td class="px-6 py-4 text-slate-500 dark:text-slate-400">${user.nombre_completo}</td>
+                <td class="px-6 py-4 text-slate-500 dark:text-slate-400 capitalize">${user.perfil}</td>
+                <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${estadoClass}">
+                        ${estadoText}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <button class="btn-editar p-2 rounded-lg text-blue-500 hover:bg-blue-500/10 hover:text-blue-600 transition-colors" title="Editar" onclick="editarUsuario(${user.id_usuarios})">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">edit</span>
+                        </button>
+                        <button class="btn-eliminar p-2 rounded-lg text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors" title="Eliminar" onclick="eliminarUsuario(${user.id_usuarios})">
+                            <span class="material-symbols-outlined text-xl pointer-events-none">delete</span>
+                        </button>
+                    </div>
                 </td>
             `;
             tableBody.appendChild(row);
         });
-        lucide.createIcons(); // Re-init icons for new rows
     }
 
     function filtrarUsuarios() {
