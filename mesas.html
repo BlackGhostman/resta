@@ -201,25 +201,45 @@
                 };
 
                 return (
-                    <div className={`fixed top-0 right-0 left-auto h-full bg-gray-900 border-l border-gray-800 text-white transition-all duration-300 z-30 ${isSidebarOpen ? 'w-64' : 'w-20'} lg:w-64`}>
-                        <div className="flex flex-col h-full p-4">
-                            <div>
-                                <div className={`flex items-center mb-6 h-[2.125rem] ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
-                                    <button onClick={() => setIsSidebarOpen(true)} className={`p-2 rounded-md hover:bg-gray-700 hidden ${!isSidebarOpen ? 'lg:inline' : ''}`}>
-                                        <Icon name="Menu" className="w-6 h-6" />
+                    <div className={`fixed top-0 right-0 left-auto h-full bg-slate-900 border-l border-slate-800 text-white transition-all duration-300 z-30 ${isSidebarOpen ? 'w-64' : 'w-20'} lg:w-64 flex flex-col`}>
+                        <div className="flex flex-col h-full p-6">
+                            <div className="mb-8">
+                                <div className={`flex items-center justify-between mb-6`}>
+                                    <span className={`text-xs font-bold text-slate-400 uppercase tracking-widest ${isSidebarOpen ? 'block' : 'hidden'} lg:block`}>ZONAS</span>
+                                    <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-1 rounded-md hover:bg-slate-800 lg:hidden text-slate-400 hover:text-white`}>
+                                        <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-5 h-5" />
                                     </button>
-                                    <span className={`self-center text-2xl font-semibold whitespace-nowrap text-white ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>ZONAS</span>
-                                    <button onClick={() => setIsSidebarOpen(prev => !prev)} className={`p-2 rounded-md hover:bg-gray-700 lg:hidden`}>
-                                        <Icon name={isSidebarOpen ? 'X' : 'Menu'} className="w-6 h-6" />
+                                    <button onClick={() => setIsSidebarOpen(true)} className={`p-2 rounded-md hover:bg-slate-800 hidden ${!isSidebarOpen ? 'lg:inline' : ''}`}>
+                                        <Icon name="Menu" className="w-5 h-5" />
                                     </button>
                                 </div>
-                                <ul className="space-y-3 font-medium">
+                                <ul className="space-y-2">
                                     {zones.map(zone => (
                                         <li key={zone.id}>
-                                            <button onClick={() => handleZoneClick(zone.id)} className={`w-full flex items-center p-3 text-gray-200 rounded-lg group transition-colors ${activeZoneId === zone.id ? 'bg-white/10' : 'hover:bg-white/5'} ${!isSidebarOpen && 'lg:w-auto w-full justify-center'}`}>
-                                                <Icon name={zone.name === 'Salón' ? 'Armchair' : zone.name.includes('Barra') ? 'Beer' : 'MapPin'} className={`flex-shrink-0 w-8 h-8 transition duration-75 ${activeZoneId === zone.id ? 'text-cyan-400' : 'text-gray-400 group-hover:text-white'}`} />
-                                                <span className={`flex-1 ms-3 whitespace-nowrap ${isSidebarOpen ? 'inline' : 'hidden'} lg:inline`}>{zone.name}</span>
-                                                <span className={`text-sm font-semibold whitespace-nowrap ${!isSidebarOpen ? 'inline' : 'hidden'} lg:hidden`}>{getInitials(zone.name)}</span>
+                                            <button
+                                                onClick={() => handleZoneClick(zone.id)}
+                                                className={`w-full flex items-center p-4 rounded-xl transition-all duration-200 group relative
+                                                    ${activeZoneId === zone.id
+                                                        ? 'bg-slate-800 text-white shadow-lg'
+                                                        : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'} 
+                                                    ${!isSidebarOpen && 'lg:w-auto w-full justify-center px-2'}`}
+                                            >
+                                                <Icon
+                                                    name={zone.name === 'Salón' ? 'Armchair' : zone.name.includes('Barra') ? 'Beer' : 'MapPin'}
+                                                    className={`w-5 h-5 ${activeZoneId === zone.id ? 'text-[#D4B106]' : 'text-current'}`}
+                                                />
+                                                <span className={`flex-1 text-left ms-4 font-medium text-sm ${isSidebarOpen ? 'block' : 'hidden'} lg:block`}>
+                                                    {zone.name}
+                                                </span>
+
+                                                {/* Active Indicator Dot */}
+                                                {activeZoneId === zone.id && (
+                                                    <div className={`w-1.5 h-1.5 rounded-full bg-[#D4B106] ml-2 ${isSidebarOpen ? 'block' : 'hidden'} lg:block`}></div>
+                                                )}
+
+                                                <span className={`text-xs font-bold ${!isSidebarOpen ? 'block' : 'hidden'} lg:hidden`}>
+                                                    {getInitials(zone.name)}
+                                                </span>
                                             </button>
                                         </li>
                                     ))}
@@ -422,11 +442,29 @@
                         <div className="relative flex h-screen">
                             <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${isSidebarOpen ? 'mr-64' : 'mr-20'} lg:mr-64`}>
                                 <Header activeZoneName={activeZone?.name || 'Sin Zonas'} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-                                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-800 p-4 lg:p-8 relative">
-                                    <h1 className="hidden lg:block text-4xl font-bold text-white mb-8">Seleccionar Mesa: {activeZone?.name || ''}</h1>
-                                    <div className="bg-white p-4 rounded-lg overflow-x-auto">
+                                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-950 p-4 lg:p-8 relative">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <h1 className="hidden lg:block text-2xl font-bold text-white tracking-tight">Seleccionar Mesa: <span className="text-slate-400">{activeZone?.name || ''}</span></h1>
+                                        <div className="flex gap-2">
+                                            <div className="flex items-center bg-slate-900 border border-slate-800 rounded-full px-3 py-1">
+                                                <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                                                <span className="text-xs font-bold text-slate-400 tracking-wider">DISPONIBLE</span>
+                                            </div>
+                                            <div className="flex items-center bg-slate-900 border border-slate-800 rounded-full px-3 py-1">
+                                                <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
+                                                <span className="text-xs font-bold text-slate-400 tracking-wider">OCUPADA</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white border border-slate-200 p-4 rounded-xl overflow-x-auto relative min-h-[600px]">
                                         {!activeZone ? (
-                                            <div className="text-center text-gray-400 py-8">Selecciona una zona para ver las mesas.</div>
+                                            <div className="absolute inset-0 flex items-center justify-center text-slate-500">
+                                                <div className="text-center">
+                                                    <Icon name="MapPin" className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                                                    <p>Selecciona una zona para ver las mesas.</p>
+                                                </div>
+                                            </div>
                                         ) : (
                                             <div
                                                 className={isDesktopView ? 'relative' : 'flex flex-col gap-3'}
